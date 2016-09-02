@@ -1,0 +1,13 @@
+<div>
+  <articles-form></articles-form>
+ 
+  <ul>
+    <li *ngFor="let article of articles">
+      <a [routerLink]="['/article,article._id]">{{article.name}}</a>
+      <p>{{article.description}}</p>
+      <p>{{article.date}}</p>
+      <button (click)="removeArticle(article)">X</button>
+    </li>
+  </ul>
+</div>
+
