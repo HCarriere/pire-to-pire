@@ -2,12 +2,12 @@ import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Tracker } from 'meteor/tracker';
 
-import { Articles } from '../../../both/collections/articles.collection.ts';
+import { Articles } from '../../../both/collections/articles.collection';
 
 import template from './article-details.component.html';
 
 @Component({
-	selector: 'party-details',
+	selector: 'article-details',
 	template
 })
 

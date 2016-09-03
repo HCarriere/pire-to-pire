@@ -6,7 +6,6 @@ import { ArticleDetailsComponent } from './imports/articles/article-details.comp
 const routes: RouterConfig = [
 	{ path: '', component: ArticlesListComponent },
 	{ path: 'article/:articleId', component: ArticleDetailsComponent }
-	
 ];
 
 export const APP_ROUTER_PROVIDERS = [

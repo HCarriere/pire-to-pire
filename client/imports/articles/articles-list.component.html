@@ -1,6 +1,7 @@
 <div>
+  
   <articles-form></articles-form>
- 
+  <h2>Articles</h2>
   <ul>
     <li *ngFor="let article of articles">
       <a [routerLink]="['/article,article._id]">{{article.name}}</a>
