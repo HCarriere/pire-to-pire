@@ -1,0 +1,21 @@
+{
+  "name": "pire-to-pire",
+  "version": "1.0.0",
+  "description": "Projet web CESI RIL Avril 2016",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test",
+    "start": "node index.js",
+    "other-command": "echo coucou"
+  },
+  "author": "HCarriere",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongoose": "^4.6.1",
+    "vue": "^1.0.27"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2"
+  }
+}
