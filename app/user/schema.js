@@ -1,19 +1,20 @@
+
+const collection = 'user';
+var mongo = require('../mongo')
 var mongoose = require('mongoose')
 
+
 var userSchema = mongoose.Schema({
-    login : {
-        type : String,
-        match : /^[a-zA-Z0-9-_]+$/
-    },
+    login: String,
     password : String,
     name : String,
     privileges : [String],
-    rank : String
+    rank : {
+        type : String,
+        match : /^[a-zA-Z0-9-_]+$/
+    },
+    articles : [String]
 });
 
 
-function getModel(){
-    return mongoose.model('user',userSchema);
-}
-
-module.exports.getModel = getModel
+module.exports.Model = mongoose.model(collection,userSchema);
