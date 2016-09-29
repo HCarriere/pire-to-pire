@@ -6,7 +6,7 @@ const path = require('path')
 const app = express()
 const port = 3000
 const exphbs = require('express-handlebars')
-
+var session = require('express-session')
 
 
 
@@ -21,20 +21,19 @@ app.listen(port, (err) => {
     console.log(`server listening ${port}`)
 });
 
-//Error handler
-app.use((err, request, response, next) => {  
-  //TODO log error
-  console.log(err);
-  response.status(500).send('Something broke!');
-  response.status(404).send('Not found.');
-});
 
-//styles
-app.use(express.static(__dirname + '/views/assets'));
+//Configuration d'express
+app
+.use(express.static(__dirname + '/views/assets'))//styles
+.use( session({
+    secret : 'Admin123',
+    name: 'sessionId',
+    resave: false,
+    saveUninitialized: true
+}))
 
 //handlebars
 app.engine('.hbs',exphbs({
-    
     defaultLayout: 'main',
     extname: '.hbs',
     layoutsDir: path.join(__dirname,'views/layouts')
@@ -57,12 +56,30 @@ app
 .get('/article/:id', (request, response) => {
     response.render('article/article', {})
 })
+.get('/article', (request, response) => {
+    response.render('article/lastArticles', {})
+})
 .get('/search', (request, response) => {
     response.render('search/search', {})
 })
 .get('/shared/:id', (request, response) => {
     response.render('shared/shared', {})
 })    
+.get('/shared', (request, response) => {
+    response.render('shared/lastShared', {})
+})
+.get('/connect', (request, response) => {
+    response.render('connect/connect', {})
+})
+
+//Error handler
+app.use((err, request, response, next) => {  
+  //TODO log error
+  console.log("err: "+err);
+  response.status(500).send('Something broke!');
+  response.status(404).send('Not found.');
+});
+
 
 
 

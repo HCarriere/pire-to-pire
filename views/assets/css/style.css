@@ -1,6 +1,12 @@
 /* GENERAL */
+html{
+    min-height:100%;
+}
+
 body {
-    background-color: aliceblue;
+    background: #79C9F9 url("/images/background.png") no-repeat;
+    background-position:left bottom;
+/*    background-size:cover;*/
     margin:0;
 }
 
@@ -9,20 +15,32 @@ header {
     width:100%;
     height:50px;
     background-color:black;
+    box-shadow: 0 3px 2px #666;
 }
 
-header .logo{
-    width:250px;
+header .top-logo{
+    width:75px;
     height:50px;
     background-image: url("/images/logo.png");
     display:inline-block;
     vertical-align: top;
 }
-
+header .top-name{
+    text-decoration: none;
+    color:aliceblue;
+    font-size: 1.8em;
+    font-family: "coolvetica";
+    display:inline-block;
+    vertical-align:top;
+    padding:5px 10px;
+}
+header .top-name:hover{
+    text-decoration: underline;
+}
 header nav{
     height:50px;
     display:inline-block;
-    background-color:green;
+    float:right;
 }
 header nav ul{
     margin:0;
@@ -30,20 +48,130 @@ header nav ul{
 }
 header nav li{
     display:inline-block;
-    height:50px;
-    background-color: aqua;
-}
-header nav li a:link{
+    height:40px;
+    min-width:125px;
+    text-align:center;
     text-decoration: none;
+    color:#fff;
+    padding-top:13px;
+    transition:background-color .3s;
+    font-family: "coolvetica";
+    vertical-align: top;
+}
+header nav a li:hover{
+    background-color:#123131;
+}
+header nav li.user{
+   
+}
+header form .search-input-text{
+    border: none;
+    padding:3px;
+    height:20px;
+    width:100px;
+    transition: all .6s;
+}
+header form .search-input-text:focus{
+    width:200px;
+    box-shadow: 0 0 3px #BBB;
+}
+header form .search-submit{
+    border:none;
+    background: url("/icons/icone_loupe.png") no-repeat;
+    background-size:26px 26px;
+    width:26px;
+    height:26px;
+    cursor:pointer;
+    vertical-align: top;
+    margin-right:10px;
+    transition: background-color .5s;
+}
+header form .search-submit:hover{
+    background-color:dimgray;
+}
+
+/***** CONTENT *****/
+.logo{
+    font-family: "coolvetica";
+    font-size: 100px;
+    color:aliceblue;
+    text-shadow: 5px 5px #555;
+}
+.mini-logo{
+    font-family: "coolvetica";
+    font-size: 50px;
+    color:aliceblue;
+    text-shadow: 2px 2px #555;
 }
 
 
+.content{
+    padding:15px 100px;
+    
+}
 
+.section{
+    padding:10px 0;
+}
+/* form login */
+.form-login{
+    width:40%;
+    border-right:1px solid #666;
+    display:inline-block;
+    vertical-align: top;
+    padding-right:5%;
+}
+.form-inscription{
+    width:40%;
+    display:inline-block;
+    margin-left:5%;
+}
+form .input-text{
+    border:1px solid #666;
+    padding:10px 0;
+    margin:10px 0;
+    transition: all .5s;
+    width:100%;
+}
+form .input-text:focus{
+    box-shadow: 0 0 5px #222;
+    border: 1px solid white;
+}
+form .button-valid{
+    background-color:#49a291;
+    border:1px solid grey;
+    padding: 7px 15px;
+    transition: all .5s;
+    cursor:pointer;
+}
+form .button-valid:hover{
+    background-color: darkslategray;
+}
+
+/* TOOLS */
+.article-content{
+    background-color:white;
+    padding:3px 20px;
+    border-radius:3px;
+    box-shadow: 0 0 5px #222;
+}
+
+h1{
+    font-family: "coolvetica";
+    font-size: 2em;
+}
 /* FOOTER */
 footer{
-    width:100%;
-    height:75px;
-    position:fixed;
-    bottom:0;
-    background-color:grey;
+    color: #333;
+    font-size: 0.8em;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+
+/* FONTS */
+
+@font-face {
+  font-family: coolvetica;
+  src: url(/fonts/coolvetica_rg.ttf);
 }

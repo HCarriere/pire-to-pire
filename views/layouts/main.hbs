@@ -4,20 +4,26 @@
     <head>
         <meta charset="utf-8">
         <title>Pire to pire</title>
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     
     <body>
         <header>
-            <a href="/" class="logo">
-                  
-            </a><!--
+            <a href="/">
+            <div class="top-logo"></div>
+            <div class="top-name">Pire to Pire</div></a><!--
          --><nav>
                 <ul>
-                    <a href="#"><li>Recherche</li></a><!--
-                 --><a href="#"><li>Articles</li></a><!--
-                 --><a href="#"><li>Partages</li></a><!--
-                 --><a href="#"><li class="user">USER</li></a>
+                    <li>
+                        <form method="get" action="/search">
+                            <input type="text" name="search" class="search-input-text" placeholder="Recherche...">
+                            <input type="submit" class="search-submit" value="">
+                        </form>
+                        </li><!--
+                 --><a href="/article"><li ><i class="fa fa-file-text-o"></i> Articles</li></a><!--
+                 --><a href="/shared"><li><i class="fa fa-share-alt"></i> Partages</li></a><!--
+                 --><a href="/connect"><li class="user"><i class="fa fa-user"></i> Connection</li></a>
                 </ul>
             </nav>
         </header>
@@ -27,11 +33,7 @@
         </div>
         
         <footer>
-            <ul>
-                <li><a href="#">link</a></li>
-                <li><a href="#">link</a></li>
-                <li><a href="#">link</a></li>
-            </ul>
+            Copyright HCarriere 2016
         </footer>
     </body>
 </html>
