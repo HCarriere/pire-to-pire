@@ -2,14 +2,18 @@
 
 
 const express = require('express')
-const path = require('path')
 const app = express()
+const path = require('path')
 const port = 3000
 const exphbs = require('express-handlebars')
-var session = require('express-session')
+const passport = require('passport')
+const session = require('express-session')
+var bodyParser = require('body-parser')
+//conf
+const config = require('./config')
 
-
-
+//indexes
+var connect = require('./app/connect/index')
 
 
 
@@ -26,10 +30,15 @@ app.listen(port, (err) => {
 app
 .use(express.static(__dirname + '/views/assets'))//styles
 .use( session({
-    secret : 'Admin123',
-    name: 'sessionId',
+    secret : config.session.secret,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
+}))
+.use(passport.initialize())
+.use(passport.session())
+.use(bodyParser.json() )        // to support JSON-encoded bodies
+.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
 }))
 
 //handlebars
@@ -41,103 +50,90 @@ app.engine('.hbs',exphbs({
 app.set('view engine', '.hbs')
 app.set('views', path.join(__dirname, 'app'))
 
+//// inits ////
 
+connect.init()
 
 ////////////////////////
 //    R O U T E S     //
 ////////////////////////
 app
+//home
 .get('/', (request, response) => {
-    response.render('home/home',{})
+    response.render('home/home',{global:getParameters(request)})
 })
-.get('/profile', (request, response) => {
+
+//users
+.get('/profile', authenticationMiddleware(), (request, response) => {
     response.render('user/user', {})
 })
+.get('/connect', (request, response) => {
+    response.render('connect/connect', {global:getParameters(request)})
+})
+.post('/connect', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/connect'
+}))
+.post('/inscription',(request, response) => {
+    response.render('connect/connect', {global:getParameters(request), special:connect.inscription(request)})
+})
+.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+})
+
+//articles
 .get('/article/:id', (request, response) => {
     response.render('article/article', {})
 })
 .get('/article', (request, response) => {
     response.render('article/lastArticles', {})
 })
+
+//search
 .get('/search', (request, response) => {
     response.render('search/search', {})
 })
+
+//shared
 .get('/shared/:id', (request, response) => {
     response.render('shared/shared', {})
 })    
 .get('/shared', (request, response) => {
     response.render('shared/lastShared', {})
 })
-.get('/connect', (request, response) => {
-    response.render('connect/connect', {})
-})
+
+
+
 
 //Error handler
 app.use((err, request, response, next) => {  
   //TODO log error
-  console.log("err: "+err);
-  response.status(500).send('Something broke!');
-  response.status(404).send('Not found.');
+  console.log(err);
+  response.status(500).send('Error 500 : '+err.message);
+  response.status(404).send('Error 404 : '+err);
 });
 
 
+// midlewares functions
+
+function authenticationMiddleware() {
+    return function (req, res, next) {
+        if(req.isAuthenticated()) {
+            return next()
+        }
+        res.redirect('/connect')
+    }
+}
 
 
-//var userBase = require('./app/user/schema')
-//var mongo = require('./app/mongo')
-//.get('/c', (request, response) => {
-//    mongo.open();
-//    
-//    var object = new userBase.Model({
-//        login:'Bob',
-//        password:'123',
-//        name:'namename',
-//        privileges:['a','b'],
-//        rank:'admin'
-//    });
-//    mongo.add(object);
-//
-//    mongo.close();
-//    response.send('create');
-//})
-//.get('/r', (request, response) => {
-//    mongo.open();
-//    
-//    mongo.find(userBase.Model,{
-//        login:'Bob'
-//    });
-//
-//    mongo.close();
-//    response.send('read');
-//})
-//.get('/u', (request, response) => {
-//    mongo.open();
-//    
-//    mongo.update(userBase.Model,
-//        {
-//        login:'Bob',
-//        },{
-//        password:'Alice'
-//        }
-//    ,null);
-//
-//    mongo.close();
-//    response.send('update');
-//})
-//.get('/d', (request, response) => {
-//    mongo.open();
-//    
-//    mongo.remove(userBase.Model,
-//    {
-//        login:'Bob'
-//    });
-//
-//    mongo.close();
-//    response.send('remove');
-//});
-//
+//global parameters
 
-//app.get('/projects/:id', (req, res) => {
-//  req.param.id;
-//})
+function getParameters(request){
+    return {
+        logName:request.isAuthenticated()?request.user.login:'Connection'
+    }
+}
+
+
 
