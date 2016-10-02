@@ -116,19 +116,21 @@ header form .search-submit:hover{
 /* form login */
 .form-login{
     width:40%;
-    border-right:1px solid #666;
     display:inline-block;
+}
+.form-login.login{
+    border-right:1px solid #666;
     vertical-align: top;
     padding-right:5%;
+    
 }
-.form-inscription{
-    width:40%;
-    display:inline-block;
-    margin-left:5%;
+.form-login.inscription{
+    padding-left:5%;
 }
 form .input-text{
     border:1px solid #666;
     padding:10px 0;
+    padding-left:10px;
     margin:10px 0;
     transition: all .5s;
     width:100%;
@@ -139,10 +141,11 @@ form .input-text:focus{
 }
 form .button-valid{
     background-color:#49a291;
-    border:1px solid grey;
-    padding: 7px 15px;
+    border:none;
+    padding: 8px 15px;
     transition: all .5s;
     cursor:pointer;
+    margin-top:7px;
 }
 form .button-valid:hover{
     background-color: darkslategray;
@@ -151,15 +154,37 @@ form .button-valid:hover{
 /* TOOLS */
 .article-content{
     background-color:white;
-    padding:3px 20px;
-    border-radius:3px;
-    box-shadow: 0 0 5px #222;
+    padding:20px;
+    border-radius:0px;
+    box-shadow: 0 0 2px #222;
 }
 
 h1{
     font-family: "coolvetica";
     font-size: 2em;
+    margin:5px;
 }
+/*alerts*/
+.alert{
+    border:1px solid #666;
+    border-radius:5px;
+    margin:15px 5px;
+    padding:0 15px;
+}
+.alert h1{
+    font-size:1.5em;
+    margin:0;
+}
+.alert p{
+    
+}
+.alert-red{
+    background-color:rgba(203, 0, 0, 0.62);
+}
+.alert-green{
+    background-color:rgba(0, 203, 70, 0.62);
+}
+
 /* FOOTER */
 footer{
     color: #333;
@@ -169,9 +194,56 @@ footer{
 }
 
 
+/**************/
+/* responsive */
+/**************/
+
+@media screen and (max-width:853px) {
+    /*nav*/
+    header nav{
+        display:block;
+        float:none;
+    }
+    header nav li{
+        background-color:black;
+        width:100%;
+    }
+    /* main */
+    .content{
+        padding:10px;
+        margin-top:200px;
+    }
+    
+    /* connect */
+    .form-login{
+        display: block;
+        width:95%;
+        min-width:200px;
+    }
+    .form-login.login{
+        border-right:none;
+        border-bottom:1px solid black;
+        padding-bottom:25px;
+    }
+    .form-login.inscription{
+        padding:0px;
+    }
+    /* home*/
+    .logo{
+        font-size:50px;
+    }
+    
+    /* general */
+    h1{
+        font-size:1.5em;
+    }
+}
+
+
 /* FONTS */
 
 @font-face {
   font-family: coolvetica;
   src: url(/fonts/coolvetica_rg.ttf);
 }
+

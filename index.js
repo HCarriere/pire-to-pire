@@ -12,10 +12,6 @@ var bodyParser = require('body-parser')
 //conf
 const config = require('./config')
 
-//indexes
-var connect = require('./app/connect/index')
-
-
 
 //application launch
 app.listen(port, (err) => {
@@ -51,7 +47,8 @@ app.set('view engine', '.hbs')
 app.set('views', path.join(__dirname, 'app'))
 
 //// inits ////
-
+//indexes
+var connect = require('./app/connect')
 connect.init()
 
 ////////////////////////
@@ -63,10 +60,12 @@ app
     response.render('home/home',{global:getParameters(request)})
 })
 
-//users
+//profil
 .get('/profile', authenticationMiddleware(), (request, response) => {
-    response.render('user/user', {})
+    response.render('user/user', {global:getParameters(request)})
 })
+
+//connection/inscription
 .get('/connect', (request, response) => {
     response.render('connect/connect', {global:getParameters(request)})
 })
@@ -74,33 +73,37 @@ app
     successRedirect: '/',
     failureRedirect: '/connect'
 }))
-.post('/inscription',(request, response) => {
-    response.render('connect/connect', {global:getParameters(request), special:connect.inscription(request)})
-})
 .get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 })
+.post('/inscription',(request, response) => {
+    response.render('connect/connect', {
+        global:getParameters(request),
+        special:connect.inscription(request)
+    })
+})
+
 
 //articles
 .get('/article/:id', (request, response) => {
-    response.render('article/article', {})
+    response.render('article/article', {global:getParameters(request)})
 })
 .get('/article', (request, response) => {
-    response.render('article/lastArticles', {})
+    response.render('article/lastArticles', {global:getParameters(request)})
 })
 
 //search
 .get('/search', (request, response) => {
-    response.render('search/search', {})
+    response.render('search/search', {global:getParameters(request)})
 })
 
 //shared
 .get('/shared/:id', (request, response) => {
-    response.render('shared/shared', {})
+    response.render('shared/shared', {global:getParameters(request)})
 })    
 .get('/shared', (request, response) => {
-    response.render('shared/lastShared', {})
+    response.render('shared/lastShared', {global:getParameters(request)})
 })
 
 
@@ -131,7 +134,7 @@ function authenticationMiddleware() {
 
 function getParameters(request){
     return {
-        logName:request.isAuthenticated()?request.user.login:'Connection'
+        logName:request.isAuthenticated()?request.user.login:null
     }
 }
 

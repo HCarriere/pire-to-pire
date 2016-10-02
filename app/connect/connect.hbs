@@ -1,10 +1,10 @@
 
 <div class="mini-logo">
-    Indentifiez-vous!</div>
+    Identifiez-vous!</div>
     
 <div class="article-content">
-    <form method="post" action="/connect" class="form-login" name="connection">
-        <h1><i class="fa fa-user"></i> Connection</h1>
+    <form method="post" action="/connect" class="form-login login" name="connection">
+        <h1><i class="fa fa-user"></i> Connexion</h1>
         <input type="text" name="username" class="input-text" placeholder="Nom de compte" required>
         <br>
         <input type="password" name="password" class="input-text" placeholder="********" required>
@@ -12,7 +12,7 @@
         <input type="submit" value="Connection" class="button-valid">
     </form>
     
-    <form method="post" action="/inscription" class="form-inscription" name="inscription">
+    <form method="post" action="/inscription" class="form-login inscription" name="inscription">
         <h1><i class="fa fa-plus"></i> Inscription</h1>
         <input type="text" name="login" class="input-text" placeholder="Nom de compte" required>
         <br>
@@ -24,4 +24,21 @@
         <br>
         <input type="submit" value="Inscription" class="button-valid">
     </form>
+    
+    {{#if special.accountAdded}}
+    <div class="alert alert-green">
+        <h1>Compte créé avec succès</h1>
+        <p>Un email de confirmation vous a été envoyé. </p>
+    </div>
+    {{/if}}
+    
+    {{#if special.notSamePassword}}
+    <div class="alert alert-red">
+        <h1>Erreur d'inscription</h1>
+        <p>Les deux mots de passe ne coincident pas. Veuillez entrez les même mots de passe.</p>
+    </div>
+    {{/if}}
+    
+    
+     
 </div>

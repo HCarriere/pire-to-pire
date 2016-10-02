@@ -8,6 +8,7 @@ function openConnection(callback){
             throw `Impossible de se connecter à la base ${conf.dev.database} : ${err}`; 
             callback(err);
         }else{
+            console.log('connection opened');
             callback(null);
         }
     });   
@@ -15,14 +16,13 @@ function openConnection(callback){
 
 function closeConnection(){
     mongoose.connection.close();
+    console.log('connection closed');
 }
 
 //CRUD
 
 /**
-mongo.add(MODEL, function(err){
-    //do smthing
-})
+
 */
 function addObject(objectFromModel, callback){   
     openConnection(function(err){
@@ -30,18 +30,17 @@ function addObject(objectFromModel, callback){
             objectFromModel.save(function (err) {
                 if (err) { 
                     throw err; 
-                    closeConnection();
                     callback(err);
+                    closeConnection();
                 }else{
                     console.log(`ADD ok`);
-                    closeConnection();
                     callback(null);
+                    closeConnection();
                 }
             });      
         }
     })
 }
-
 
 function findObject(model,jsonRequest, callback){
     openConnection(function(err){
@@ -52,7 +51,7 @@ function findObject(model,jsonRequest, callback){
                 callback(err, null);
             }
             console.log(`object retrieved : ${result}`);
-            closeConnection()
+            closeConnection();
             callback(null, result);
         });
     })

@@ -2,13 +2,13 @@
 
 const passport = require('passport')  
 const LocalStrategy = require('passport-local').Strategy
-const userBase = require('../user/schema')
+const UserModel = require('../user').Model
 const mongo = require('../mongo')
 
 
 function findUser(username, callback){
    
-    mongo.findOne(userBase.Model, {
+    mongo.findOne(UserModel, {
         login: username
     }, function(err, result){
         if(err){
@@ -58,25 +58,37 @@ Render inscription
 function inscription(request){
     
     if(request.body.password === request.body.password2){
-        
-        
-        var object = new userBase.Model({
+
+        var object = new UserModel({
             login:request.body.login,
             password:request.body.password,
             mail:request.body.email,
             privileges:[''],
             rank:'Utilisateur'
         });
+        
         mongo.add(object, function(err){
-            return {
-                succes : true
-            }    
-        })
+            if(err){
+                console.log("erreur d'ajout")
+                return 
+                {
+                    error : true
+                };
+            }
+            else{
+                console.log('objet ajouté avec succès');
+                return 
+                {
+                    accountAdded : true
+                };
+            }
+        });
         
     }else{
-        return {
+        return 
+        {
             notSamePassword : true
-        }
+        };
     }
 }
 

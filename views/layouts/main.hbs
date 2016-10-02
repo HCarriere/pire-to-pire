@@ -23,7 +23,13 @@
                         </li><!--
                  --><a href="/article"><li ><i class="fa fa-file-text-o"></i> Articles</li></a><!--
                  --><a href="/shared"><li><i class="fa fa-share-alt"></i> Partages</li></a><!--
-                 --><a href="/connect"><li class="user"><i class="fa fa-user"></i> {{global.logName}}</li></a>
+                 --><a href="/profile"><li class="user"><i class="fa fa-user"></i> 
+                    {{#if global.logName}} 
+                        {{global.logName}} 
+                    {{else}} 
+                        Connexion 
+                    {{/if}}
+                    </li></a>
                 </ul>
             </nav>
         </header>
