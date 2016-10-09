@@ -71,16 +71,18 @@ app
 })
 .post('/connect', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/connect'
+    failureRedirect: '/connect?error=1'
 }))
 .get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 })
 .post('/inscription',(request, response) => {
-    response.render('connect/connect', {
-        global:getParameters(request),
-        special:connect.inscription(request)
+    connect.inscription(request, function(msg){
+        response.render('connect/connect', {
+            global:getParameters(request),
+            special:msg
+        })
     })
 })
 
@@ -106,8 +108,10 @@ app
     response.render('shared/lastShared', {global:getParameters(request)})
 })
 
-
-
+//other routes handler
+app.get('*', function(req, res){
+  res.render('404');
+});
 
 //Error handler
 app.use((err, request, response, next) => {  
@@ -119,7 +123,10 @@ app.use((err, request, response, next) => {
 
 
 // midlewares functions
-
+/**
+verify user is connected
+if not, redirect to /connect
+*/
 function authenticationMiddleware() {
     return function (req, res, next) {
         if(req.isAuthenticated()) {
@@ -131,10 +138,13 @@ function authenticationMiddleware() {
 
 
 //global parameters
-
+/**
+accessing 'get' parameters : 'global.query.*'
+*/
 function getParameters(request){
     return {
-        logName:request.isAuthenticated()?request.user.login:null
+        logName:request.isAuthenticated()?request.user.login:null,
+        query:request.query
     }
 }
 

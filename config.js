@@ -1,10 +1,10 @@
 
 
 module.exports = {
-    dev: {
-        database: "mongodb://localhost/pire-to-pire"
+    database: {
+        name: "mongodb://localhost/pire-to-pire"
     },
     session:{
-        secret: "OUEHFKE?D54"
+        secret: "QeHjU?D542:8eE"
     }
 }

@@ -55,8 +55,8 @@ function initPassport(){
 /**
 Render inscription
 */
-function inscription(request){
-    
+function inscription(request, callback){
+
     if(request.body.password === request.body.password2){
 
         var object = new UserModel({
@@ -69,27 +69,26 @@ function inscription(request){
         
         mongo.add(object, function(err){
             if(err){
-                console.log("erreur d'ajout")
-                return 
-                {
+                console.log("erreur d'ajout :"+err)
+                callback( {
                     error : true
-                };
+                });
             }
             else{
-                console.log('objet ajouté avec succès');
-                return 
-                {
+                console.log('user ajouté avec succès');
+                callback( {
                     accountAdded : true
-                };
+                });
             }
         });
         
     }else{
-        return 
-        {
+        console.log('not the same password')
+        callback({
             notSamePassword : true
-        };
+        });
     }
+
 }
 
 

@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 
 function openConnection(callback){
-    mongoose.connect(conf.dev.database, function(err) {
+    mongoose.connect(conf.database.name, function(err) {
         if (err) { 
             throw `Impossible de se connecter à la base ${conf.dev.database} : ${err}`; 
             callback(err);
@@ -25,8 +25,8 @@ function closeConnection(){
 
 */
 function addObject(objectFromModel, callback){   
-    openConnection(function(err){
-        if(!err){
+    openConnection(function(coErr){
+        if(!coErr){
             objectFromModel.save(function (err) {
                 if (err) { 
                     throw err; 
@@ -38,68 +38,86 @@ function addObject(objectFromModel, callback){
                     closeConnection();
                 }
             });      
+        }else{
+            callback(coErr);
         }
     })
 }
 
 function findObject(model,jsonRequest, callback){
-    openConnection(function(err){
-        model.find(jsonRequest, function (err, result) {
-            if(err) { 
-                throw err; 
+    openConnection(function(coErr){
+        if(!coErr){
+            model.find(jsonRequest, function (err, result) {
+                if(err) { 
+                    throw err; 
+                    closeConnection();
+                    callback(err, null);
+                }
+                console.log(`object retrieved : ${result}`);
                 closeConnection();
-                callback(err, null);
-            }
-            console.log(`object retrieved : ${result}`);
-            closeConnection();
-            callback(null, result);
-        });
+                callback(null, result);
+            });
+        }else{
+            callback(coErr);
+        }
     })
 }
 
 function findOne(model,jsonRequest, callback){
-    openConnection(function(err){
-        model.findOne(jsonRequest, function (err, result) {
-            if(err) { 
-                throw err; 
-                closeConnection();
-                callback(err, null);
-            }
-            console.log(`one object retrieved : ${result}`);
-            closeConnection()
-            callback(null, result);
-        });
+    openConnection(function(coErr){
+        if(!coErr){
+            model.findOne(jsonRequest, function (err, result) {
+                if(err) { 
+                    throw err; 
+                    closeConnection();
+                    callback(err, null);
+                }
+                console.log(`one object retrieved : ${result}`);
+                closeConnection()
+                callback(null, result);
+            });
+        }else{
+            callback(coErr);
+        }
     })
 }
 
 function updateObject(model, condition, update, option, callback){
-    openConnection(function(err){
-        model.update(condition, update, option, function(err){
-            if (err) {
-                throw err; 
+    openConnection(function(coErr){
+        if(!coErr){
+            model.update(condition, update, option, function(err){
+                if (err) {
+                    throw err; 
+                    closeConnection();
+                    callback(err);
+                }
+                console.log(`UPDATE ok`);
                 closeConnection();
-                callback(err);
-            }
-            console.log(`UPDATE ok`);
-            closeConnection();
-            callback(null);
-        });
+                callback(null);
+            });
+        }else{
+            callback(coErr);
+        }
     })
 }
 
 
 function removeObject(model, condition, callback){
-    openConnection(function(err){
-        model.remove(condition, function (err) {
-           if (err) {
-               throw err;
-               closeConnection();
-               callback(err);
-           }
-            console.log(`REMOVE ok`);
-            closeConnection();
-            callback(err);
-        });
+    openConnection(function(coErr){
+        if(!coErr){
+            model.remove(condition, function (err) {
+               if (err) {
+                   throw err;
+                   closeConnection();
+                   callback(err);
+               }
+                console.log(`REMOVE ok`);
+                closeConnection();
+                callback(err);
+            });
+        }else{
+            callback(coErr);
+        }
     })
 }
 

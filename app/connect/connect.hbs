@@ -1,5 +1,5 @@
 
-<div class="mini-logo">
+<div class="page-title">
     Identifiez-vous!</div>
     
 <div class="article-content">
@@ -24,6 +24,12 @@
         <br>
         <input type="submit" value="Inscription" class="button-valid">
     </form>
+    {{#if global.query.error}}
+    <div class="alert alert-red">
+        <h1>Impossible de se connecter</h1>
+        <p>Veuillez vérifier votre nom de compte / mot de passe.</p>
+    </div>
+    {{/if}}
     
     {{#if special.accountAdded}}
     <div class="alert alert-green">
@@ -35,7 +41,7 @@
     {{#if special.notSamePassword}}
     <div class="alert alert-red">
         <h1>Erreur d'inscription</h1>
-        <p>Les deux mots de passe ne coincident pas. Veuillez entrez les même mots de passe.</p>
+        <p>Les deux mots de passe ne coincident pas. Veuillez entrer les même mots de passe.</p>
     </div>
     {{/if}}
     

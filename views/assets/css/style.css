@@ -91,13 +91,13 @@ header form .search-submit:hover{
 }
 
 /***** CONTENT *****/
-.logo{
+.website-title{
     font-family: "coolvetica";
     font-size: 100px;
     color:aliceblue;
     text-shadow: 5px 5px #555;
 }
-.mini-logo{
+.page-title{
     font-family: "coolvetica";
     font-size: 50px;
     color:aliceblue;
