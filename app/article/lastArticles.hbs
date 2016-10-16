@@ -1,6 +1,24 @@
 <div class="page-title">
 Derniers articles
 </div>
-<div class="content article-content">
+
+<a class="button add" href="/new/article"><i class="fa fa-plus"></i> Nouveau</a>
+
+<div class="list-container">
+
+    {{#each special.article}}
+    
+    <div class="list-element">
+        <a href="/article/{{shortName}}" class="list-title">{{title}}</a>
+        Par<a href="/search?user={{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{publicationDate}}</div>
+        <p class="list-extract">{{extract}}</p>
+    
+        {{#each tags}}
+        <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
+        {{/each}}
+    
+    </div>
+
+    {{/each}}
     
 </div>

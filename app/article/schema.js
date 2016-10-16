@@ -10,10 +10,13 @@ var schema = mongoose.Schema({
     name: String,
     shortName: String,
     content: String,
+    extract: String,
     publicationDate: Date,
     modificationDate: Date,
-    tags: [String],
-    Author: [mongoose.Schema.Types.ObjectId]
+    tags: {
+        tag:[String]
+    },
+    author: String
 });
 
 

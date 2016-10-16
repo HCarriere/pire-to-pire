@@ -5,8 +5,9 @@ var mongoose = require('mongoose');
 function openConnection(callback){
     mongoose.connect(conf.database.name, function(err) {
         if (err) { 
-            throw `Impossible de se connecter à la base ${conf.dev.database} : ${err}`; 
+            console.log(`Impossible de se connecter à la base ${conf.database.name} : ${err}`)
             callback(err);
+            //throw `Impossible de se connecter à la base ${conf.dev.database} : ${err}`; 
         }else{
             console.log('connection opened');
             callback(null);

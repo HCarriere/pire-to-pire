@@ -49,6 +49,7 @@ app.set('views', path.join(__dirname, 'app'))
 //// inits ////
 //indexes
 var connect = require('./app/connect')
+var article = require('./app/article')
 connect.init()
 
 ////////////////////////
@@ -92,7 +93,16 @@ app
     response.render('article/article', {global:getParameters(request)})
 })
 .get('/article', (request, response) => {
-    response.render('article/lastArticles', {global:getParameters(request)})
+    article.getArticles(function(err, articles){
+        if(err){
+            
+        }else{
+           response.render('article/lastArticles', {
+                global:getParameters(request),
+                special:articles
+            }) 
+        }
+    })
 })
 
 //search
@@ -110,15 +120,23 @@ app
 
 //other routes handler
 app.get('*', function(req, res){
-  res.render('404');
+  res.render('error',{
+      errorCode:404,
+      errorTitle:"Page non trouvée",
+      errorContent:"Essayez ailleur !"
+  });
 });
 
 //Error handler
 app.use((err, request, response, next) => {  
   //TODO log error
-  console.log(err);
-  response.status(500).send('Error 500 : '+err.message);
-  response.status(404).send('Error 404 : '+err);
+  console.log('Erreur reçue : ' +err);
+  response.status(500).render('error', {
+      errorCode:405,
+      errorTitle:"Erreur de serveur interne",
+      errorContent:err
+  });
+  //response.status(404).send('Error 404 : '+err);
 });
 
 

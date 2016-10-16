@@ -13,14 +13,20 @@ var userSchema = mongoose.Schema({
         match: /^[^\n]+@[^\n]+.[a-zA-Z]+$/
     },
     picture: String,
-    privileges : [String],
+    privileges : {
+        privilege:[String]
+    },
     rank : {
         type : String,
         match : /^[a-zA-Z0-9-_]+$/
     },
-    articles : [mongoose.Schema.Types.ObjectId],
+    articles : {
+        article:[mongoose.Schema.Types.ObjectId]
+    },
     inscriptionDate : Date,
-    actualities:  [mongoose.Schema.Types.ObjectId],
+    actualities:{
+        actuality:[mongoose.Schema.Types.ObjectId]
+    },
     options: {
         notifications: Boolean
     }
