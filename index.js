@@ -90,20 +90,30 @@ app
 
 //articles
 .get('/article/:id', (request, response) => {
-    response.render('article/article', {global:getParameters(request)})
+    response.render('article/showArticle', {global:getParameters(request)})
 })
 .get('/article', (request, response) => {
     article.getArticles(function(err, articles){
+       response.render('article/lastArticles', {
+            global:getParameters(request),
+            articles:articles
+        }) 
+    })
+})
+.get('/new/article', (request, response) => {
+    response.render('article/newArticle', {global:getParameters(request)})
+})
+.post('/add/article', (request, response) => {
+    article.addArticle(request, function(err,shortName){
+        if(shortName){
+            response.redirect('/article/'+shortName);
+        }
         if(err){
-            
-        }else{
-           response.render('article/lastArticles', {
-                global:getParameters(request),
-                special:articles
-            }) 
+            response.redirect('/');
         }
     })
 })
+
 
 //search
 .get('/search', (request, response) => {

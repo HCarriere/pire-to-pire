@@ -1,71 +1,78 @@
-const ArticleModel = require('./index').Model
+const ArticleSchema = require('./schema').Schema
 const mongo = require('../mongo')
 
 
 
 
-
-
-
 function getArticles(callback){
-    mongo.find(ArticleModel, {}, function(err,result){
+
+    mongo.find(ArticleSchema, {}, function(err,result){
         if(err){
             callback(err, null)
         }
-        else if(result){
-            callback(err,result)
+        else{
+            callback(null,result)
         }
-        else callback(null,null)
     })
     
 }
 
+function addArticle(request,callback){
+    
+    if(!request.isAuthenticated()){
+        callback({err:'Non authentifié'},null)
+        return
+    }
+    else{
+        var object = new ArticleSchema.schema({
+            name:request.body.name.trim(),
+            shortName: setShortName(request.body.name.trim()),
+            content: request.body.content,
+            extract: getExtract(request.body.content),
+            //datum
+            tags: getTags(request.body.tags),
+            author: request.user.login
+        });
+
+        mongo.add(object, function(err){
+            if(err){
+                callback(err,null)    
+            }else{
+                callback(null,object.shortName)
+            }
+        })
+    }
+}
+
 module.exports = {
-    getArticles
+    getArticles,
+    addArticle
 }
 
 
-/*
+function setShortName(name){
+    return name.replace(/ /g,'-');
+}
 
-{
-        article : [
-            {
-                shortName:"short-name",
-                title:"Comment j'ai réussi à echapper aux trolls",
-                extract:" lorem ipsum et caetera",
-                author:"herv",
-                publicationDate:"15/10/2017",
-                tags:[
-                    {
-                        tag:"youpi"
-                    },
-                    {
-                        tag:"test"
-                    },
-                    {
-                        tag:"lol"
-                    }
-                ]
-            },
-            {
-                shortName:"short-name2",
-                title:"If you want to kill a troll... You name it.",
-                extract:" lorem ipsum et caetera2",
-                author:"herv2",
-                publicationDate:"15/10/2018",
-                tags:[
-                    {
-                        tag:"youpi2"
-                    },
-                    {
-                        tag:"test1"
-                    },
-                    {
-                        tag:"lol5"
-                    }
-                ]
-            }
-        ]
-    }
-
+/**
+tags: tag1;tag2;tag3
+return [
+    {tag:"tag1"},
+    {tag:"tag2"},
+    {tag:"tag3"}
+]
 */
+function getTags(tagsRequest){
+    var r  = [];
+    var tags = tagsRequest.replace(/ /g,';').split(';');
+    for (var tag in tags){
+        if(tags[tag]){
+            r.push({tag:tags[tag]});
+        }
+    }
+    return r;
+}
+
+function getExtract(content){
+    return content.substring(0,150);
+}

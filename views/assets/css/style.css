@@ -121,7 +121,7 @@ header form .search-submit:hover{
 }
 
 
-/* form login */
+/* login */
 .form-login{
     width:40%;
     display:inline-block;
@@ -135,7 +135,9 @@ header form .search-submit:hover{
 .form-login.inscription{
     padding-left:5%;
 }
-form .input-text{
+
+/* form  */
+.input-text{
     border:1px solid #666;
     padding:10px 0;
     padding-left:10px;
@@ -143,7 +145,22 @@ form .input-text{
     transition: all .5s;
     width:100%;
 }
-form .input-text:focus{
+.input-text:focus{
+    box-shadow: 0 0 5px #222;
+    border: 1px solid white;
+}
+
+form textarea{
+    border:1px solid #666;
+    padding:10px 0;
+    padding-left:10px;
+    margin:10px 0;
+    transition: all .5s;
+    width:100%;
+    resize:none;
+    height:500px;
+}
+form textarea:focus{
     box-shadow: 0 0 5px #222;
     border: 1px solid white;
 }

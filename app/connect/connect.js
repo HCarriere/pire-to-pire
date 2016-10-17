@@ -2,13 +2,13 @@
 
 const passport = require('passport')  
 const LocalStrategy = require('passport-local').Strategy
-const UserModel = require('../user').Model
+const UserSchema = require('../user').Schema
 const mongo = require('../mongo')
 
 
 function findUser(username, callback){
    
-    mongo.findOne(UserModel, {
+    mongo.findOne(UserSchema, {
         login: username
     }, function(err, result){
         if(err){
@@ -59,7 +59,7 @@ function inscription(request, callback){
 
     if(request.body.password === request.body.password2){
 
-        var object = new UserModel({
+        var object = new UserSchema.schema({
             login:request.body.login,
             password:request.body.password,
             mail:request.body.email,

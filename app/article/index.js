@@ -2,6 +2,7 @@ var schema = require('./schema')
 var article = require('./article')
 
 module.exports = {
-    Model : schema.Model,
-    getArticles: article.getArticles
+    Schema : schema.Schema,
+    getArticles: article.getArticles,
+    addArticle: article.addArticle
 }

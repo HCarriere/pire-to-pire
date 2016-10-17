@@ -6,10 +6,10 @@ Derniers articles
 
 <div class="list-container">
 
-    {{#each special.article}}
+    {{#each articles}}
     
     <div class="list-element">
-        <a href="/article/{{shortName}}" class="list-title">{{title}}</a>
+        <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
         Par<a href="/search?user={{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{publicationDate}}</div>
         <p class="list-extract">{{extract}}</p>
     

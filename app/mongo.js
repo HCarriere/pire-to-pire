@@ -1,23 +1,32 @@
 const conf = require('../config')
 var mongoose = require('mongoose');
-
+var conn;
 
 function openConnection(callback){
-    mongoose.connect(conf.database.name, function(err) {
+   /*var conn = mongoose.createConnection(conf.database.name, function(err) {
         if (err) { 
-            console.log(`Impossible de se connecter à la base ${conf.database.name} : ${err}`)
-            callback(err);
+            console.log(`(${conf.database.name}) : ${err}`)
+            callback(null,err);
             //throw `Impossible de se connecter à la base ${conf.dev.database} : ${err}`; 
         }else{
-            console.log('connection opened');
-            callback(null);
+            console.log('vvvvvvvvvvvv - connection opened - vvvvvvvvvvvv');
+            callback(conn,null);
         }
-    });   
+    });  */ 
+    if(!conn){
+        var conn = mongoose.createConnection(conf.database.name, function(err) {
+           if(!err){
+               callback(conn,null)
+           }
+        })
+    } else{
+        callback(conn, null);
+    }
 }
 
-function closeConnection(){
-    mongoose.connection.close();
-    console.log('connection closed');
+function closeConnection(conn){
+   // conn.close();
+   // console.log('^^^^^^^^^^^^ - connection closed - ^^^^^^^^^^^^');
 }
 
 //CRUD
@@ -26,15 +35,15 @@ function closeConnection(){
 
 */
 function addObject(objectFromModel, callback){   
-    openConnection(function(coErr){
-        if(!coErr){
+    openConnection(function(conn,coErr){
+        if(conn){
             objectFromModel.save(function (err) {
                 if (err) { 
                     throw err; 
                     callback(err);
                     closeConnection();
                 }else{
-                    console.log(`ADD ok`);
+                    console.log(`ADD ok : ${objectFromModel}`);
                     callback(null);
                     closeConnection();
                 }
@@ -45,9 +54,11 @@ function addObject(objectFromModel, callback){
     })
 }
 
-function findObject(model,jsonRequest, callback){
-    openConnection(function(coErr){
-        if(!coErr){
+
+function findObject(schema,jsonRequest, callback){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
             model.find(jsonRequest, function (err, result) {
                 if(err) { 
                     throw err; 
@@ -64,9 +75,10 @@ function findObject(model,jsonRequest, callback){
     })
 }
 
-function findOne(model,jsonRequest, callback){
-    openConnection(function(coErr){
-        if(!coErr){
+function findOne(schema,jsonRequest, callback){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
             model.findOne(jsonRequest, function (err, result) {
                 if(err) { 
                     throw err; 
@@ -83,9 +95,10 @@ function findOne(model,jsonRequest, callback){
     })
 }
 
-function updateObject(model, condition, update, option, callback){
-    openConnection(function(coErr){
-        if(!coErr){
+function updateObject(schema, condition, update, option, callback){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
             model.update(condition, update, option, function(err){
                 if (err) {
                     throw err; 
@@ -103,9 +116,10 @@ function updateObject(model, condition, update, option, callback){
 }
 
 
-function removeObject(model, condition, callback){
-    openConnection(function(coErr){
-        if(!coErr){
+function removeObject(schema, condition, callback){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
             model.remove(condition, function (err) {
                if (err) {
                    throw err;
