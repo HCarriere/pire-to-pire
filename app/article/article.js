@@ -24,7 +24,7 @@ function addArticle(request,callback){
         return
     }
     else{
-        var object = new ArticleSchema.schema({
+        var object ={
             name:request.body.name.trim(),
             shortName: setShortName(request.body.name.trim()),
             content: request.body.content,
@@ -32,9 +32,9 @@ function addArticle(request,callback){
             //datum
             tags: getTags(request.body.tags),
             author: request.user.login
-        });
+        };
 
-        mongo.add(object, function(err){
+        mongo.add(object, ArticleSchema, function(err){
             if(err){
                 callback(err,null)    
             }else{

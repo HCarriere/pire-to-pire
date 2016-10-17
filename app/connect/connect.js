@@ -59,15 +59,15 @@ function inscription(request, callback){
 
     if(request.body.password === request.body.password2){
 
-        var object = new UserSchema.schema({
+        var object = {
             login:request.body.login,
             password:request.body.password,
             mail:request.body.email,
             privileges:[''],
             rank:'Utilisateur'
-        });
+        };
         
-        mongo.add(object, function(err){
+        mongo.add(object, UserSchema, function(err){
             if(err){
                 console.log("erreur d'ajout :"+err)
                 callback( {

@@ -109,7 +109,11 @@ app
             response.redirect('/article/'+shortName);
         }
         if(err){
-            response.redirect('/');
+             response.status(500).render('error', {
+              errorCode:666,
+              errorTitle:"Mais ques'ta fait toi...",
+              errorContent:"Refait plus jamais ça."
+          });
         }
     })
 })
@@ -167,11 +171,13 @@ function authenticationMiddleware() {
 
 //global parameters
 /**
+accession global : global.*
 accessing 'get' parameters : 'global.query.*'
 */
 function getParameters(request){
     return {
-        logName:request.isAuthenticated()?request.user.login:null,
+        authentified:request.isAuthenticated(),
+        userName:request.isAuthenticated()?request.user.login:null,
         query:request.query
     }
 }

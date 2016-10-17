@@ -2,7 +2,7 @@
 //const collection = 'article';
 //get mongoose
 var mongoose = require('mongoose')
-
+const conf = require('../../config')
 
 var articleSchema = {
     schema:mongoose.Schema({
@@ -15,9 +15,9 @@ var articleSchema = {
         tags: [
             {tag:String}
         ],
-        author: String
+        author: { type : String , ref : conf.database.collections.users }
     }),
-    collection:'article'
+    collection : conf.database.collections.articles
 }
 
 

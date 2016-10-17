@@ -1,7 +1,7 @@
 
 //const collection = 'user';
 var mongoose = require('mongoose')
-
+const conf = require('../../config')
 
 var userSchema = {
     schema : mongoose.Schema({
@@ -21,17 +21,17 @@ var userSchema = {
             match : /^[a-zA-Z0-9-_]+$/
         },
         articles : [ 
-            {article:mongoose.Schema.Types.ObjectId}
+             { type : String , ref : conf.database.collections.articles }
         ],
         inscriptionDate : Date,
         actualities:[
-             {actuality:mongoose.Schema.Types.ObjectId}
+              { type : String , ref : "conf.database.collections.actualities"}
         ],
-        options: [
-             {notifications: Boolean}
-        ]
+        options: {
+             notifications: Boolean
+        }
     }),
-    collection:'user'
+    collection:conf.database.collections.users
 }
 
 

@@ -29,14 +29,18 @@ function closeConnection(conn){
    // console.log('^^^^^^^^^^^^ - connection closed - ^^^^^^^^^^^^');
 }
 
+
+
 //CRUD
 
 /**
 
 */
-function addObject(objectFromModel, callback){   
+function addObject(object, schema, callback){   
     openConnection(function(conn,coErr){
         if(conn){
+            var model = conn.model(schema.collection,schema.schema);
+            var objectFromModel = new model(object);
             objectFromModel.save(function (err) {
                 if (err) { 
                     throw err; 
