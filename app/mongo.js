@@ -59,7 +59,7 @@ function addObject(object, schema, callback){
 }
 
 
-function findObject(schema,jsonRequest, callback){
+function findObject(schema, jsonRequest, callback){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -79,7 +79,7 @@ function findObject(schema,jsonRequest, callback){
     })
 }
 
-function findOne(schema,jsonRequest, callback){
+function findOne(schema, jsonRequest, callback){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -109,7 +109,7 @@ function updateObject(schema, condition, update, option, callback){
                     closeConnection();
                     callback(err);
                 }
-                console.log(`UPDATE ok`);
+                console.log(`UPDATE ok : ${condition} --> ${update}`);
                 closeConnection();
                 callback(null);
             });
@@ -154,8 +154,6 @@ module.exports = {
     findOne: findOne,
     update: updateObject,
     remove: removeObject
-//    open: openConnection,
-//    close: closeConnection
 }
 
 

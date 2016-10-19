@@ -1,0 +1,31 @@
+
+
+<div class="page-title">#{{global.userName}}</div>
+
+<div class="article-content" style="padding-bottom: 60px;">
+
+    <form  method="post">
+        <label class="input-label">Pseudo *:</label>
+        <input type="text" class="input-text quart" name="pseudo" value="{{profile.pseudo}}" placeholder="BogossDu69 ?" required>
+        <br>
+        <label class="input-label">Nom:</label>
+        <input type="text" class="input-text quart" name="fullName" value="{{profile.fullName}}" placeholder="Votre vrai nom, bien sur.">
+        <br>
+        <label class="input-label">Pays:</label>
+        <input type="text" class="input-text quart" name="geo_country" value="{{profile.geo.country}}" placeholder="Canada ?">
+        <br>
+        <label class="input-label">Ville:</label>
+        <input type="text" class="input-text quart" name="geo_city" value="{{profile.geo.city}}" placeholder="Matane ?">
+        <br>
+        
+        <input type="submit" class="button add" value="Enregistrer les modifications">
+    </form>
+    <hr>
+    <br>
+        <img class="profile-picture" src="/images/logo.png"></img>
+        <input accept=".png,.jpg" type="file" name="profile_picture" class="profile-file-input">
+    
+    <br>
+    <a href="/logout" class="button danger pull-right">Déconnection</a>
+
+</div>

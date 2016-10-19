@@ -58,10 +58,17 @@ Render inscription
 function inscription(request, callback){
 
     if(request.body.password === request.body.password2){
-
+        //check @mail déjà utilisé
+        
+        //check si login deja utilisé
+        
+        //si pseudo deja utilisé, suffixe ++
+        
+        
         var object = {
             login:request.body.login,
             password:request.body.password,
+            pseudo:request.body.pseudo,
             mail:request.body.email,
             privileges:[''],
             rank:'Utilisateur'
@@ -91,6 +98,16 @@ function inscription(request, callback){
 
 }
 
+function getIsUserExisting(condition, callback){
+    //array of conditions ?
+    mongo.findOne(UserSchema, condition, function(err, result){
+        if(result){
+            callback(true)
+        }else{
+            callback(false)
+        }
+    })
+}
 
 
 module.exports = {

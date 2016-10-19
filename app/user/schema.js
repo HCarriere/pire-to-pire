@@ -7,7 +7,9 @@ var userSchema = {
     schema : mongoose.Schema({
         login: String,
         password : String,
-        name : String,
+        pseudo: String,
+        suffix: String,
+        fullName : String,
         mail: {
             type: String,
             match: /^[^\n]+@[^\n]+.[a-zA-Z]+$/
@@ -29,6 +31,10 @@ var userSchema = {
         ],
         options: {
              notifications: Boolean
+        },
+        geo: {
+            country:String,
+            city:String
         }
     }),
     collection:conf.database.collections.users

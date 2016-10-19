@@ -145,9 +145,21 @@ header form .search-submit:hover{
     transition: all .5s;
     width:100%;
 }
+.input-text.half{
+    width:50%;
+}
+.input-text.quart{
+    width:25%;
+}
 .input-text:focus{
     box-shadow: 0 0 5px #222;
     border: 1px solid white;
+}
+
+.input-label{
+    min-width:75px;
+    display:inline-block;
+    font-family: "coolvetica";
 }
 
 form textarea{
@@ -165,6 +177,16 @@ form textarea:focus{
     border: 1px solid white;
 }
 
+.profile-picture{
+    width:100px;
+    height:100px;
+}
+.profile-file-input{
+    vertical-align: top;
+    padding: 37px;
+}
+
+
 
 /* TOOLS */
 .article-content{
@@ -179,7 +201,12 @@ h1{
     font-size: 2em;
     margin:5px;
 }
-
+.round{
+    border-radius: 50%;
+}
+.pull-right{
+    float:right;
+}
 
 /*alerts*/
 .alert{
@@ -264,6 +291,7 @@ a.meta:hover{
     font-family: "coolvetica";
     font-size: 1.1em;
     box-shadow: 0 0  2px #000;
+    display:inline-block;
 }
 .button:hover{
     background-color: #0f4130;
@@ -275,6 +303,9 @@ a.meta:hover{
 }
 .button.add{
     
+}
+.button.danger{
+    background-color:#9f0606;
 }
 
 /* FOOTER */

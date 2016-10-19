@@ -46,10 +46,12 @@ app.engine('.hbs',exphbs({
 app.set('view engine', '.hbs')
 app.set('views', path.join(__dirname, 'app'))
 
-//// inits ////
-//indexes
+
+//// indexes////
 var connect = require('./app/connect')
 var article = require('./app/article')
+var user = require('./app/user')
+//// inits ////
 connect.init()
 
 ////////////////////////
@@ -63,8 +65,23 @@ app
 
 //profil
 .get('/profile', authenticationMiddleware(), (request, response) => {
-    response.render('user/user', {global:getParameters(request)})
+    user.getUserInfo(request, function(profile){
+        response.render('user/profile', {
+            global:getParameters(request),
+            profile:profile
+        })
+    })
 })
+.post('/profile', authenticationMiddleware(), (request, response) => {
+    user.updateUserInfo(request, function(err){
+        if(err){
+            response.redirect('/profile?error=1');
+        }else {
+            response.redirect('/profile?success=1');
+        }
+    })
+})
+
 
 //connection/inscription
 .get('/connect', (request, response) => {
@@ -132,6 +149,9 @@ app
     response.render('shared/lastShared', {global:getParameters(request)})
 })
 
+
+
+
 //other routes handler
 app.get('*', function(req, res){
   res.render('error',{
@@ -140,6 +160,8 @@ app.get('*', function(req, res){
       errorContent:"Essayez ailleur !"
   });
 });
+
+
 
 //Error handler
 app.use((err, request, response, next) => {  
