@@ -4,28 +4,44 @@
 
 <div class="article-content" style="padding-bottom: 60px;">
 
-    <form  method="post">
-        <label class="input-label">Pseudo *:</label>
-        <input type="text" class="input-text quart" name="pseudo" value="{{profile.pseudo}}" placeholder="BogossDu69 ?" required>
-        <br>
-        <label class="input-label">Nom:</label>
-        <input type="text" class="input-text quart" name="fullName" value="{{profile.fullName}}" placeholder="Votre vrai nom, bien sur.">
-        <br>
-        <label class="input-label">Pays:</label>
-        <input type="text" class="input-text quart" name="geo_country" value="{{profile.geo.country}}" placeholder="Canada ?">
-        <br>
-        <label class="input-label">Ville:</label>
-        <input type="text" class="input-text quart" name="geo_city" value="{{profile.geo.city}}" placeholder="Matane ?">
-        <br>
+    <form  method="post" action="/api/update/profile">
         
-        <input type="submit" class="button add" value="Enregistrer les modifications">
+        <div class="form-data-couple">
+            <label class="input-label">Pseudo *</label>
+            <input type="text" name="pseudo" value="{{profile.pseudo}}" placeholder="BogossDu69 ?" 
+                    oninvalid="setCustomValidity('a-z, A-Z, 0-9, _')" onchange="try{setCustomValidity('')}catch(e){}"
+                    pattern="^[a-zA-Z0-9_]+$" required>
+        </div>
+        
+        <div class="form-data-couple">
+            <label class="input-label">Nom</label>
+            <input type="text" name="fullName" value="{{profile.fullName}}" placeholder="Votre vrai nom, bien sur." >
+        </div>
+        
+        <div class="form-data-couple">
+            <label class="input-label">Pays</label>
+            <input type="text" name="geo_country" value="{{profile.geo.country}}" placeholder="Canada ?" >
+        </div>
+        
+        <div class="form-data-couple">
+            <label class="input-label">Ville</label>
+            <input type="text" name="geo_city" value="{{profile.geo.city}}" placeholder="Matane ?" >
+        </div>
+        
+        
+        <input type="submit" class="button valid" value="Enregistrer les modifications">
     </form>
     <hr>
     <br>
-        <img class="profile-picture" src="/images/logo.png"></img>
-        <input accept=".png,.jpg" type="file" name="profile_picture" class="profile-file-input">
     
+    <form method="POST" action="/api/photo" enctype = "multipart/form-data">
+        <img class="profile-picture" src="/{{profile.picture}}" >
+        <input accept=".png,.jpg" type="file" name="profile_picture" class="profile-file-input">
+        <br>
+        <input type="submit" class="button valid" value="Valider la photo">
+    </form>
     <br>
     <a href="/logout" class="button danger pull-right">Déconnection</a>
 
 </div>
+

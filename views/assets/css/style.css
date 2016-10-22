@@ -6,6 +6,7 @@ html{
 body {
     background: #79C9F9 url("/images/background.png") no-repeat;
     background-position:left bottom;
+    background-repeat: repeat-x;
 /*    background-size:cover;*/
     margin:0;
 }
@@ -21,7 +22,7 @@ header {
 header .top-logo{
     width:75px;
     height:50px;
-    background-image: url("/images/logo.png");
+/*    background-image: url("/images/logo.png");*/
     display:inline-block;
     vertical-align: top;
 }
@@ -145,15 +146,14 @@ header form .search-submit:hover{
     transition: all .5s;
     width:100%;
 }
-.input-text.half{
-    width:50%;
-}
-.input-text.quart{
-    width:25%;
-}
+
 .input-text:focus{
     box-shadow: 0 0 5px #222;
     border: 1px solid white;
+}
+.input-text.error{
+    box-shadow: 0 0 5px #d80a0a;
+    border: 1px solid #d80a0a;
 }
 
 .input-label{
@@ -208,6 +208,33 @@ h1{
     float:right;
 }
 
+
+/*data couple*/
+.form-data-couple {
+    width:100%;
+}
+.form-data-couple label{
+    max-width:150px;
+    width:25%;
+}
+.form-data-couple input{
+    width:70%;
+    border: 1px solid transparent;
+    border-bottom: 1px solid black;
+    padding:10px 0;
+    padding-left:10px;
+    margin:10px 0;
+    transition: all .5s;
+    color:#666;
+}
+.form-data-couple input:focus{
+    box-shadow: 0 0 5px #222;
+    border: 1px solid transparent;
+}
+
+
+
+
 /*alerts*/
 .alert{
     border:1px solid #666;
@@ -228,6 +255,8 @@ h1{
 .alert-green{
     background-color:rgba(0, 203, 70, 0.62);
 }
+
+
 
 /* lists */
 .list-container {
@@ -279,7 +308,7 @@ a.meta:hover{
 
 /* buttons */
 .button{
-    background-color:#49a291;
+    background-color:#c6c6c6;
     border:none;
     padding: 8px 15px;
     margin: 5px 0;
@@ -294,15 +323,14 @@ a.meta:hover{
     display:inline-block;
 }
 .button:hover{
-    background-color: #0f4130;
     color: white;
     box-shadow: none;
 }
 .button.valid{
-    
+    background-color:#2eac50;
 }
 .button.add{
-    
+    background-color:#49a291;
 }
 .button.danger{
     background-color:#9f0606;
@@ -373,6 +401,8 @@ footer{
   font-family: coolvetica;
   src: url(/fonts/coolvetica_rg.ttf);
 }
+
+
 
 
 

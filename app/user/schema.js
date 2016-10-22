@@ -8,7 +8,6 @@ var userSchema = {
         login: String,
         password : String,
         pseudo: String,
-        suffix: String,
         fullName : String,
         mail: {
             type: String,

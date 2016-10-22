@@ -20,28 +20,31 @@ function getArticles(callback){
 function addArticle(request,callback){
     
     if(!request.isAuthenticated()){
-        callback({err:'Non authentifié'},null)
-        return
+        callback({err:'Non authentifié'},null);
+        return;
     }
-    else{
-        var object ={
-            name:request.body.name.trim(),
-            shortName: setShortName(request.body.name.trim()),
-            content: request.body.content,
-            extract: getExtract(request.body.content),
-            //datum
-            tags: getTags(request.body.tags),
-            author: request.user.login
-        };
+    if(!request.body.name || !request.body.content || !request.body.tags){
+        callback({err:'Contenu vide'},null);
+        return;
+    }
+    
+    var object ={
+        name:request.body.name.trim(),
+        shortName: setShortName(request.body.name.trim()),
+        content: request.body.content,
+        extract: getExtract(request.body.content),
+        //datum
+        tags: getTags(request.body.tags),
+        author: request.user.login
+    };
 
-        mongo.add(object, ArticleSchema, function(err){
-            if(err){
-                callback(err,null)    
-            }else{
-                callback(null,object.shortName)
-            }
-        })
-    }
+    mongo.add(object, ArticleSchema, function(err){
+        if(err){
+            callback(err,null)    
+        }else{
+            callback(null,object.shortName)
+        }
+    })
 }
 
 module.exports = {

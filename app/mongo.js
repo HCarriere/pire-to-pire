@@ -140,6 +140,26 @@ function removeObject(schema, condition, callback){
     })
 }
 
+
+function count(schema, condition, callback){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
+            model.count(condition , function(err, count){
+                if(!err && count){
+                    throw err;
+                    closeConnection();
+                    callback(count);
+                }else {
+                    closeConnection();
+                    callback(null);
+                }
+            })
+        }else{
+            callback(coErr);
+        }
+    })
+}
 //module.exports.addObject = addObject
 //module.exports.findObject = findObject
 //module.exports.updateObject = updateObject
@@ -153,7 +173,8 @@ module.exports = {
     find: findObject,
     findOne: findOne,
     update: updateObject,
-    remove: removeObject
+    remove: removeObject,
+    count: count
 }
 
 

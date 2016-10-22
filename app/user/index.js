@@ -4,5 +4,6 @@ var user = require('./user')
 module.exports = {
     Schema : schema.Schema,
     getUserInfo: user.getUserInfo,
-    updateUserInfo: user.updateUserInfo
+    updateUserInfo: user.updateUserInfo,
+    updateUserProfilePicture: user.updateUserProfilePicture
 }

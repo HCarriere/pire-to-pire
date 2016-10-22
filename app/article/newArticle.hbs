@@ -4,13 +4,16 @@ Nouvel article
 
 <div class="article-content">
 
-    <form method="post" action="/add/article">
+    <form method="post" action="/api/add/article">
         <label>Title de l'article</label>
-        <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title">
+        <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required>
+        
         <label>Article</label>
-        <textarea name="content"></textarea>
+        <textarea name="content"  required></textarea>
+        
         <label>Tags</label>
-        <input type="text" name="tags" placeholder="jeux-videos;tortues;ninja" class="input-text">
+        <input type="text" name="tags" placeholder="jeux-videos;tortues;ninja" class="input-text"  required>
+        
         <input type="submit" value="Publier" class="button add">
     </form>
 </div>
