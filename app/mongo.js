@@ -47,7 +47,7 @@ function addObject(object, schema, callback){
                     callback(err);
                     closeConnection();
                 }else{
-                    console.log(`ADD ok : ${objectFromModel}`);
+                    console.log(`${objectFromModel} has been added`);
                     callback(null);
                     closeConnection();
                 }
@@ -69,10 +69,32 @@ function findObject(schema, jsonRequest, callback){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`object retrieved : ${result}`);
+                console.log(`objects retrieved (${jsonRequest})`);
                 closeConnection();
                 callback(null, result);
             });
+        }else{
+            callback(coErr);
+        }
+    })
+}
+
+function findObjectWithOptions(schema, jsonRequest, limit, sort, callback){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
+            model.find(jsonRequest, function (err, result) {
+                if(err) { 
+                    throw err; 
+                    closeConnection();
+                    callback(err, null);
+                }
+                console.log(`objects retrieved (${jsonRequest})`);
+                closeConnection();
+                callback(null, result);
+            })
+            .limit(limit)
+            .sort(sort);
         }else{
             callback(coErr);
         }
@@ -89,7 +111,7 @@ function findOne(schema, jsonRequest, callback){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`one object retrieved : ${result}`);
+                console.log(`one object retrieved (${jsonRequest})`);
                 closeConnection()
                 callback(null, result);
             });
@@ -130,7 +152,7 @@ function removeObject(schema, condition, callback){
                    closeConnection();
                    callback(err);
                }
-                console.log(`REMOVE ok`);
+                console.log(`REMOVE ok (${condition})`);
                 closeConnection();
                 callback(err);
             });
@@ -150,6 +172,7 @@ function count(schema, condition, callback){
                     throw err;
                     closeConnection();
                     callback(count);
+                    console.log(`count : ${count} (${condition})`);
                 }else {
                     closeConnection();
                     callback(null);
@@ -160,13 +183,10 @@ function count(schema, condition, callback){
         }
     })
 }
-//module.exports.addObject = addObject
-//module.exports.findObject = findObject
-//module.exports.updateObject = updateObject
-//module.exports.removeObject = removeObject
-//
-//module.exports.openConnection = openConnection
-//module.exports.closeConnection = closeConnection
+
+
+
+
 
 module.exports = {
     add: addObject,
@@ -174,66 +194,8 @@ module.exports = {
     findOne: findOne,
     update: updateObject,
     remove: removeObject,
-    count: count
+    count: count,
+    findWithOptions : findObjectWithOptions
 }
 
-
-
-//var userBase = require('./app/user/schema')
-//var mongo = require('./app/mongo')
-//.get('/c', (request, response) => {
-//    mongo.open();
-//    
-//    var object = new userBase.Model({
-//        login:'Bob',
-//        password:'123',
-//        name:'namename',
-//        privileges:['a','b'],
-//        rank:'admin'
-//    });
-//    mongo.add(object);
-//
-//    mongo.close();
-//    response.send('create');
-//})
-//.get('/r', (request, response) => {
-//    mongo.open();
-//    
-//    mongo.find(userBase.Model,{
-//        login:'Bob'
-//    });
-//
-//    mongo.close();
-//    response.send('read');
-//})
-//.get('/u', (request, response) => {
-//    mongo.open();
-//    
-//    mongo.update(userBase.Model,
-//        {
-//        login:'Bob',
-//        },{
-//        password:'Alice'
-//        }
-//    ,null);
-//
-//    mongo.close();
-//    response.send('update');
-//})
-//.get('/d', (request, response) => {
-//    mongo.open();
-//    
-//    mongo.remove(userBase.Model,
-//    {
-//        login:'Bob'
-//    });
-//
-//    mongo.close();
-//    response.send('remove');
-//});
-//
-
-//app.get('/projects/:id', (req, res) => {
-//  req.param.id;
-//})
 

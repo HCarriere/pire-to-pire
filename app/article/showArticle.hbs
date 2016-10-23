@@ -1,1 +1,36 @@
-An article : 
+{{#if article}}
+
+<div class="page-subtitle">
+    
+</div>
+
+<article class="article-content" style="text-align:justify;">
+    <div class="list-title">{{article.name}}</div>
+    
+    Par <a href="/search?user={{article.author}}" class="meta user">
+        {{article.author}}
+    </a>le<div class="meta date">
+        {{article.stringPublicationDate}}
+    </div>
+    
+    <br><hr><br>
+    
+    {{{ article.content }}}
+
+    <br><br><hr>
+    
+    {{#each article.tags}}
+    <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
+    {{/each}}    
+</article>
+
+
+{{else}}
+
+<div class="page-title">Article non trouvé</div>
+
+<div class="article-content">
+    <a href="/" class="button">Retour à la page principale</a>
+</div>
+
+{{/if}}

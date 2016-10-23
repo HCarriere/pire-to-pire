@@ -12,8 +12,8 @@ Derniers articles
     
     <div class="list-element">
         <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
-        Par<a href="/search?user={{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{publicationDate}}</div>
-        <p class="list-extract">{{extract}}</p>
+        Par<a href="/search?user={{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
+        <div class="list-extract">{{extract}}...</div>
     
         {{#each tags}}
         <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>

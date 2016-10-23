@@ -9,8 +9,8 @@
         <div class="form-data-couple">
             <label class="input-label">Pseudo *</label>
             <input type="text" name="pseudo" value="{{profile.pseudo}}" placeholder="BogossDu69 ?" 
-                    oninvalid="setCustomValidity('a-z, A-Z, 0-9, _')" onchange="try{setCustomValidity('')}catch(e){}"
-                    pattern="^[a-zA-Z0-9_]+$" required>
+                    oninvalid="setCustomValidity('Veuillez rentrer un pseudo valide.')" onchange="try{setCustomValidity('')}catch(e){}"
+                    required>
         </div>
         
         <div class="form-data-couple">
@@ -31,17 +31,40 @@
         
         <input type="submit" class="button valid" value="Enregistrer les modifications">
     </form>
-    <hr>
     <br>
     
     <form method="POST" action="/api/photo" enctype = "multipart/form-data">
+        {{#if profile.picture}}
         <img class="profile-picture" src="/{{profile.picture}}" >
+        {{/if}}
         <input accept=".png,.jpg" type="file" name="profile_picture" class="profile-file-input">
         <br>
         <input type="submit" class="button valid" value="Valider la photo">
     </form>
     <br>
+    
+    <form method="post" action="/api/update/password">
+         <div class="form-data-couple">
+            <label class="input-label">Ancien mot de passe</label>
+            <input type="password" name="old_password" required>
+        </div>
+        
+         <div class="form-data-couple">
+            <label class="input-label">Nouveau mot de passe</label>
+            <input type="password" name="new_password1" required>
+        </div>
+        
+        <div class="form-data-couple">
+            <label class="input-label">Répéter le mot de passe</label>
+            <input type="password" name="new_password2" required>
+        </div>
+        
+        <input type="submit" class="button valid" value="Modifier le mot de passe">
+    </form>
+    
+    <br>
     <a href="/logout" class="button danger pull-right">Déconnection</a>
 
+    
 </div>
 

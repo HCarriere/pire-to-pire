@@ -5,5 +5,6 @@ module.exports = {
     Schema : schema.Schema,
     getUserInfo: user.getUserInfo,
     updateUserInfo: user.updateUserInfo,
-    updateUserProfilePicture: user.updateUserProfilePicture
+    updateUserProfilePicture: user.updateUserProfilePicture,
+    updateUserPassword : user.updateUserPassword
 }

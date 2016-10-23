@@ -4,7 +4,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const UserSchema = require('../user').Schema
 const mongo = require('../mongo')
-
+const md5 = require('md5')
 ////////////// private ////////////////
 
 
@@ -56,6 +56,9 @@ function getExistingUserInfos(mail,login,pseudo,callback){
     })
 }
 
+function hashPassword(password){
+    return md5(password);
+}
 
 ////////////// public /////////////////
 
@@ -71,9 +74,9 @@ function initPassport(){
                     console.log("can't find user")
                     return done(null, false)
                 }
-                if(password != user.password){
-                    console.log('wrong password : '+password +" != "+user.password)
-                    return done(null, false)
+                if(hashPassword(password) != user.password){
+                    console.log('wrong password');
+                    return done(null, false);
                 }
                 console.log(user.login +' is authenticated')
                 return done(null, user)
@@ -99,7 +102,7 @@ function inscription(request, callback){
     
     var object = {
         login:request.body.login.trim(),
-        password:request.body.password,
+        password:hashPassword(request.body.password),
         pseudo:request.body.pseudo.trim(),
         mail:request.body.email,
         privileges:[''],

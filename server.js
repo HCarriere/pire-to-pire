@@ -69,6 +69,8 @@ var uploadImage = multer({
 var connect = require('./app/connect')
 var article = require('./app/article')
 var user    = require('./app/user')
+var home    = require('./app/home')
+var search  = require('./app/search')
 
 /////////// inits ///////////
 connect.init()
@@ -81,12 +83,15 @@ app
 ////////// FRONT //////////
 
 //home
-.get('/', (request, response) => {
-    response.render('home/home',{global:getParameters(request)})
+.get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), (request, response) => {
+    response.render('home/home',{
+        global:getParameters(request),
+        articles : request.articles
+    })
 })
 
 //profil
-.get('/profile', authenticationMiddleware(), (request, response) => {
+.get('/profile', mustBeAuthentified(), (request, response) => {
     user.getUserInfo(request, function(profile){
         response.render('user/profile', {
             global:getParameters(request),
@@ -120,25 +125,47 @@ app
 
 //articles
 .get('/article/:id', (request, response) => {
-    response.render('article/showArticle', {global:getParameters(request)})
+    article.getArticle(request.params.id, function(result){
+        if(result){
+            response.render('article/showArticle', {
+                global:getParameters(request),
+                article:result
+            }) 
+        }else{
+            response.render('article/showArticle', {global:getParameters(request)}) 
+        }
+    })
 })
 .get('/article', (request, response) => {
-    article.getArticles(function(err, articles){
+    article.listArticles(0, function(err, articles){ //0: no limit
        response.render('article/lastArticles', {
             global:getParameters(request),
             articles:articles
         }) 
     })
 })
-.get('/new/article', (request, response) => {
+.get('/new/article', mustBeAuthentified(), (request, response) => {
     response.render('article/newArticle', {global:getParameters(request)})
 })
 
 
 
 //search
-.get('/search', (request, response) => {
-    response.render('search/search', {global:getParameters(request)})
+.get('/search',
+     search.findNews(), 
+     search.findArticles(), 
+     search.findShareables(), 
+     search.findUsers(), 
+     (request, response) => {
+    response.render('search/search', {
+        global:getParameters(request),
+        resultFound: {
+            news : request.newsFound,
+            articles : request.articlesFound,
+            shareable : request.shareableFound,
+            user : request.userFound
+        }
+    })
 })
 
 //shared
@@ -150,11 +177,11 @@ app
 })
 
 
-////////////////// API ////////////////////
+////////////////// APIs ////////////////////
 
 
 //update user profile
-.post('/api/update/profile', authenticationMiddleware(), (request, response) => {
+.post('/api/update/profile', mustBeAuthentified(), (request, response) => {
     user.updateUserInfo(request, function(err){
         if(err){
             response.redirect('/profile?error=1');
@@ -164,24 +191,19 @@ app
     })
 })
 
-//add article
-.post('/api/add/article', (request, response) => {
-    article.addArticle(request, function(err,shortName){
-        if(shortName){
-            response.redirect('/article/'+shortName);
-        }
+//update user password
+.post('/api/update/password', mustBeAuthentified(), (request, response) => {
+    user.updateUserPassword(request, function(err){
         if(err){
-             response.render('error', {
-              errorCode:666,
-              errorTitle:"Mais qu'est ce que t'a fait toi...",
-              errorContent:"Refait plus jamais ça."
-          });
+            response.redirect('/profile?error=1');
+        }else {
+            response.redirect('/profile?success=1');
         }
     })
 })
 
 //upload profile picture
-.post('/api/photo',function(request,response){
+.post('/api/photo', mustBeAuthentified(), (request,response) => {
     uploadImage(request,response,function(err) {
         if(err) {
             response.render('error', {
@@ -201,11 +223,27 @@ app
     });
 })
 
+//add article
+.post('/api/add/article', mustBeAuthentified(), (request, response) => {
+    article.addArticle(request, function(err,shortName){
+        if(shortName){
+            response.redirect('/article/'+shortName);
+        }
+        if(err){
+             response.render('error', {
+              errorCode:666,
+              errorTitle:"Mais qu'est ce que t'a fait toi...",
+              errorContent:"Refait plus jamais ça."
+          });
+        }
+    })
+})
 
 
-;
+
+
 //////////  OTHER ROUTES ///////
-app.get('*', function(req, res){
+.get('*', function(req, res){
   res.render('error',{
       errorCode:404,
       errorTitle:"Page non trouvée",
@@ -220,11 +258,10 @@ app.use((err, request, response, next) => {
   //TODO log error
   console.log('Erreur reçue : ' +err);
   response.status(500).render('error', {
-      errorCode:405,
+      errorCode:500,
       errorTitle:"Erreur de serveur interne",
       errorContent:err
   });
-  //response.status(404).send('Error 404 : '+err);
 });
 
 
@@ -243,7 +280,7 @@ app.listen(port, (err) => {
 verify user is connected
 if not, redirect to /connect
 */
-function authenticationMiddleware() {
+function mustBeAuthentified() {
     return function (req, res, next) {
         if(req.isAuthenticated()) {
             return next()
