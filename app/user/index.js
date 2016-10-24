@@ -6,5 +6,6 @@ module.exports = {
     getUserInfo: user.getUserInfo,
     updateUserInfo: user.updateUserInfo,
     updateUserProfilePicture: user.updateUserProfilePicture,
-    updateUserPassword : user.updateUserPassword
+    updateUserPassword : user.updateUserPassword,
+    getUserInfoByPseudo : user.getUserInfoByPseudo
 }

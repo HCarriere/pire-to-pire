@@ -90,10 +90,20 @@ app
     })
 })
 
-//profil
+//edit profile
 .get('/profile', mustBeAuthentified(), (request, response) => {
     user.getUserInfo(request, function(profile){
-        response.render('user/profile', {
+        response.render('user/editProfile', {
+            global:getParameters(request),
+            profile:profile
+        })
+    })
+})
+
+//view profile
+.get('/user/:id', (request, response) => {
+    user.getUserInfoByPseudo(request.params.id, function(profile){
+        response.render('user/viewProfile', {
             global:getParameters(request),
             profile:profile
         })
@@ -124,6 +134,7 @@ app
 
 
 //articles
+//view article
 .get('/article/:id', (request, response) => {
     article.getArticle(request.params.id, function(result){
         if(result){
@@ -136,14 +147,16 @@ app
         }
     })
 })
+//list articles
 .get('/article', (request, response) => {
     article.listArticles(0, function(err, articles){ //0: no limit
-       response.render('article/lastArticles', {
+       response.render('article/listArticles', {
             global:getParameters(request),
             articles:articles
         }) 
     })
 })
+//write article
 .get('/new/article', mustBeAuthentified(), (request, response) => {
     response.render('article/newArticle', {global:getParameters(request)})
 })
@@ -152,18 +165,16 @@ app
 
 //search
 .get('/search',
-     search.findNews(), 
-     search.findArticles(), 
-     search.findShareables(), 
-     search.findUsers(), 
-     (request, response) => {
+    search.findNews(),         //middleware1 
+    search.findArticles(),     //middleware2
+    search.findShareables(),   //middleware3
+    (request, response) => {
     response.render('search/search', {
         global:getParameters(request),
         resultFound: {
             news : request.newsFound,
             articles : request.articlesFound,
-            shareable : request.shareableFound,
-            user : request.userFound
+            shareable : request.shareableFound
         }
     })
 })
@@ -172,6 +183,7 @@ app
 .get('/shared/:id', (request, response) => {
     response.render('shared/shared', {global:getParameters(request)})
 })    
+//list shareables
 .get('/shared', (request, response) => {
     response.render('shared/lastShared', {global:getParameters(request)})
 })

@@ -29,13 +29,26 @@ function hashPassword(password){
 
 /////////////  public //////////
 function getUserInfo(request, callback){
-    if(!request.isAuthenticated()){
+    if(!request.isAuthenticated() ){
        callback(null)
     }
-    var login =  request.user.login;
+    
+    var login = request.user.login;
     
     mongo.findOne(UserSchema, {
         login: login
+    }, function(err, result){
+        if(!err){
+            callback(result);
+        }else{
+            callback(null);
+        }
+    });
+}
+
+function getUserInfoByPseudo(pseudo, callback){
+    mongo.findOne(UserSchema, {
+        pseudo: pseudo
     }, function(err, result){
         if(!err){
             callback(result);
@@ -150,8 +163,9 @@ function updateUserProfilePicture(request, callback){
 /////////// exports //////////////
 
 module.exports = {
-    getUserInfo : getUserInfo,
-    updateUserInfo : updateUserInfo,
-    updateUserProfilePicture : updateUserProfilePicture,
-    updateUserPassword : updateUserPassword
+    getUserInfo,
+    updateUserInfo,
+    updateUserProfilePicture,
+    updateUserPassword,
+    getUserInfoByPseudo
 }

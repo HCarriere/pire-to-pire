@@ -2,7 +2,7 @@
 <div class="website-title">
     Pire to Pire</div>
     
-<div class="article-content">
+<div>
     
     <div class="section" id="news">
         <h1><i class="fa fa-newspaper-o"></i> Dernières news</h1>
@@ -17,7 +17,7 @@
     
             <div class="list-element">
                 <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
-                Par<a href="/search?user={{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
+                Par<a href="/user/{{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
                 <div class="list-extract">{{extract}}...</div>
 
                 {{#each tags}}
@@ -27,8 +27,8 @@
             </div>
 
         {{/each}}
-
-    </div>
+            
+        </div>
     </div>
     
     <div class="section" id="shared">

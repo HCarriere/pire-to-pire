@@ -9,7 +9,6 @@ var articleSchema = {
         name: String,
         shortName: String,
         content: String,
-        extract: String,
         publicationDate: Date,
         modificationDate: Date,
         tags: [

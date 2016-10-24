@@ -1,6 +1,6 @@
 const ArticleSchema = require('./schema').Schema
 const mongo = require('../mongo')
-
+const utils = require('../utils')
 
 ///////////// private /////////////////
 
@@ -22,21 +22,16 @@ function getTags(tagsRequest){
     var tags = tagsRequest.trim().replace(/,/g,';').split(';');
     
     for (var tag in tags){
-        if(tags[tag] && !u.hasOwnProperty(tags[tag]) ){
-            r.push({tag:tags[tag]});
-            u[tags[tag]] = 1;
+        var theTag = tags[tag].trim();
+        if(theTag && !u.hasOwnProperty(theTag) ){
+            r.push({tag:theTag});
+            u[theTag] = 1;
         }
     }
     return r;
 }
 
-function getExtract(content){
-    return content.substring(0,400);
-}
 
-function getStringDate(date){
-    return date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
-}
 
 function getHTMLContent(content){
     content = content.replace(/\n/g,'<br>');
@@ -49,19 +44,6 @@ function getHTMLContent(content){
 
 //////////// public ////////////////
 
-function listArticles(limit, callback){
-    mongo.findWithOptions(ArticleSchema, {},limit,{publicationDate:-1}, function(err,result){
-        if(err){
-            callback(err, null)
-        }
-        else{
-            for (var article of result){
-                article.stringPublicationDate = getStringDate(article.publicationDate);
-            }
-            callback(null,result)
-        }
-    })
-}
 
 function addArticle(request,callback){
     
@@ -78,7 +60,6 @@ function addArticle(request,callback){
         name:request.body.name.trim(),
         shortName: setShortName(request.body.name.trim()),
         content: request.body.content,
-        extract: getExtract(request.body.content),
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
         author: request.user.pseudo
@@ -94,11 +75,27 @@ function addArticle(request,callback){
 }
 
 
+function listArticles(limit, callback){
+    mongo.findWithOptions(ArticleSchema, {},limit,{publicationDate:-1}, function(err,result){
+        if(err){
+            callback(err, null)
+        }
+        else{
+            for (var article of result){
+                article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                article.extract = utils.getExtractOf(article.content);
+            }
+            callback(null,result)
+        }
+    })
+}
+
 function getArticle(shortName, callback){
     mongo.findOne(ArticleSchema, {shortName: shortName}, function(err,result){
         if(result){
-            result.stringPublicationDate = getStringDate(result.publicationDate);
+            result.stringPublicationDate = utils.getStringDate(result.publicationDate);
             result.content = getHTMLContent(result.content);
+//            result.extract = getExtract(result.content);
             callback(result)
             return;
         }

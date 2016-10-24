@@ -1,25 +1,40 @@
 
+<div class="page-title">Résultats:</div>
+
+
+{{#if resultFound.articles}}
+<h1><i class="fa fa-file-text-o"></i> Articles:</h1>
+<div class="list-container">
+
+{{#each resultFound.articles}}
+
+    <div class="list-element">
+        <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
+        Par<a href="/user/{{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
+        <div class="list-extract">{{extract}}...</div>
+
+        {{#each tags}}
+        <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
+        {{/each}}
+
+    </div>
+
+{{/each}}
+
+</div>
+{{/if}}
+
+
 {{#if resultFound.news}}
     NEWS : 
     {{resultFound.news}}
 {{/if}}
 
 
-{{#if resultFound.articles}}
-    ARTICLES : 
-    {{resultFound.articles}}
-{{/if}}
 
- 
 {{#if resultFound.shareable}}
     PARTAGES :
     {{resultFound.shareable}}
-{{/if}}
-
-
-{{#if resultFound.user}}
-    PROFILS : 
-    {{resultFound.user}}
 {{/if}}
 
 

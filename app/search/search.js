@@ -5,25 +5,18 @@ SEARCH MODULE
 -news
 -articles
 -partages
--user
 
 query type possible:
 
-- user : 
-    _news -> les news des utilisateurs recherchés
-    _articles -> les articles " 
-    _partages -> les partages "
-    _user -> les utilisateurs ayant un pseudo similaire
+
 - tag
     _news -> les news contenant les tags
     _articles -> les articles " 
     _partages -> les partages "
-    _user -> pas d'utilisateur retournés
 - text
-    _news -> les news contenant une partie du texte
+    _news -> les news contenant une partie du texte (content / titre)
     _articles -> les articles "
     _partages -> les partages "
-    _user -> les utilisateurs ayant un pseudo similaire
 
 
 
@@ -32,8 +25,8 @@ query type possible:
 
 const mongo = require('../mongo')
 const conf = require('../../config')
+const utils = require('../utils')
 //shemas
-const UserSchema = require('../user').Schema
 const ArticleSchema = require('../article').Schema
 
 
@@ -57,17 +50,18 @@ function findArticles() {
     return function (request, response, next) {
         var jsonRequest;
         if(request.query.tag){
-            jsonRequest = {tags : {tag : request.query.tag} };
-        }
-        if(request.query.user){
-            jsonRequest = {author:request.query.user};
+            jsonRequest = {'tags.tag' : request.query.tag};
         }
         if(request.query.text){
-            jsonRequest = {};
+            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}]};
         }
         mongo.findWithOptions(ArticleSchema, jsonRequest, 0, {}, function(err, result){
             if(result){
                 //articles trouvés
+                for (var article of result){
+                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);
+                }
                 request.articlesFound = result
             }
             return next()
@@ -83,35 +77,12 @@ function findShareables(){
     }
 }
 
-//middleware 4
-function findUsers(){
-    return function (request, response, next) {
-        var jsonRequest;
-        if(request.query.tag){
-            jsonRequest = {};
-        }
-        if(request.query.user){
-            jsonRequest = {pseudo:request.query.user};
-        }
-        if(request.query.text){
-            jsonRequest = {};
-        }
-        mongo.find(UserSchema, jsonRequest, function(err, result){
-            if(result){
-                request.userFound = result
-            }
-            return next(); 
-        })
-        
-    }
-}
 
 
 module.exports = {
     findNews,
     findArticles,
-    findShareables,
-    findUsers
+    findShareables
 }
 
 

@@ -1,0 +1,22 @@
+
+<article class="article-content">
+    <h1>{{#if profile.picture}}
+        <img class="profile-picture" src="/{{profile.picture}}" style="vertical-align:middle;">
+        {{/if}} {{profile.pseudo}}</h1>
+    
+     <div class="form-data-couple">
+            <label class="input-label">Nom</label>
+            {{profile.fullName}}
+        </div>
+        
+        <div class="form-data-couple">
+            <label class="input-label">Pays</label>
+            {{profile.geo.country}}
+        </div>
+        
+        <div class="form-data-couple">
+            <label class="input-label">Ville</label>
+            {{profile.geo.city}}
+        </div>
+    
+</article>
