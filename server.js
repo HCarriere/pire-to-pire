@@ -101,13 +101,14 @@ app
 })
 
 //view profile
-.get('/user/:id', (request, response) => {
-    user.getUserInfoByPseudo(request.params.id, function(profile){
-        response.render('user/viewProfile', {
-            global:getParameters(request),
-            profile:profile
-        })
-    })
+.get('/user/:id',user.getUserInfoByPseudo(), article.getAuthorPublications() ,(request, response) => {
+    response.render('user/viewProfile', {
+        global:getParameters(request),
+        profile:request.profile,
+        articles: request.articles
+//        news: request.news,
+//        shareables: request.shareables
+    })    
 })
 
 

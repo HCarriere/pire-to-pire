@@ -47,7 +47,7 @@ function addObject(object, schema, callback){
                     callback(err);
                     closeConnection();
                 }else{
-                    console.log(`${objectFromModel} has been added`);
+                    console.log(`${JSON.stringify(objectFromModel)} has been added`);
                     callback(null);
                     closeConnection();
                 }
@@ -69,7 +69,7 @@ function findObject(schema, jsonRequest, callback){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`objects retrieved (${jsonRequest})`);
+                console.log(`objects retrieved (${JSON.stringify(jsonRequest)})`);
                 closeConnection();
                 callback(null, result);
             });
@@ -89,7 +89,7 @@ function findObjectWithOptions(schema, jsonRequest, limit, sort, callback){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`objects retrieved (${jsonRequest})`);
+                console.log(`objects retrieved with options (${JSON.stringify(jsonRequest)})`);
                 closeConnection();
                 callback(null, result);
             })
@@ -111,7 +111,7 @@ function findOne(schema, jsonRequest, callback){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`one object retrieved (${jsonRequest})`);
+                console.log(`one object retrieved (${JSON.stringify(jsonRequest)})`);
                 closeConnection()
                 callback(null, result);
             });
@@ -131,7 +131,7 @@ function updateObject(schema, condition, update, option, callback){
                     closeConnection();
                     callback(err);
                 }
-                console.log(`UPDATE ok : ${condition} --> ${update}`);
+                console.log(`UPDATE ok : ${JSON.stringify(condition)} --> ${JSON.stringify(update)}`);
                 closeConnection();
                 callback(null);
             });
@@ -152,7 +152,7 @@ function removeObject(schema, condition, callback){
                    closeConnection();
                    callback(err);
                }
-                console.log(`REMOVE ok (${condition})`);
+                console.log(`REMOVE ok (${JSON.stringify(condition)})`);
                 closeConnection();
                 callback(err);
             });
@@ -172,7 +172,7 @@ function count(schema, condition, callback){
                     throw err;
                     closeConnection();
                     callback(count);
-                    console.log(`count : ${count} (${condition})`);
+                    console.log(`count : ${count} (${JSON.stringify(condition)})`);
                 }else {
                     closeConnection();
                     callback(null);

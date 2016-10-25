@@ -1,22 +1,59 @@
 
 <article class="article-content">
-    <h1>{{#if profile.picture}}
-        <img class="profile-picture" src="/{{profile.picture}}" style="vertical-align:middle;">
-        {{/if}} {{profile.pseudo}}</h1>
+    {{#if profile}}
     
-     <div class="form-data-couple">
-            <label class="input-label">Nom</label>
-            {{profile.fullName}}
-        </div>
-        
-        <div class="form-data-couple">
-            <label class="input-label">Pays</label>
-            {{profile.geo.country}}
-        </div>
-        
-        <div class="form-data-couple">
-            <label class="input-label">Ville</label>
-            {{profile.geo.city}}
-        </div>
+    {{#if profile.picture}}
+        <img class="profile-picture round center" src="/{{profile.picture}}" style="vertical-align:middle;">
+    {{else}}
+        <img class="profile-picture round center" src="/images/noProfilePic.png" style="vertical-align:middle;">
+    {{/if}} 
+    <h1 class="center">{{profile.pseudo}}</h1>
     
+    <div class="form-data-couple">
+        <label class="input-label">Nom</label>
+        <div class="data">{{profile.fullName}}</div>
+    </div>
+
+    <div class="form-data-couple">
+        <label class="input-label">Pays</label>
+        <div class="data">{{profile.geo.country}}</div>
+    </div>
+
+    <div class="form-data-couple">
+        <label class="input-label">Ville</label>
+        <div class="data">{{profile.geo.city}}</div>
+    </div>
 </article>
+
+<h1><i class="fa fa-newspaper-o"></i> News de {{profile.pseudo}}</h1>
+
+{{#if articles}}
+<h1><i class="fa fa-file-text-o"></i> Articles de {{profile.pseudo}}</h1>
+<div class="list-container">
+
+{{#each articles}}
+
+    <div class="list-element">
+        <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
+        Par<a href="/user/{{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
+        <div class="list-extract">{{extract}}...</div>
+
+        {{#each tags}}
+        <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
+        {{/each}}
+
+    </div>
+
+{{/each}}
+
+</div>
+{{/if}}
+
+<h1><i class="fa fa-share-alt"></i> Partages de {{profile.pseudo}}</h1>
+
+
+
+{{else}}
+    Cet utilisateur n'existe pas !
+{{/if}}
+

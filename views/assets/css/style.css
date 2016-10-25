@@ -99,21 +99,20 @@ header form .search-submit:hover{
 .website-title{
     font-family: "coolvetica";
     font-size: 5em;
-    color:aliceblue;
+    color:#FF7E12;
     text-shadow: 5px 5px #555;
 }
 .page-title{
     font-family: "coolvetica";
     font-size: 3em;
-    color:aliceblue;
+    color:#FF7E12;
     text-shadow: 2px 2px #555;
     margin-bottom:15px;
 }
 .page-subtitle{
     font-family: "coolvetica";
     font-size: 1.3em;
-    color:aliceblue;
-    
+    color:#FF7E12;
     margin-bottom:15px;
 }
 
@@ -187,6 +186,7 @@ form textarea:focus{
 .profile-picture{
     width:100px;
     height:100px;
+    box-shadow: 0 0  2px #666;
 }
 .profile-file-input{
     vertical-align: top;
@@ -207,6 +207,10 @@ h1{
     font-family: "coolvetica";
     font-size: 2em;
     margin:5px;
+    color: black;
+}
+h1 i{
+    width:40px;
 }
 .round{
     border-radius: 50%;
@@ -217,24 +221,33 @@ h1{
 pre{
     font-family: arial;
 }
-
+.center{
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+}
 
 /*data couple*/
 .form-data-couple {
     width:100%;
+    margin-bottom:10px;
 }
 .form-data-couple label{
     max-width:150px;
     width:25%;
 }
-.form-data-couple input{
+.form-data-couple input, .form-data-couple .data{
     width:70%;
     border: 1px solid transparent;
-    border-bottom: 1px solid black;
     padding:10px 0;
     padding-left:10px;
     margin:10px 0;
     transition: all .5s;
+    display:initial;
+}
+.form-data-couple input{
+    border-bottom: 1px solid black;
     color:#666;
 }
 .form-data-couple input:focus{
@@ -299,7 +312,7 @@ a.list-title:hover{
     display:inline-block;
     transition:all .5s;
     text-decoration: none;
-    color:#676767;
+    color:#3b3b3b;
     padding:2px 5px;
 }
 a.meta{

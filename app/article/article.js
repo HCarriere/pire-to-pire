@@ -5,7 +5,7 @@ const utils = require('../utils')
 ///////////// private /////////////////
 
 function setShortName(name){
-    return name.replace(/ /g,'-');
+    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-');
 }
 
 /**
@@ -104,10 +104,30 @@ function getArticle(shortName, callback){
     })
 }
 
+/**
+middleware
+récupère de la base dataBase les objets dont 'author' est le pseudo
+*/
+function getAuthorPublications(){
+    return function (request, response, next) {
+       mongo.find(ArticleSchema, {author:request.params.id}, function(err, result){
+           if(result){
+                for (var article of result){
+                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);
+                } 
+                request.articles = result;
+           }
+           return next();
+       })
+    }
+}
+
 module.exports = {
     listArticles,
     addArticle,
-    getArticle
+    getArticle,
+    getAuthorPublications
 }
 
 

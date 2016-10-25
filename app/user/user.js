@@ -28,6 +28,10 @@ function hashPassword(password){
 
 
 /////////////  public //////////
+
+/**
+récupère les info de l'utilisateur connecté dans la requete
+*/
 function getUserInfo(request, callback){
     if(!request.isAuthenticated() ){
        callback(null)
@@ -46,17 +50,26 @@ function getUserInfo(request, callback){
     });
 }
 
-function getUserInfoByPseudo(pseudo, callback){
-    mongo.findOne(UserSchema, {
-        pseudo: pseudo
-    }, function(err, result){
-        if(!err){
-            callback(result);
-        }else{
-            callback(null);
-        }
-    });
+
+/**
+middleware
+récupère les info de l'utilisateur avec son pseudo
+*/
+function getUserInfoByPseudo(){
+    return function (request, response, next) {
+        var pseudo =request.params.id;
+            mongo.findOne(UserSchema, {
+            pseudo: pseudo
+        }, function(err, result){
+            if(result){
+                request.profile = result;
+            }
+            return next();
+        });
+    }
 }
+
+
 
 //POST params : request.body.*
 function updateUserInfo(request, callback){
