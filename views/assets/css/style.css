@@ -9,6 +9,7 @@ body {
     background-repeat: repeat-x;
 /*    background-size:cover;*/
     margin:0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 /* HEADER */
@@ -60,7 +61,7 @@ header nav li{
     vertical-align: top;
 }
 header nav a li:hover{
-    background-color:#123131;
+    background-color:#FF7E12;/*123131*/
 }
 header nav li.user{
     max-width:125px;
@@ -319,7 +320,7 @@ a.meta{
     color:#333;
 }
 a.meta:hover{
-    background-color:#123131;
+    background-color:#FF7E12;
     color:white;
     border-radius: 5px;
 }
@@ -355,7 +356,7 @@ a.meta:hover{
     background-color:#2eac50;
 }
 .button.add{
-    background-color:#49a291;
+    background-color:#FF7E12;
 }
 .button.danger{
     background-color:#9f0606;

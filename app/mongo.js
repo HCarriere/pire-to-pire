@@ -31,12 +31,14 @@ function closeConnection(conn){
 
 
 
-//CRUD
+/*********
+function are always :
+function X(schema, callback, ...., .... )
+callback are always : (err,result)
+**********/
 
-/**
 
-*/
-function addObject(object, schema, callback){   
+function addObject(schema, callback, object){   
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -44,22 +46,22 @@ function addObject(object, schema, callback){
             objectFromModel.save(function (err) {
                 if (err) { 
                     throw err; 
-                    callback(err);
+                    callback(err, null);
                     closeConnection();
                 }else{
-                    console.log(`${JSON.stringify(objectFromModel)} has been added`);
-                    callback(null);
+                    console.log(`an object has been added`);
+                    callback(null, 'Insert ok');
                     closeConnection();
                 }
             });      
         }else{
-            callback(coErr);
+            callback(coErr, null);
         }
     })
 }
 
 
-function findObject(schema, jsonRequest, callback){
+function findObject(schema, callback, jsonRequest){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -74,12 +76,12 @@ function findObject(schema, jsonRequest, callback){
                 callback(null, result);
             });
         }else{
-            callback(coErr);
+            callback(coErr, null);
         }
     })
 }
 
-function findObjectWithOptions(schema, jsonRequest, limit, sort, callback){
+function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -96,12 +98,12 @@ function findObjectWithOptions(schema, jsonRequest, limit, sort, callback){
             .limit(limit)
             .sort(sort);
         }else{
-            callback(coErr);
+            callback(coErr, null);
         }
     })
 }
 
-function findOne(schema, jsonRequest, callback){
+function findOne(schema, callback, jsonRequest){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -116,12 +118,12 @@ function findOne(schema, jsonRequest, callback){
                 callback(null, result);
             });
         }else{
-            callback(coErr);
+            callback(coErr, null);
         }
     })
 }
 
-function updateObject(schema, condition, update, option, callback){
+function updateObject(schema,callback, condition, update, option){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -129,20 +131,20 @@ function updateObject(schema, condition, update, option, callback){
                 if (err) {
                     throw err; 
                     closeConnection();
-                    callback(err);
+                    callback(err, null);
                 }
                 console.log(`UPDATE ok : ${JSON.stringify(condition)} --> ${JSON.stringify(update)}`);
                 closeConnection();
-                callback(null);
+                callback(null, 'update ok');
             });
         }else{
-            callback(coErr);
+            callback(coErr, null);
         }
     })
 }
 
 
-function removeObject(schema, condition, callback){
+function removeObject(schema, callback, condition){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -150,20 +152,20 @@ function removeObject(schema, condition, callback){
                if (err) {
                    throw err;
                    closeConnection();
-                   callback(err);
+                   callback(err, null);
                }
                 console.log(`REMOVE ok (${JSON.stringify(condition)})`);
                 closeConnection();
-                callback(err);
+                callback(err, 'remove ok');
             });
         }else{
-            callback(coErr);
+            callback(coErr, nulll);
         }
     })
 }
 
 
-function count(schema, condition, callback){
+function count(schema,callback, condition){
     openConnection(function(conn,coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
@@ -171,19 +173,39 @@ function count(schema, condition, callback){
                 if(!err && count){
                     throw err;
                     closeConnection();
-                    callback(count);
+                    callback(null, count);
                     console.log(`count : ${count} (${JSON.stringify(condition)})`);
                 }else {
                     closeConnection();
-                    callback(null);
+                    callback(err, null);
                 }
             })
         }else{
-            callback(coErr);
+            callback(coErr, null);
         }
     })
 }
 
+
+function processFunction(mongoOperation, schema, dataArray, current, onDone){
+    console.log('operation '+(current+1)+'/'+dataArray.length+':')
+    if(current >= dataArray.length || current < 0){
+        console.log('done.')
+        onDone();
+        return ;
+    }
+    console.log('operating '+current+'...')
+    mongoOperation(schema, function(err, result){
+        if(err){
+            console.log('error on '+current)
+        }else{
+            console.log('operation '+current+' executed with success !')
+            console.log('--------------')
+        }
+        
+        processFunction(mongoOperation, schema, dataArray, current + 1, onDone)
+    } , dataArray[current]);
+}
 
 
 
@@ -195,7 +217,8 @@ module.exports = {
     update: updateObject,
     remove: removeObject,
     count: count,
-    findWithOptions : findObjectWithOptions
+    findWithOptions : findObjectWithOptions,
+    processFunction : processFunction
 }
 
 

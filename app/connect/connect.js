@@ -10,15 +10,13 @@ const md5 = require('md5')
 
 function findUser(username, callback){
    
-    mongo.findOne(UserSchema, {
-        login: username
-    }, function(err, result){
+    mongo.findOne(UserSchema , function(err, result){
         if(err){
             callback(err, null);
         }else{
             callback(null, result);
         }
-    });
+    },{ login: username });
     
 }
 
@@ -31,13 +29,13 @@ passport.deserializeUser(function (username, cb) {
 })
 
 function getExistingUser(condition, callback){
-    mongo.findOne(UserSchema, condition, function(err, result){
+    mongo.findOne(UserSchema, function(err, result){
         if(result){
             callback(true)
         }else{
             callback(false)
         }
-    })
+    },condition)
 }
 
 function getExistingUserInfos(mail,login,pseudo,callback){
@@ -111,7 +109,7 @@ function inscription(request, callback){
     
     getExistingUserInfos(object.mail, object.login, object.pseudo, function(msg, valid){
         if(valid){
-            mongo.add(object, UserSchema, function(err) {
+            mongo.add(UserSchema, function(err,result) {
                 if(err){
                     console.log("erreur d'ajout :"+err)
                     callback({
@@ -124,7 +122,7 @@ function inscription(request, callback){
                         accountAdded : true
                     });
                 }
-            });
+            },object);
         }else{
             console.log("info already taken : " + msg)
             callback(msg);

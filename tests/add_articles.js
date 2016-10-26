@@ -1,11 +1,10 @@
 const mongo = require('../app/mongo')
 const ArticleSchema = require('../app/article').Schema
 
-//mongo.add({"name":"Tortues Ninja", "shortName":"tortues-ninja","content":"Cet article parle des tortues ninja.","publicationDate":Date(), "tags" : [{"tag":"tortues ninja"},{"tag":"atari"},{"tag":"retro"}],"author":"admin1"})
 
 
 function init(){
-    mongo.add({
+    var dataArray = [{
         name: "Tortues Ninja",
         shortName: "tortues-ninja",
         content: "Cet article parle des tortues ninja.",
@@ -16,15 +15,8 @@ function init(){
             {tag:"retro"}
         ],
         author:"admin1"
-    }, ArticleSchema, function(err){
-        if(err){
-            console.log("insertion OK")
-        }else{
-            console.log(err)
-        }
-    })
-
-    mongo.add({
+    }, 
+              {
         name: "Tintin au tibet",
         shortName: "tintin-au-tibet",
         content: "Tintin au tibet, bah c'était dur !",
@@ -35,14 +27,8 @@ function init(){
             {tag:"retro"}
         ],
         author:"admin1"
-    }, ArticleSchema, function(err){
-        if(err){
-            console.log("insertion OK")
-        }else{
-            console.log(err)
-        }
-    })
-    mongo.add({
+    }, 
+              {
         name: "No man's sky",
         shortName: "no-mans-sky",
         content: "Whoa, quelle arnaque !",
@@ -53,15 +39,8 @@ function init(){
             {tag:"arnaque"}
         ],
         author:"admin1"
-    }, ArticleSchema, function(err){
-        if(err){
-            console.log("insertion OK")
-        }else{
-            console.log(err)
-        }
-    })
-    
-    mongo.add({
+    }, 
+              {
         name: "League of Legend",
         shortName: "lol",
         content: "Tu pleure?",
@@ -72,12 +51,22 @@ function init(){
             {tag:"arnaque"}
         ],
         author:"user1"
-    }, ArticleSchema, function(err){
-        if(err){
-            console.log("insertion OK")
-        }else{
-            console.log(err)
-        }
+    },
+              {
+        name: "Tamagochi",
+        shortName: "tamagochi",
+        content: "Laissez moi vous compter l'histoire des tamagochi...",
+        publicationDate:new Date(),
+        tags:[
+            {tag:"japon"},
+            {tag:"sommeil"},
+            {tag:"arnaque"}
+        ],
+        author:"user1"
+    }]
+    
+    mongo.processFunction(mongo.add, ArticleSchema, dataArray, 0, function(){
+        process.exit();
     })
 }
 

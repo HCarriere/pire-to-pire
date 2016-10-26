@@ -55,7 +55,7 @@ function findArticles() {
         if(request.query.text){
             jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}]};
         }
-        mongo.findWithOptions(ArticleSchema, jsonRequest, 0, {}, function(err, result){
+        mongo.findWithOptions(ArticleSchema, function(err, result){
             if(result){
                 //articles trouvés
                 for (var article of result){
@@ -65,7 +65,7 @@ function findArticles() {
                 request.articlesFound = result
             }
             return next()
-        })
+        }, jsonRequest, 0, {})
     }
 }
 

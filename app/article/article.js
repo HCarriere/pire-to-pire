@@ -65,18 +65,18 @@ function addArticle(request,callback){
         author: request.user.pseudo
     };
 
-    mongo.add(object, ArticleSchema, function(err){
+    mongo.add(ArticleSchema, function(err,result){
         if(err){
             callback(err,null)    
         }else{
             callback(null,object.shortName)
         }
-    })
+    },object)
 }
 
 
 function listArticles(limit, callback){
-    mongo.findWithOptions(ArticleSchema, {},limit,{publicationDate:-1}, function(err,result){
+    mongo.findWithOptions(ArticleSchema, function(err,result){
         if(err){
             callback(err, null)
         }
@@ -87,11 +87,11 @@ function listArticles(limit, callback){
             }
             callback(null,result)
         }
-    })
+    },{},limit,{publicationDate:-1})
 }
 
 function getArticle(shortName, callback){
-    mongo.findOne(ArticleSchema, {shortName: shortName}, function(err,result){
+    mongo.findOne(ArticleSchema, function(err,result){
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
             result.content = getHTMLContent(result.content);
@@ -101,7 +101,7 @@ function getArticle(shortName, callback){
         }
         callback(null)
         return;
-    })
+    },{shortName: shortName})
 }
 
 /**
@@ -110,16 +110,16 @@ récupère de la base dataBase les objets dont 'author' est le pseudo
 */
 function getAuthorPublications(){
     return function (request, response, next) {
-       mongo.find(ArticleSchema, {author:request.params.id}, function(err, result){
+       mongo.find(ArticleSchema, function(err, result){
            if(result){
                 for (var article of result){
                     article.stringPublicationDate = utils.getStringDate(article.publicationDate);
                     article.extract = utils.getExtractOf(article.content);
-                } 
+                }
                 request.articles = result;
            }
            return next();
-       })
+       },{author:request.params.id})
     }
 }
 

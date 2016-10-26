@@ -6,7 +6,7 @@ const md5 = require('md5')
 ////////// private ////////////////
 
 function getIsPseudoExisting(pseudo, login,  exist){
-    mongo.findOne( UserSchema, { pseudo:pseudo }, function(err, result){
+    mongo.findOne( UserSchema, function(err, result){
         if(result){
             if(result.login != login){
                 //qq d'autre a ce pseudo
@@ -18,7 +18,7 @@ function getIsPseudoExisting(pseudo, login,  exist){
         }else{
             exist(false)
         }
-    })
+    },{ pseudo:pseudo })
 }
 
 function hashPassword(password){
@@ -39,15 +39,13 @@ function getUserInfo(request, callback){
     
     var login = request.user.login;
     
-    mongo.findOne(UserSchema, {
-        login: login
-    }, function(err, result){
+    mongo.findOne(UserSchema, function(err, result){
         if(!err){
             callback(result);
         }else{
             callback(null);
         }
-    });
+    },{login: login});
 }
 
 
@@ -58,14 +56,12 @@ récupère les info de l'utilisateur avec son pseudo
 function getUserInfoByPseudo(){
     return function (request, response, next) {
         var pseudo =request.params.id;
-            mongo.findOne(UserSchema, {
-            pseudo: pseudo
-        }, function(err, result){
+            mongo.findOne(UserSchema, function(err, result){
             if(result){
                 request.profile = result;
             }
             return next();
-        });
+        },{pseudo: pseudo});
     }
 }
 
@@ -86,28 +82,27 @@ function updateUserInfo(request, callback){
         if(!exists){
             mongo.update(
                 UserSchema,
-                {
-                    //conditions
-                    login:login 
-                },
-                {
-                    //update
-                    fullName:request.body.fullName.trim(),
-                    pseudo: pseudo,
-                    geo:{
-                        country: request.body.geo_country,
-                        city:request.body.geo_city
-                    }
-                },
-                { /*options*/ },
-                function(err){
+                function(err,result){
                     callback(err)
                 }
             );
         }else{
             callback({pseudoAlreadyInUse:pseudo})
         }
-    })
+    },{
+        //conditions
+        login:login 
+    },
+    {
+        //update
+        fullName:request.body.fullName.trim(),
+        pseudo: pseudo,
+        geo:{
+            country: request.body.geo_country,
+            city:request.body.geo_city
+        }
+    },
+    { /*options*/ })
 }
 
 
@@ -125,25 +120,25 @@ function updateUserPassword(request, callback){
         callback({notSamePassword:true});
         return;
     }
-    mongo.findOne(UserSchema, {login:request.user.login},function(err,result){
+    mongo.findOne(UserSchema,function(err,result){
         if(result.password === hashPassword(request.body.old_password)){
             mongo.update(
                 UserSchema,
+                function(err,result){
+                    callback(err)
+                },
                 {
                     login:request.user.login
                 },
                 {
                     password:hashPassword(request.body.new_password1)
                 },
-                { },
-                function(err){
-                    callback(err)
-                }
+                { }
             );
         }else{
             callback({wrongPassword:true});
         }
-    })
+    }, {login:request.user.login})
 }
 
 
@@ -158,16 +153,16 @@ function updateUserProfilePicture(request, callback){
     var login =  request.user.login;
     mongo.update(
         UserSchema,
+        function(err,result){
+            callback(err)
+        },
         {
             login:login 
         },
         {
             picture:request.file.filename
         },
-        { },
-        function(err){
-            callback(err)
-        }
+        { }
     );
 }
 
