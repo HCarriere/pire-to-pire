@@ -187,6 +187,15 @@ function count(schema,callback, condition){
 }
 
 
+
+/**
+methode de test. envoi de maniere recursive des données dans la DB
+mongoOperation : 1 seule opération
+schema : 1 seul schema
+dataArray plusieurs object dans le dataArray
+current : par ou commence l'array
+onDone() : action executée à la fin
+*/
 function processFunction(mongoOperation, schema, dataArray, current, onDone){
     console.log('operation '+(current+1)+'/'+dataArray.length+':')
     if(current >= dataArray.length || current < 0){

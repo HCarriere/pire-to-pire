@@ -13,6 +13,9 @@ $(document).ready(function(){
         }
     })
     
+    
+    /* auto select input field */
+    $(".auto-select").select();
 })
 
 
