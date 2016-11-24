@@ -1,0 +1,62 @@
+
+
+<div class="page-title">Administration</div>
+
+<a class="button" href="/admin/users">Utilisateurs</a>
+<a class="button" href="/admin/articles">Articles</a>
+<a class="button" href="/admin/news">News</a>
+<a class="button" href="/admin/shareables">Partages</a>
+
+<div class="article-content">
+    <h1>{{admin.title}}</h1>
+    
+    <!--<table>
+        <tr>
+            {{#each admin.columns}}
+            <th>{{text}}</th>
+            {{/each}}
+        </tr>
+        {{#each admin.lines}}
+        <tr>
+            {{#each .}}
+            <td>
+                {{#if input}}
+                    <input type="{{input}}" value="{{text}}" name="{{id}}" id="{{id}}" 
+                           {{#if action}}formaction="{{action}}"{{/if}} 
+                           {{#if class}}class="{{class}}"{{/if}} 
+                           {{attributes}}>
+                {{else}}
+                    {{#if link}}
+                        <a href="{{link}}" {{#if class}}class="{{class}}"{{/if}} {{attributes}}>{{text}}</a>
+                    {{else}}
+                        <div {{#if class}}class="{{class}}"{{/if}} {{attributes}}>{{text}}</div>
+                    {{/if}}
+                {{/if}}
+            </td>
+            {{/each}}
+        </tr>
+        {{/each}}
+    </table>-->
+    
+    {{#each admin.lines}}
+    <form class="data-line" method="POST">
+        {{#each .}}
+        <div class="data-row">
+            {{#if input}}
+                <input type="{{input}}" value="{{text}}" name="{{id}}" id="{{id}}" 
+                       {{#if action}}formaction="{{action}}"{{/if}} 
+                       {{#if class}}class="{{class}}"{{/if}} 
+                       {{attributes}}>
+            {{else}}
+                {{#if link}}
+                    <a href="{{link}}" {{#if class}}class="{{class}}"{{/if}} {{attributes}}>{{text}}</a>
+                {{else}}
+                    <div {{#if class}}class="{{class}}"{{/if}} {{attributes}}>{{text}}</div>
+                {{/if}}
+            {{/if}}
+        </div>
+        {{/each}}
+    </form>
+    {{/each}}
+    
+</div>

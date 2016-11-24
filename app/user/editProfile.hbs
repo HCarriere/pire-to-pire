@@ -6,12 +6,12 @@
 
     <form  method="post" action="/api/update/profile">
         
-        <div class="form-data-couple">
+        {{!<div class="form-data-couple">
             <label class="input-label">Pseudo *</label>
-            <input type="text" name="pseudo" value="{{profile.pseudo}}" placeholder="BogossDu69 ?" 
+            <input type="text" name="pseudo" value="{profile.pseudo}" placeholder="BogossDu69 ?" 
                     oninvalid="setCustomValidity('Veuillez rentrer un pseudo valide.')" onchange="try{setCustomValidity('')}catch(e){}"
                     required>
-        </div>
+        </div>}}
         
         <div class="form-data-couple">
             <label class="input-label">Nom</label>

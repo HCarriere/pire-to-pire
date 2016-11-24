@@ -14,7 +14,7 @@ function init(){
             {tag:"atari"},
             {tag:"retro"}
         ],
-        author:"admin1"
+        author:"user2"
     }, 
               {
         name: "Tintin au tibet",
@@ -26,7 +26,7 @@ function init(){
             {tag:"hergé"},
             {tag:"retro"}
         ],
-        author:"admin1"
+        author:"user2"
     }, 
               {
         name: "No man's sky",
@@ -38,7 +38,7 @@ function init(){
             {tag:"espace"},
             {tag:"arnaque"}
         ],
-        author:"admin1"
+        author:"user2"
     }, 
               {
         name: "League of Legend",

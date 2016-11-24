@@ -13,8 +13,9 @@ function init(){
         mongo.remove(UserSchema,{} , function(err){
             if(!err){
                 console.log("destroy users OK")
+                process.exit();
             }else{
-                process.exit()
+                process.exit();
             }
         })
     })

@@ -35,6 +35,7 @@ récupère les info de l'utilisateur connecté dans la requete
 function getUserInfo(request, callback){
     if(!request.isAuthenticated() ){
        callback(null)
+       return;
     }
     
     var login = request.user.login;
@@ -65,6 +66,21 @@ function getUserInfoByPseudo(){
     }
 }
 
+function getUserPrivileges(){
+    return function (request, res, next) {
+    if(!request.isAuthenticated() ){
+       return next();
+    }
+    
+    var login = request.user.login;
+        mongo.findOne(UserSchema, function(err, result){
+            if(result){
+                request.privileges = result.privileges;
+            }
+            return next();
+        },{login: login});
+    }
+}
 
 
 //POST params : request.body.*
@@ -84,25 +100,25 @@ function updateUserInfo(request, callback){
                 UserSchema,
                 function(err,result){
                     callback(err)
-                }
+                },{
+                    //conditions
+                    login:login 
+                },
+                {
+                    //update
+                    fullName:request.body.fullName.trim(),
+                    //pseudo: pseudo,
+                    geo:{
+                        country: request.body.geo_country,
+                        city:request.body.geo_city
+                    }
+                },
+                { /*options*/ }
             );
         }else{
             callback({pseudoAlreadyInUse:pseudo})
         }
-    },{
-        //conditions
-        login:login 
-    },
-    {
-        //update
-        fullName:request.body.fullName.trim(),
-        pseudo: pseudo,
-        geo:{
-            country: request.body.geo_country,
-            city:request.body.geo_city
-        }
-    },
-    { /*options*/ })
+    })
 }
 
 
@@ -166,6 +182,18 @@ function updateUserProfilePicture(request, callback){
     );
 }
 
+function listUsers(callback){
+    mongo.findWithOptions(
+        UserSchema, 
+        function(err, result){
+            if(result){
+                callback(result)
+            }else{
+                callback(null)
+            }
+        }, {},0,{inscriptionDate:-1}
+    );
+}
 
 
 /////////// exports //////////////
@@ -175,5 +203,7 @@ module.exports = {
     updateUserInfo,
     updateUserProfilePicture,
     updateUserPassword,
-    getUserInfoByPseudo
+    getUserInfoByPseudo,
+    getUserPrivileges,
+    listUsers
 }

@@ -21,13 +21,14 @@ var userSchema = {
             type : String,
             match : /^[a-zA-Z0-9-_]+$/
         },
-        articles : [ 
-             { type : String , ref : conf.database.collections.articles }
-        ],
+        
         inscriptionDate : Date,
-        actualities:[
+        /*actualities:[
               { type : String , ref : "conf.database.collections.actualities"}
         ],
+        articles : [ 
+             { type : String , ref : conf.database.collections.articles }
+        ],*/
         options: {
              notifications: Boolean
         },

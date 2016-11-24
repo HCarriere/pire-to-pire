@@ -2,9 +2,9 @@
 Derniers articles
 </div>
 
-{{#if global.authentified}} 
+{{#ifContains privileges 'create_articles'}}
 <a class="button add" href="/new/article"><i class="fa fa-plus"></i> Nouveau</a>
-{{/if}}
+{{/ifContains}}
 
 <div class="list-container">
 

@@ -31,16 +31,31 @@ app
   extended: true
 }))
 
-
-//handlebars configuration
-app.
-engine('.hbs',exphbs({
+var handlebars = exphbs.create({
     defaultLayout: 'main',
     extname: '.hbs',
-    layoutsDir: path.join(__dirname,'views/layouts')
-}))
+    layoutsDir: path.join(__dirname,'views/layouts'),
+    helpers: {
+        ifContains: function(context, options, out) { //{{#ifContains privileges 'create_articles'}} interieur {{/ifContains}}
+            if(!context){
+                return "";
+            }
+            for(i=0; i<context.length; i++){
+                if(context[i].privilege === options){
+                    //contains
+                    return out.fn(this);
+                }
+            }
+        }
+    }
+});
+
+//handlebars configuration
+app
+.engine('.hbs', handlebars.engine)
 .set('view engine', '.hbs')
 .set('views', path.join(__dirname, 'app'))
+
 
 
 //Multer storage configuration
@@ -71,6 +86,7 @@ var article = require('./app/article')
 var user    = require('./app/user')
 var home    = require('./app/home')
 var search  = require('./app/search')
+var BO      = require('./app/backOffice')
 
 /////////// inits ///////////
 connect.init()
@@ -149,12 +165,13 @@ app
     })
 })
 //list articles
-.get('/article', (request, response) => {
+.get('/article',user.getUserPrivileges() ,(request, response) => {
     article.listArticles(0, function(err, articles){ //0: no limit
-       response.render('article/listArticles', {
+        response.render('article/listArticles', {
             global:getParameters(request),
-            articles:articles
-        }) 
+            articles:articles,
+            privileges:request.privileges
+        })
     })
 })
 //write article
@@ -187,6 +204,29 @@ app
 //list shareables
 .get('/shared', (request, response) => {
     response.render('shared/lastShared', {global:getParameters(request)})
+})
+
+
+//BACK OFFICE
+//menu
+.get('/admin',hasPrivilege('admin'), (request, response) => {
+    response.render('backOffice/menu', {global:getParameters(request)})
+})
+.get('/admin/users',hasPrivilege('admin'), (request, response) => {
+    user.listUsers(function(userList){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(userList, BO.UserTableModel)
+        })  
+    })
+})
+.get('/admin/articles',hasPrivilege('admin'), (request, response) => {
+    article.listArticles(0, function(err, list){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(list, BO.ArticleTableModel)
+        })  
+    })
 })
 
 
@@ -252,6 +292,36 @@ app
     })
 })
 
+.post('/api/delete/user', hasPrivilege('admin'), (request,response) => {
+    BO.deleteUser(request, function(err){
+        if(err){
+            response.redirect('/admin/users?error=1');
+            console.log(err);
+        }
+        else
+            response.redirect('/admin/users?succes=1');
+    })
+})
+.post('/api/update/user', hasPrivilege('admin'), (request,response) => {
+    BO.updateUserRank(request, function(err){
+        if(err){
+            response.redirect('/admin/users?error=2');
+            console.log(err);
+        }
+        else
+            response.redirect('/admin/users?succes=2');
+    })
+})
+.post('/api/delete/article', hasPrivilege('admin'), (request,response) => {
+    BO.deleteArticle(request, function(err){
+        if(err){
+            response.redirect('/admin/articles?error=1');
+            console.log(err);
+        }
+        else
+            response.redirect('/admin/articles?succes=1');
+    })
+})
 
 
 
@@ -299,6 +369,21 @@ function mustBeAuthentified() {
             return next()
         }
         res.redirect('/connect')
+    }
+}
+
+function hasPrivilege(priv){
+    return function (req, res, next) {
+        user.getUserInfo(req, function(profile){
+            if(profile){
+                for(i=0; i<profile.privileges.length; i++){
+                    if(profile.privileges[i].privilege === priv){
+                        return next();
+                    }
+                }
+            }
+            res.redirect('/');
+        })
     }
 }
 

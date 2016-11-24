@@ -123,6 +123,46 @@ function findOne(schema, callback, jsonRequest){
     })
 }
 
+function findById(schema, callback, id){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
+            model.findById(id, function (err, result) {
+                if(err) { 
+                    throw err; 
+                    closeConnection();
+                    callback(err, null);
+                }
+                console.log(`object retrieved by id (${id})`);
+                closeConnection()
+                callback(null, result);
+            });
+        }else{
+            callback(coErr, null);
+        }
+    })
+}
+
+function removeById(schema, callback, id){
+    openConnection(function(conn,coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
+            model.findById(id).remove(function(err,result){
+                if(err) { 
+                    throw err; 
+                    closeConnection();
+                    callback(err, null);
+                }
+                console.log(`object removed by id (${id})`);
+                closeConnection()
+                callback(null, result);
+            });
+        }else{
+            callback(coErr, null);
+        }
+    })
+}
+
 function updateObject(schema,callback, condition, update, option){
     openConnection(function(conn,coErr){
         if(conn){
@@ -149,11 +189,11 @@ function removeObject(schema, callback, condition){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.remove(condition, function (err) {
-               if (err) {
+                if (err) {
                    throw err;
                    closeConnection();
                    callback(err, null);
-               }
+                }
                 console.log(`REMOVE ok (${JSON.stringify(condition)})`);
                 closeConnection();
                 callback(err, 'remove ok');
@@ -197,36 +237,38 @@ current : par ou commence l'array
 onDone() : action executée à la fin
 */
 function processFunction(mongoOperation, schema, dataArray, current, onDone){
-    console.log('operation '+(current+1)+'/'+dataArray.length+':')
     if(current >= dataArray.length || current < 0){
         console.log('done.')
         onDone();
         return ;
     }
-    console.log('operating '+current+'...')
+    console.log('operation '+(current+1)+'/'+dataArray.length+':')
+    console.log('operating '+(current+1)+'...')
     mongoOperation(schema, function(err, result){
         if(err){
-            console.log('error on '+current)
+            console.log('error on '+(current+1))
         }else{
-            console.log('operation '+current+' executed with success !')
+            console.log('operation '+(current+1)+' executed with success !')
             console.log('--------------')
         }
-        
         processFunction(mongoOperation, schema, dataArray, current + 1, onDone)
     } , dataArray[current]);
 }
 
 
-
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
 module.exports = {
     add: addObject,
     find: findObject,
     findOne: findOne,
+    findById: findById,
     update: updateObject,
     remove: removeObject,
+    removeById: removeById,
     count: count,
     findWithOptions : findObjectWithOptions,
+    ObjectId : ObjectId,
     processFunction : processFunction
 }
 
