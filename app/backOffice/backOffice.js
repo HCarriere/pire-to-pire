@@ -48,17 +48,17 @@ function getAsTable(objectSet, tableModel){
                 data.text = tableModel.columns[j].text;
             }
             datas.push(data);
+            datas.uid = Math.random().toString().substring(2);
         }
         lines.push(datas);
     }
     admin.lines = lines;
-    //console.log(JSON.stringify(admin))
+    console.log(JSON.stringify(admin))
     return admin;
 }
 
 //callback(err)
 function updateUserRank(request, callback){
-    //mongo.update(schema,callback,condition,update,option)
     mongo.update(user.Schema, function(err,result){
         callback(err);
     }, {login:request.body.login}, {rank:request.body.rank}, {})
@@ -68,7 +68,6 @@ function updateUserRank(request, callback){
 function deleteUser(request, callback){
     mongo.remove(user.Schema, function(err,result){
         callback(err)
-        console.log('login : '+request.body.login)
     },{login:request.body.login})
 }
 
@@ -161,12 +160,60 @@ var ArticleTableModel = {
     ]
 }
 
+
+var NewsTableModel = {
+    title:'News',
+    buttons:[
+        {
+            link:'/new/news',
+            label:'Ajouter',
+            class:'button add'
+        }
+    ],
+    columns:[
+        {
+            text:"ID",
+            value:'id',
+            id:'id',
+            input:'text',
+            attributes:'readonly'
+        },
+        {
+            text:"Titre",
+            value:'name',
+            id:'title',
+            input:null,
+            link:'/article/%shortName%' //devient un <a>, %XXX% avec XXX-> BDD field
+        },
+        {
+            text:"Auteur",
+            value:'author',
+            id:'author',
+            input:null
+        },
+        {
+            text:"Date",
+            value:'publicationDate',
+            id:'date',
+            input:null
+        },
+        {
+            text:"Supprimer",
+            id:'delete',
+            input:"submit",
+            action:"/api/delete/article",
+            class:"button danger"
+        }
+    ]
+}
+
 // EXPORTS
 
 module.exports = {
     getAsTable,
     UserTableModel,
     ArticleTableModel,
+    NewsTableModel,
     updateUserRank,
     deleteUser,
     deleteArticle

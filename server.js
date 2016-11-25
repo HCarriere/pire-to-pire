@@ -154,31 +154,58 @@ app
 //view article
 .get('/article/:id', (request, response) => {
     article.getArticle(request.params.id, function(result){
-        if(result){
-            response.render('article/showArticle', {
-                global:getParameters(request),
-                article:result
-            }) 
-        }else{
-            response.render('article/showArticle', {global:getParameters(request)}) 
-        }
+        response.render('article/showArticle', {
+            global:getParameters(request),
+            article:result
+        }) 
     })
 })
 //list articles
 .get('/article',user.getUserPrivileges() ,(request, response) => {
     article.listArticles(0, function(err, articles){ //0: no limit
-        response.render('article/listArticles', {
+        response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:articles,
-            privileges:request.privileges
+            privileges:request.privileges,
+            pageTitle:'Derniers articles'
         })
     })
 })
 //write article
 .get('/new/article', mustBeAuthentified(), (request, response) => {
-    response.render('article/newArticle', {global:getParameters(request)})
+    response.render('article/newArticle', {
+        global:getParameters(request),
+        apiAdd:'/api/add/article'
+    })
 })
 
+
+//shared
+.get('/shared/:id', (request, response) => {
+    response.render('shared/shared', {global:getParameters(request)})
+})    
+//list shareables
+.get('/shared', (request, response) => {
+    response.render('shared/lastShared', {global:getParameters(request)})
+})
+    
+//list news
+.get('/news', (request, response) => {
+    article.listNews(0, function(err,news){
+        response.render('../views/layouts/listArticles', {
+            global:getParameters(request),
+            articles:news,
+            pageTitle:'Dernières news'
+        })  
+    })
+})
+//write news
+.get('/new/news', mustBeAuthentified(), (request, response) => {
+    response.render('article/newArticle', {
+        global:getParameters(request),
+        apiAdd:'/api/add/news'
+    })
+})
 
 
 //search
@@ -196,16 +223,6 @@ app
         }
     })
 })
-
-//shared
-.get('/shared/:id', (request, response) => {
-    response.render('shared/shared', {global:getParameters(request)})
-})    
-//list shareables
-.get('/shared', (request, response) => {
-    response.render('shared/lastShared', {global:getParameters(request)})
-})
-
 
 //BACK OFFICE
 //menu
@@ -225,6 +242,14 @@ app
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.ArticleTableModel)
+        })  
+    })
+})
+.get('/admin/news',hasPrivilege('admin'), (request, response) => {
+    article.listNews(0, function(err, list){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(list, BO.NewsTableModel)
         })  
     })
 })
@@ -292,14 +317,22 @@ app
     })
 })
 
+//add news
+.post('/api/add/news',hasPrivilege('admin'), (request, response) => {
+    article.addNews(request, function(err,shortName){
+        if(shortName){
+            response.redirect('/article/'+shortName);
+        }
+    })
+})
+
 .post('/api/delete/user', hasPrivilege('admin'), (request,response) => {
     BO.deleteUser(request, function(err){
         if(err){
             response.redirect('/admin/users?error=1');
             console.log(err);
         }
-        else
-            response.redirect('/admin/users?succes=1');
+        else response.redirect('/admin/users?succes=1');
     })
 })
 .post('/api/update/user', hasPrivilege('admin'), (request,response) => {
@@ -308,8 +341,7 @@ app
             response.redirect('/admin/users?error=2');
             console.log(err);
         }
-        else
-            response.redirect('/admin/users?succes=2');
+        else response.redirect('/admin/users?succes=2');
     })
 })
 .post('/api/delete/article', hasPrivilege('admin'), (request,response) => {
@@ -318,8 +350,7 @@ app
             response.redirect('/admin/articles?error=1');
             console.log(err);
         }
-        else
-            response.redirect('/admin/articles?succes=1');
+        else response.redirect('/admin/articles?succes=1');
     })
 })
 

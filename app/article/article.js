@@ -62,7 +62,8 @@ function addArticle(request,callback){
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
-        author: request.user.pseudo
+        author: request.user.pseudo,
+        isNews: false
     };
 
     mongo.add(ArticleSchema, function(err,result){
@@ -74,6 +75,35 @@ function addArticle(request,callback){
     },object)
 }
 
+function addNews(request,callback){
+    
+    if(!request.isAuthenticated() || !request.user.pseudo){
+        callback({error:'Non authentifié'},null);
+        return;
+    }
+    if(!request.body.name || !request.body.content || !request.body.tags){
+        callback({error:'Contenu vide'},null);
+        return;
+    }
+    
+    var object ={
+        name:request.body.name.trim(),
+        shortName: setShortName(request.body.name.trim()),
+        content: request.body.content,
+        publicationDate: Date.now(),
+        tags: getTags(request.body.tags),
+        author: request.user.pseudo,
+        isNews: true
+    };
+
+    mongo.add(ArticleSchema, function(err,result){
+        if(err){
+            callback(err,null)    
+        }else{
+            callback(null,object.shortName)
+        }
+    },object)
+}
 
 function listArticles(limit, callback){
     mongo.findWithOptions(ArticleSchema, function(err,result){
@@ -87,8 +117,25 @@ function listArticles(limit, callback){
             }
             callback(null,result)
         }
-    },{},limit,{publicationDate:-1})
+    },{isNews: false},limit,{publicationDate:-1})
 }
+
+
+function listNews(limit, callback){
+    mongo.findWithOptions(ArticleSchema, function(err,result){
+        if(err){
+            callback(err, null)
+        }
+        else{
+            for (var article of result){
+                article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                article.extract = utils.getExtractOf(article.content);
+            }
+            callback(null,result)
+        }
+    },{isNews:true},limit,{publicationDate:-1})
+}
+
 
 function getArticle(shortName, callback){
     mongo.findOne(ArticleSchema, function(err,result){
@@ -125,7 +172,9 @@ function getAuthorPublications(){
 
 module.exports = {
     listArticles,
+    listNews,
     addArticle,
+    addNews,
     getArticle,
     getAuthorPublications
 }

@@ -10,7 +10,11 @@
 <div class="article-content">
     <h1>{{admin.title}}</h1>
     
-    <!--<table>
+    {{#each admin.buttons}}
+        <a href="{{link}}" class="{{class}}">{{label}}</a>
+    {{/each}}
+    
+    <table>
         <tr>
             {{#each admin.columns}}
             <th>{{text}}</th>
@@ -21,10 +25,10 @@
             {{#each .}}
             <td>
                 {{#if input}}
-                    <input type="{{input}}" value="{{text}}" name="{{id}}" id="{{id}}" 
-                           {{#if action}}formaction="{{action}}"{{/if}} 
-                           {{#if class}}class="{{class}}"{{/if}} 
-                           {{attributes}}>
+                    <input type="{{input}}" value="{{text}}" name="{{id}}" id="{{id}}"  form="{{../uid}}"
+                       {{#if action}}formaction="{{action}}" {{/if}} 
+                       {{#if class}}class="{{class}}"{{/if}} 
+                       {{attributes}}>
                 {{else}}
                     {{#if link}}
                         <a href="{{link}}" {{#if class}}class="{{class}}"{{/if}} {{attributes}}>{{text}}</a>
@@ -34,11 +38,12 @@
                 {{/if}}
             </td>
             {{/each}}
+            <td><form id="{{uid}}" method="post"></form></td>
         </tr>
         {{/each}}
-    </table>-->
+    </table>
     
-    {{#each admin.lines}}
+    <!--{{#each admin.lines}}
     <form class="data-line" method="POST">
         {{#each .}}
         <div class="data-row">
@@ -57,6 +62,6 @@
         </div>
         {{/each}}
     </form>
-    {{/each}}
+    {{/each}}-->
     
 </div>
