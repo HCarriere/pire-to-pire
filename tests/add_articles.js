@@ -14,7 +14,8 @@ function init(){
             {tag:"atari"},
             {tag:"retro"}
         ],
-        author:"user2"
+        author:"user2",
+		isNews: false
     }, 
               {
         name: "Tintin au tibet",
@@ -26,7 +27,8 @@ function init(){
             {tag:"hergé"},
             {tag:"retro"}
         ],
-        author:"user2"
+        author:"user2",
+		isNews: false
     }, 
               {
         name: "No man's sky",
@@ -38,7 +40,8 @@ function init(){
             {tag:"espace"},
             {tag:"arnaque"}
         ],
-        author:"user2"
+        author:"user2",
+		isNews: false
     }, 
               {
         name: "League of Legend",
@@ -50,7 +53,8 @@ function init(){
             {tag:"calisse"},
             {tag:"arnaque"}
         ],
-        author:"user1"
+        author:"user1",
+		isNews: false
     },
               {
         name: "Tamagochi",
@@ -62,7 +66,8 @@ function init(){
             {tag:"sommeil"},
             {tag:"arnaque"}
         ],
-        author:"user1"
+        author:"user1",
+		isNews: false
     }]
     
     mongo.processFunction(mongo.add, ArticleSchema, dataArray, 0, function(){

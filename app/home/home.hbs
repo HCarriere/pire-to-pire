@@ -6,7 +6,25 @@
     
     <div class="section" id="news">
         <h1><i class="fa fa-newspaper-o"></i> Dernières news</h1>
-        
+        <div class="list-container">
+
+        {{#each news}}
+    
+            <div class="list-element">
+                <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
+                Par<a href="/user/{{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
+                <div class="list-extract">{{extract}}...</div>
+
+                {{#each tags}}
+                <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
+                {{/each}}
+
+            </div>
+
+        {{/each}}
+            
+        </div>
+		<a href="/news">Voir plus...</a>
     </div>
     
     <div class="section" id="articles">
@@ -29,6 +47,7 @@
         {{/each}}
             
         </div>
+		<a href="/article">Voir plus...</a>
     </div>
     
     <div class="section" id="shared">
@@ -39,7 +58,28 @@
     <div class="section" id="chat">
         <h1><i class="fa fa-bomb"></i> Coin trash</h1>
         <div class="chat">
-            
+            <div id="chat-zone">
+				<div class="in">
+				{{#each previousChatMessage}}
+					<div class="chat-message">
+						<div class="chat-date meta date">({{stringDate}})</div>
+						<a href="user/{{author}}" class="chat-author meta user">{{author}}</a>:
+						<div class="chat-content">{{{message}}}</div>
+					</div>
+				{{/each}}
+				</div>
+			</div>
+			{{#if userPseudo}} 
+			<form action="" id="chat_form">
+				<input id="message" type="text" autocomplete="off" />
+				<input id="message_author" type="hidden" value="{{userPseudo}}" />
+				<input id="message_keyauth" type="hidden" value="{{keyAuth}}" />
+				<button class="button">Send</button>
+			</form>
+			{{else}} 
+				Vous devez être connecté pour parler !
+			{{/if}}
+			
         </div>
     </div>
     

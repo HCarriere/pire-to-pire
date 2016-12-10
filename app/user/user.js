@@ -66,6 +66,7 @@ function getUserInfoByPseudo(){
     }
 }
 
+//middleware
 function getUserPrivileges(){
     return function (request, res, next) {
     if(!request.isAuthenticated() ){
@@ -76,6 +77,7 @@ function getUserPrivileges(){
         mongo.findOne(UserSchema, function(err, result){
             if(result){
                 request.privileges = result.privileges;
+				request.userPseudo = result.pseudo;
             }
             return next();
         },{login: login});

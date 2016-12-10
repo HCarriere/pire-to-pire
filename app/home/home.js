@@ -11,7 +11,12 @@ const article = require('../article')
 //middleware1
 function getHomeLastNews(){
     return function (request, response, next) {
-       return next();
+		article.listNews(1, function(err,result){
+            if(result){
+                request.news = result;
+            }
+            return next();
+        })
     }
 }
 

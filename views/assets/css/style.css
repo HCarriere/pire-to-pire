@@ -194,7 +194,39 @@ form textarea:focus{
     padding: 37px;
 }
 
-
+/* chat */
+.chat{
+	
+}
+#chat-zone{
+	background-color:white;
+	box-shadow: 0 0 5px #222;
+	padding:15px;
+	height:200px;
+	overflow-y: scroll;
+}
+#chat_form{
+	
+}
+#chat_form input{
+	height:35px;
+	border:none;
+	box-shadow: 0 0 5px #222;
+	width: 85%;
+	margin-top: 5px;
+}
+.chat-message{
+	padding:3px; margin:3px;
+}
+.chat-message .chat-date{
+	display:inline-block;
+}
+.chat-message .chat-author{
+	display:inline-block;
+}
+.chat-message .chat-content{
+	display:inline-block;
+}
 
 /* TOOLS */
 .article-content{

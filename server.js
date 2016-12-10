@@ -9,11 +9,11 @@ const session   = require('express-session')
 const bodyParser= require('body-parser')
 const multer    = require('multer');
 
+
 //General cong
 const config    = require('./config') //config file
 const app       = express()
 const port      = config.server.port
-
 
 //Express configuration
 app
@@ -87,11 +87,11 @@ var user    = require('./app/user')
 var home    = require('./app/home')
 var search  = require('./app/search')
 var BO      = require('./app/backOffice')
+var chat 	= require('./app/chat')
 
 /////////// inits ///////////
-connect.init()
-
-
+connect.init();
+chat.init();
 ////////////////////////
 //    R O U T E S     //
 ////////////////////////
@@ -99,10 +99,15 @@ app
 ////////// FRONT //////////
 
 //home
-.get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), (request, response) => {
+.get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(),user.getUserPrivileges(), (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
-        articles : request.articles
+		otherScripts:[{script:"/js/socket.io.min.js"},{script:"/js/chatClient.js"}],
+		previousChatMessage: request.previousChatMessage,
+		keyAuth: getKeyFromPseudo(request.userPseudo),
+        articles : request.articles,
+		userPseudo : request.userPseudo,
+		news: request.news
     })
 })
 
@@ -353,7 +358,15 @@ app
         else response.redirect('/admin/articles?succes=1');
     })
 })
-
+.post('/api/delete/news', hasPrivilege('admin'), (request,response) => {
+    BO.deleteArticle(request, function(err){
+        if(err){
+            response.redirect('/admin/news?error=1');
+            console.log(err);
+        }
+        else response.redirect('/admin/news?succes=1');
+    })
+})
 
 
 //////////  OTHER ROUTES ///////
@@ -384,7 +397,7 @@ app.listen(port, (err) => {
     if(err) {
         return console.log('Erreur inattendue', err)
     }
-    console.log(`server listening ${port}`)
+    console.log(`main server listening *:${port}`)
 });
 
 
@@ -418,6 +431,12 @@ function hasPrivilege(priv){
     }
 }
 
+function getKeyFromPseudo(pseudo){
+	var md5 = require('md5');
+	if(pseudo != null) 
+		return md5(pseudo+config.chat.secret);
+	return "invalid";
+}
 
 //////////// global parameters ////////// 
 /**

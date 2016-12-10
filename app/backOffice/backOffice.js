@@ -201,7 +201,7 @@ var NewsTableModel = {
             text:"Supprimer",
             id:'delete',
             input:"submit",
-            action:"/api/delete/article",
+            action:"/api/delete/news",
             class:"button danger"
         }
     ]

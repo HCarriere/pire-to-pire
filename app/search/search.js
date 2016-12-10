@@ -39,9 +39,25 @@ const ArticleSchema = require('../article').Schema
 //////////////public ////////////////
 //middleware 1
 function findNews(){
-    return function (request, response, next) {
-        //request.newsFound = { coucou : "result"}
-        return next();   
+     return function (request, response, next) {
+        var jsonRequest;
+        if(request.query.tag){
+            jsonRequest = {'tags.tag' : request.query.tag, isNews: true};
+        }
+        if(request.query.text){
+            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}],isNews: true};
+        }
+        mongo.findWithOptions(ArticleSchema, function(err, result){
+            if(result){
+                //articles trouvés
+                for (var article of result){
+                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);
+                }
+                request.newsFound = result
+            }
+            return next()
+        }, jsonRequest, 0, {})
     }
 }
 
@@ -50,10 +66,10 @@ function findArticles() {
     return function (request, response, next) {
         var jsonRequest;
         if(request.query.tag){
-            jsonRequest = {'tags.tag' : request.query.tag};
+            jsonRequest = {'tags.tag' : request.query.tag, isNews: false};
         }
         if(request.query.text){
-            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}]};
+            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}],isNews: false};
         }
         mongo.findWithOptions(ArticleSchema, function(err, result){
             if(result){
