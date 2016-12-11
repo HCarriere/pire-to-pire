@@ -195,9 +195,6 @@ form textarea:focus{
 }
 
 /* chat */
-.chat{
-	
-}
 #chat-zone{
 	background-color:white;
 	box-shadow: 0 0 5px #222;
@@ -210,16 +207,21 @@ form textarea:focus{
 }
 #chat_form input{
 	height:35px;
-	border:none;
-	box-shadow: 0 0 5px #222;
+	border:1px solid #666;
 	width: 85%;
 	margin-top: 5px;
+	transition:all .5s 
+}
+#chat_form input:focus{
+	border:1px solid transparent;
+	box-shadow: 0 0 5px #222;
 }
 .chat-message{
 	padding:3px; margin:3px;
 }
 .chat-message .chat-date{
 	display:inline-block;
+	min-width:70px;
 }
 .chat-message .chat-author{
 	display:inline-block;
@@ -227,6 +229,34 @@ form textarea:focus{
 .chat-message .chat-content{
 	display:inline-block;
 }
+
+/* back office */
+/*menu*/
+.bo_menu{
+	padding:0px;margin:3px;
+	box-shadow: 0 0 2px #222;
+	background-color:black;
+}
+
+.bo_menuitem{
+	text-decoration: none;
+	color:white;
+    padding: 8px 15px;
+    margin:0;
+	border-bottom:5px solid transparent;
+    transition: all .2s;
+    cursor:pointer;
+    font-family: "coolvetica";
+    font-size: 1.1em;
+    display:inline-block;
+}
+.bo_menuitem.selected{
+	border-bottom:5px solid #FF7E12;
+}
+.bo_menuitem:hover{
+	border-bottom:5px solid #FF7E12;
+}
+
 
 /* TOOLS */
 .article-content{

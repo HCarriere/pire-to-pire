@@ -99,7 +99,7 @@ app
 ////////// FRONT //////////
 
 //home
-.get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(),user.getUserPrivileges(), (request, response) => {
+.get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(config.chat.limitPrevious),user.getUserPrivileges(), (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
 		otherScripts:[{script:"/js/socket.io.min.js"},{script:"/js/chatClient.js"}],
@@ -335,7 +335,7 @@ app
     BO.deleteUser(request, function(err){
         if(err){
             response.redirect('/admin/users?error=1');
-            console.log(err);
+            console.log("ptp:api:(/api/delete/user):BO.deleteUser:ERR:():"+err);
         }
         else response.redirect('/admin/users?succes=1');
     })
@@ -344,7 +344,7 @@ app
     BO.updateUserRank(request, function(err){
         if(err){
             response.redirect('/admin/users?error=2');
-            console.log(err);
+            console.log("ptp:api:(/api/udpate/user):BO.updateUserRank:ERR:():"+err);
         }
         else response.redirect('/admin/users?succes=2');
     })
@@ -353,7 +353,7 @@ app
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/articles?error=1');
-            console.log(err);
+            console.log("ptp:api:(/api/delete/article):BO.deleteArticle:ERR:():"+err);
         }
         else response.redirect('/admin/articles?succes=1');
     })
@@ -362,7 +362,7 @@ app
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/news?error=1');
-            console.log(err);
+            console.log("ptp:api:(/api/delete/news):BO.deleteArticle:ERR:():"+err);
         }
         else response.redirect('/admin/news?succes=1');
     })
@@ -383,7 +383,7 @@ app
 //////////// Error handler //////////
 app.use((err, request, response, next) => {  
   //TODO log error
-  console.log('Erreur reçue : ' +err);
+  console.log("ptp:app:():():ERR:(Express error handler):"+err);
   response.status(500).render('error', {
       errorCode:500,
       errorTitle:"Erreur de serveur interne",
@@ -395,9 +395,9 @@ app.use((err, request, response, next) => {
 //application launch
 app.listen(port, (err) => {
     if(err) {
-        return console.log('Erreur inattendue', err)
+        return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }
-    console.log(`main server listening *:${port}`)
+    console.log(`ptp:app:(/):():OK:(main server listening *:${port})`)
 });
 
 

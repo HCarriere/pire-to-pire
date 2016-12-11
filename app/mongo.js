@@ -29,6 +29,11 @@ function closeConnection(conn){
    // console.log('^^^^^^^^^^^^ - connection closed - ^^^^^^^^^^^^');
 }
 
+function logMsg(msg){
+	if(conf.database.verbose){
+		console.log(msg);
+	}
+}
 
 
 /*********
@@ -49,7 +54,7 @@ function addObject(schema, callback, object){
                     callback(err, null);
                     closeConnection();
                 }else{
-                    console.log(`an object has been added`);
+                    logMsg("ptp:mongo:():addObject:OK:(Object added to "+schema.collection+")");
                     callback(null, 'Insert ok');
                     closeConnection();
                 }
@@ -71,7 +76,7 @@ function findObject(schema, callback, jsonRequest){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`objects retrieved (${JSON.stringify(jsonRequest)})`);
+                logMsg("ptp:mongo:():findObject:OK:("+result.length+" object found in "+schema.collection+")");
                 closeConnection();
                 callback(null, result);
             });
@@ -91,7 +96,7 @@ function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`objects retrieved with options (${JSON.stringify(jsonRequest)})`);
+                logMsg("ptp:mongo:():findObjectWithOptions:OK:("+result.length+" object found in "+schema.collection+")");
                 closeConnection();
                 callback(null, result);
             })
@@ -113,7 +118,7 @@ function findOne(schema, callback, jsonRequest){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`one object retrieved (${JSON.stringify(jsonRequest)})`);
+                logMsg("ptp:mongo:():findOne:OK:(object found in "+schema.collection+")");
                 closeConnection()
                 callback(null, result);
             });
@@ -133,7 +138,7 @@ function findById(schema, callback, id){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`object retrieved by id (${id})`);
+                logMsg("ptp:mongo:():findById:OK:(object found in "+schema.collection+" with id "+id+")");
                 closeConnection()
                 callback(null, result);
             });
@@ -153,7 +158,7 @@ function removeById(schema, callback, id){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`object removed by id (${id})`);
+                logMsg("ptp:mongo:():removeById:OK:("+result.length+" objects removed with id "+id+")");
                 closeConnection()
                 callback(null, result);
             });
@@ -173,7 +178,7 @@ function updateObject(schema,callback, condition, update, option){
                     closeConnection();
                     callback(err, null);
                 }
-                console.log(`UPDATE ok : ${JSON.stringify(condition)} --> ${JSON.stringify(update)}`);
+                logMsg(`ptp:mongo:():updateObject:OK:(update ok : ${JSON.stringify(condition)} --> ${JSON.stringify(update)})`);
                 closeConnection();
                 callback(null, 'update ok');
             });
@@ -194,7 +199,7 @@ function removeObject(schema, callback, condition){
                    closeConnection();
                    callback(err, null);
                 }
-                console.log(`REMOVE ok (${JSON.stringify(condition)})`);
+                logMsg(`ptp:mongo:():updateObject:OK:(remove ok (${JSON.stringify(condition)}))`);
                 closeConnection();
                 callback(err, 'remove ok');
             });
@@ -214,7 +219,7 @@ function count(schema,callback, condition){
                     throw err;
                     closeConnection();
                     callback(null, count);
-                    console.log(`count : ${count} (${JSON.stringify(condition)})`);
+                    logMsg(`ptp:mongo:():updateObject:OK:( ${count} object have ${JSON.stringify(condition)})`);
                 }else {
                     closeConnection();
                     callback(err, null);

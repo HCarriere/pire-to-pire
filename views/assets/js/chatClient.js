@@ -11,7 +11,7 @@ $(document).ready(function(){
 			<div class="chat-content">${data.message}</div>
 		</div>`
 		);
-		scrollBottom();
+		scrollToBottomAnimated();
 	});
 
 	$('#chat_form').submit(function(){
@@ -24,22 +24,15 @@ $(document).ready(function(){
 		return false;
 	});
 
+	scrollToBottom();
 });
 
-function scrollBottom(){
+function scrollToBottomAnimated(){
 	$('#chat-zone').animate({
 		scrollTop: $('#chat-zone .in').height()
 	},300);
 }
-
-/**
-si date aujourd'hui : que l'heure
-sinon, date.
-*/
-function getSimpleStringDate(date){
-	if(isDateFromToday(date)){
-		return getStringDateHour(date);
-	}else{
-		return getStringDateDay(date);
-	}
+function scrollToBottom(){
+	$('#chat-zone').scrollTop( $('#chat-zone .in').height());
 }
+

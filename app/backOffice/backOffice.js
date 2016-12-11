@@ -53,7 +53,7 @@ function getAsTable(objectSet, tableModel){
         lines.push(datas);
     }
     admin.lines = lines;
-    console.log(JSON.stringify(admin))
+    //console.log(JSON.stringify(admin))
     return admin;
 }
 
@@ -83,6 +83,9 @@ function deleteArticle(request, callback){
 
 var UserTableModel = {
     title:'Utilisateurs',
+	selected:{
+		users:"selected"	
+	},
     columns:[
         {
             text:"Login",   //nom de la colonne 
@@ -123,6 +126,9 @@ var UserTableModel = {
 
 var ArticleTableModel = {
     title:'Articles',
+	selected:{
+		articles:"selected"	
+	},
     columns:[
         {
             text:"ID",
@@ -163,6 +169,9 @@ var ArticleTableModel = {
 
 var NewsTableModel = {
     title:'News',
+	selected:{
+		news:"selected"	
+	},
     buttons:[
         {
             link:'/new/news',

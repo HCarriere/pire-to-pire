@@ -1,7 +1,7 @@
 /*****
 SEARCH MODULE
 
-4 recherches effectuées : 
+3 recherches effectuées : 
 -news
 -articles
 -partages

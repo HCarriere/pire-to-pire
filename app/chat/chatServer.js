@@ -31,8 +31,8 @@ function init(){
 			onDisconnect(socket);
 		});
 	});
-	io.listen(8080);
-	console.log("socket.io listening *:8080");
+	io.listen(conf.chat.port);
+	console.log("ptp:chatServer:():init:OK:(socket.io listening *:"+conf.chat.port+")");
 	
 }
 
@@ -60,11 +60,11 @@ function fetchPreviousChatMessages(limit){
 
 
 function onConnect(socket){
-	console.log('user connected to chat');
+	//console.log('user connected to chat');
 }
 
 function onDisconnect(socket){
-	console.log('user disconnected to chat');
+	//console.log('user disconnected to chat');
 }
 
 //verify if data are ok, then send it to db (saveMessage)
@@ -93,16 +93,16 @@ function saveMessage(object, callback){
 }
 
 function isAuthorValid(author, key){
-	console.log(author+" -> "+key)
 	if(author && key){
 		if(getKeyFromPseudo(author) === key){
+			//console.log(author+" -> "+key+ " (ok)");
 			return true;
 		}else{
-			console.log("warning(chat): author/key unautorized:"+author+" -> "+key);
+			console.log("ptp:chatServer:():isAuthorValid:WARN:(author/key unautorized:"+author+" -> "+key+")");
 			return false;
 		}
 	}
-	console.log("error(chat): author/key of invalid format :"+author+" -> "+key);
+	console.log("ptp:chatServer:():isAuthorValid:ERR:(author/key of invalid format:"+author+" -> "+key+")");
 	return false;
 }
 

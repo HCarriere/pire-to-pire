@@ -1,12 +1,13 @@
 
 
-
 function getExtractOf(content){
     if(!content){
         return "";
     }
     return content.substring(0,400);
 }
+
+/////////////////////////////////
 
 function getStringDate(date){
     if(!date){
@@ -18,6 +19,10 @@ function getStringDate(date){
         " "+("0"+date.getHours()).slice(-2)+
         ":"+("0"+date.getMinutes()).slice(-2);
 }
+
+
+
+/////////////////////////////////////
 
 function getStringDateHour(date){
 	return ("0"+date.getHours()).slice(-2)+
@@ -34,6 +39,7 @@ function getStringDateDay(date){
 function isDateFromToday(date){
 	return getStringDateDay(date) === getStringDateDay(new Date());
 }
+
 
 /**
 si date aujourd'hui : que l'heure

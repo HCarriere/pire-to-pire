@@ -69,14 +69,14 @@ function initPassport(){
                     return done("erreur:"+err)
                 } 
                 if(!user) {
-                    console.log("can't find user")
+                    console.log("ptp:connection:():initPassport:ERR:(can't find user)")
                     return done(null, false)
                 }
                 if(hashPassword(password) != user.password){
-                    console.log('wrong password');
+                    console.log('ptp:connection:():initPassport:WARN:(wrong password)');
                     return done(null, false);
                 }
-                console.log(user.login +' is authenticated')
+                console.log("ptp:connection:():initPassport:OK:("+user.login +" is authenticated)")
                 return done(null, user)
             })
         }
@@ -91,7 +91,7 @@ Render inscription
 function inscription(request, callback){
 
     if(request.body.password != request.body.password2){
-        console.log('not the same password')
+        console.log('ptp:connection:():inscription:WARN:(not the same password)')
         callback({
             notSamePassword : true
         });
@@ -111,20 +111,20 @@ function inscription(request, callback){
         if(valid){
             mongo.add(UserSchema, function(err,result) {
                 if(err){
-                    console.log("erreur d'ajout :"+err)
+                    console.log("ptp:connection:():inscription:ERR:(erreur d'ajout):"+err)
                     callback({
                         error : true
                     });
                 }
                 else{
-                    console.log('user ajouté avec succès');
+                    console.log('ptp:connection:():inscription:OK:(user'+object.pseudo+'ajouté avec succès)');
                     callback( {
                         accountAdded : true
                     });
                 }
             },object);
         }else{
-            console.log("info already taken : " + msg)
+            console.log("ptp:connection:():inscription:WARN:(mail/login/pseudo already took) : " + msg)
             callback(msg);
         }
     })
