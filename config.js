@@ -17,7 +17,7 @@ module.exports = {
 	chat:{
 		secret: "ZOjc1o+i25-jO.IE7*OIJ8-_8OIJ",
 		limitPrevious: 50,
-		port: 8080
+		port:5000
 	},
     server:{
         port:3000

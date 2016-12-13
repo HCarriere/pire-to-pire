@@ -1,7 +1,7 @@
 // scr="/js/socket.io.min.js"
 $(document).ready(function(){
 	
-	var socket = io("http://localhost:8080");
+	var socket = io("http://localhost:5000");
 
 	socket.on('message', function (data) {
 		$('#chat-zone .in').append(
