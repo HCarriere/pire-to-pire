@@ -15,6 +15,8 @@ const conf = require('../../config')
 
 function init(server){
 	var io = require('socket.io')(server);
+	
+	
 	io.sockets.on('connection', function(socket){
 		onConnect(socket);
 		//SESSION ON

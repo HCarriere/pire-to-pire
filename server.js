@@ -11,6 +11,7 @@ const multer    = require('multer')
 const http		= require('http')
 
 //General cong
+const mongo   = require('./app/mongo')
 const config    = require('./config') //config file
 const app       = express();
 const port      = config.server.port
@@ -89,7 +90,7 @@ var home    = require('./app/home')
 var search  = require('./app/search')
 var BO      = require('./app/backOffice')
 var chat 	= require('./app/chat')
-var mongo   = require('./app/mongo')
+
 
 /////////// inits ///////////
 connect.init();
@@ -110,6 +111,7 @@ app
 					  {script:"/js/chatClient.js"}],
 		previousChatMessage: request.previousChatMessage,
 		keyAuth: getKeyFromPseudo(request.userPseudo),
+		chatRequestPath : request.protocol + '://' + request.hostname+ ':' + config.chat.port,
         articles : request.articles,
 		userPseudo : request.userPseudo,
 		news: request.news
