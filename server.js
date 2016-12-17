@@ -397,7 +397,7 @@ app.use((err, request, response, next) => {
 
 
 //application launch
-app.listen(port, (err) => {
+app.listen(process.env.PORT || port, (err) => {
     if(err) {
         return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }
