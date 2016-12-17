@@ -11,11 +11,11 @@ const multer    = require('multer')
 const http		= require('http')
 
 //General cong
-const mongo   = require('./app/mongo')
+const mongo     = require('./app/mongo')
 const config    = require('./config') //config file
 const app       = express();
 const port      = config.server.port
-const server 	= http.Server(app)
+const server 	= http.createServer(app)
 
 //Express configuration
 app
@@ -32,6 +32,8 @@ app
 .use(bodyParser.urlencoded({    // to support URL-encoded bodies
   extended: true
 }))
+
+
 
 var handlebars = exphbs.create({
     defaultLayout: 'main',
@@ -107,11 +109,10 @@ app
 .get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(config.chat.limitPrevious),user.getUserPrivileges(), (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
-		otherScripts:[{script:"/js/socket.io.min.js"},
+		otherScripts:[{script:"/socket.io/socket.io.js"},
 					  {script:"/js/chatClient.js"}],
 		previousChatMessage: request.previousChatMessage,
 		keyAuth: getKeyFromPseudo(request.userPseudo),
-		chatRequestPath : request.protocol + '://' + request.hostname+ ':' + config.chat.port,
         articles : request.articles,
 		userPseudo : request.userPseudo,
 		news: request.news
@@ -399,7 +400,7 @@ app.use((err, request, response, next) => {
 
 
 //application launch
-app.listen(process.env.PORT || port, (err) => {
+server.listen(process.env.PORT || port, (err) => {
     if(err) {
         return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }

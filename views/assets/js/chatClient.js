@@ -1,8 +1,6 @@
 // scr="/js/socket.io.min.js"
 $(document).ready(function(){
 	
-	var address = window.location.hostname;
-	console.log("listening to "+address);
 	var socket = io();
 
 	socket.on('message', function (data) {
