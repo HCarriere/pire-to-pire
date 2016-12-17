@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Projet web CESI RIL Avril 2016",
   "main": "index.js",
+  "engine":{
+	  "node": "4.4.7"
+  },
   "scripts": {
     "test": "mocha test",
     "start": "node index.js",
