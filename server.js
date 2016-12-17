@@ -110,6 +110,7 @@ app
 					  {script:"/js/chatClient.js"}],
 		previousChatMessage: request.previousChatMessage,
 		keyAuth: getKeyFromPseudo(request.userPseudo),
+		chatRequestPath : request.protocol + '://' + request.hostname+ ':' + config.chat.port,
         articles : request.articles,
 		userPseudo : request.userPseudo,
 		news: request.news

@@ -1,7 +1,9 @@
 // scr="/js/socket.io.min.js"
 $(document).ready(function(){
 	
-	var socket = io("http://localhost:5000");
+	var address = $("#request_path").val();
+	console.log("listening to "+address);
+	var socket = io(address);//"http://localhost:5000"
 
 	socket.on('message', function (data) {
 		$('#chat-zone .in').append(
