@@ -2,6 +2,11 @@ const conf = require('../config')
 var mongoose = require('mongoose');
 var conn;
 
+function initMongo(){
+	mongoose.set('debug', conf.database.mongooseDebug);
+	logMsg("ptp:mongo:():initMongo:OK:(mongo initialized)");
+}
+
 function openConnection(callback){
    /*var conn = mongoose.createConnection(conf.database.name, function(err) {
         if (err) { 
@@ -14,13 +19,22 @@ function openConnection(callback){
         }
     });  */ 
     if(!conn){
-        var conn = mongoose.createConnection(conf.database.name, function(err) {
+		var options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
+                replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };       
+
+        conn = mongoose.createConnection(conf.database.name, options, function(err) {
            if(!err){
-               callback(conn,null)
-           }
+               callback(null)
+			   logMsg("ptp:mongo:():openConnection:OK:(mongo connected to "+conf.database.name+" )");
+           }else{
+			   callback(err)
+			   logMsg("ptp:mongo:():openConnection:ERR:(mongo is unable to connect to "+conf.database.name+" )");
+			   return;
+		   }
         })
+		
     } else{
-        callback(conn, null);
+        callback(null);
     }
 }
 
@@ -44,7 +58,7 @@ callback are always : (err,result)
 
 
 function addObject(schema, callback, object){   
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             var objectFromModel = new model(object);
@@ -67,7 +81,7 @@ function addObject(schema, callback, object){
 
 
 function findObject(schema, callback, jsonRequest){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.find(jsonRequest, function (err, result) {
@@ -87,7 +101,7 @@ function findObject(schema, callback, jsonRequest){
 }
 
 function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.find(jsonRequest, function (err, result) {
@@ -101,7 +115,8 @@ function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
                 callback(null, result);
             })
             .limit(limit)
-            .sort(sort);
+            .sort(sort)
+			;
         }else{
             callback(coErr, null);
         }
@@ -109,7 +124,7 @@ function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
 }
 
 function findOne(schema, callback, jsonRequest){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.findOne(jsonRequest, function (err, result) {
@@ -129,7 +144,7 @@ function findOne(schema, callback, jsonRequest){
 }
 
 function findById(schema, callback, id){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.findById(id, function (err, result) {
@@ -149,7 +164,7 @@ function findById(schema, callback, id){
 }
 
 function removeById(schema, callback, id){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.findById(id).remove(function(err,result){
@@ -169,7 +184,7 @@ function removeById(schema, callback, id){
 }
 
 function updateObject(schema,callback, condition, update, option){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.update(condition, update, option, function(err){
@@ -190,7 +205,7 @@ function updateObject(schema,callback, condition, update, option){
 
 
 function removeObject(schema, callback, condition){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.remove(condition, function (err) {
@@ -211,7 +226,7 @@ function removeObject(schema, callback, condition){
 
 
 function count(schema,callback, condition){
-    openConnection(function(conn,coErr){
+    openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
             model.count(condition , function(err, count){
@@ -224,7 +239,7 @@ function count(schema,callback, condition){
                     closeConnection();
                     callback(err, null);
                 }
-            })
+            });
         }else{
             callback(coErr, null);
         }
@@ -264,6 +279,7 @@ function processFunction(mongoOperation, schema, dataArray, current, onDone){
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
 module.exports = {
+	initMongo : initMongo,
     add: addObject,
     find: findObject,
     findOne: findOne,

@@ -89,10 +89,12 @@ var home    = require('./app/home')
 var search  = require('./app/search')
 var BO      = require('./app/backOffice')
 var chat 	= require('./app/chat')
+var mongo   = require('./app/mongo')
 
 /////////// inits ///////////
 connect.init();
 chat.init(server);
+mongo.initMongo();
 ////////////////////////
 //    R O U T E S     //
 ////////////////////////
@@ -100,7 +102,7 @@ app
 ////////// FRONT //////////
 
 //home
-/*
+
 .get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(config.chat.limitPrevious),user.getUserPrivileges(), (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
@@ -111,15 +113,6 @@ app
         articles : request.articles,
 		userPseudo : request.userPseudo,
 		news: request.news
-    })
-})*/
-.get('/', (request, response) => {
-    response.render('home/home',{
-        global:getParameters(request),
-		otherScripts:[{script:"/js/socket.io.min.js"},
-					  {script:"/js/chatClient.js"}],
-		
-		keyAuth: getKeyFromPseudo(request.userPseudo)
     })
 })
 //edit profile
@@ -409,6 +402,7 @@ app.listen(port, (err) => {
         return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }
     console.log(`ptp:app:(/):():OK:(main server listening *:${port})`)
+    
 });
 
 

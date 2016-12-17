@@ -9,7 +9,8 @@ module.exports = {
             articles:"article",
 			chatMessage:"chatMessage"
         },
-		verbose:true
+		verbose:true,
+		mongooseDebug:false
     },
     session:{
         secret: "QeHjU?D542:8eE"
