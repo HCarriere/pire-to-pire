@@ -7,13 +7,14 @@ const exphbs    = require('express-handlebars')
 const passport  = require('passport')
 const session   = require('express-session')
 const bodyParser= require('body-parser')
-const multer    = require('multer');
-
+const multer    = require('multer')
+const http		= require('http')
 
 //General cong
 const config    = require('./config') //config file
-const app       = express()
+const app       = express();
 const port      = config.server.port
+const server 	= http.Server(app)
 
 //Express configuration
 app
@@ -91,7 +92,7 @@ var chat 	= require('./app/chat')
 
 /////////// inits ///////////
 connect.init();
-chat.init();
+chat.init(server);
 ////////////////////////
 //    R O U T E S     //
 ////////////////////////
@@ -102,7 +103,8 @@ app
 .get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(config.chat.limitPrevious),user.getUserPrivileges(), (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
-		otherScripts:[{script:"/js/socket.io.min.js"},{script:"/js/chatClient.js"}],
+		otherScripts:[{script:"/js/socket.io.min.js"},
+					  {script:"/js/chatClient.js"}],
 		previousChatMessage: request.previousChatMessage,
 		keyAuth: getKeyFromPseudo(request.userPseudo),
         articles : request.articles,

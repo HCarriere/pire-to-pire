@@ -76,11 +76,12 @@ function initPassport(){
                     console.log('ptp:connection:():initPassport:WARN:(wrong password)');
                     return done(null, false);
                 }
-                console.log("ptp:connection:():initPassport:OK:("+user.login +" is authenticated)")
+                console.log("ptp:connection:():initPassport->findUser:OK:("+user.login +" is authenticated)")
                 return done(null, user)
             })
         }
     ))
+	console.log("ptp:connection:():initPassport:OK:(passport is initialized)")
 }
 
 

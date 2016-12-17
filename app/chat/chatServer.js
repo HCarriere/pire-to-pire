@@ -4,7 +4,6 @@ message recu  :  {message,author,keyAuth}
 message renvoyé  :  {message, author, date}
 */
 
-const io = require('socket.io')();
 const mongo = require('../mongo')
 const ChatMessageSchema = require('./schema').Schema
 const utils = require('../utils')
@@ -14,7 +13,8 @@ const conf = require('../../config')
 ////////////// PUBLIC //////////////
 ////////////////////////////////////
 
-function init(){
+function init(server){
+	var io = require('socket.io')(server);
 	io.sockets.on('connection', function(socket){
 		onConnect(socket);
 		//SESSION ON
@@ -33,7 +33,6 @@ function init(){
 	});
 	io.listen(conf.chat.port);
 	console.log("ptp:chatServer:():init:OK:(socket.io listening *:"+conf.chat.port+")");
-	
 }
 
 /**
