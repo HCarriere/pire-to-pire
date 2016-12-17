@@ -21,7 +21,7 @@ module.exports = {
 		port:5000
 	},
     server:{
-        port:80
+        port:3000
     },
     upload:{
         image:{
