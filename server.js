@@ -100,6 +100,7 @@ app
 ////////// FRONT //////////
 
 //home
+/*
 .get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(config.chat.limitPrevious),user.getUserPrivileges(), (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
@@ -111,8 +112,16 @@ app
 		userPseudo : request.userPseudo,
 		news: request.news
     })
+})*/
+.get('/', (request, response) => {
+    response.render('home/home',{
+        global:getParameters(request),
+		otherScripts:[{script:"/js/socket.io.min.js"},
+					  {script:"/js/chatClient.js"}],
+		
+		keyAuth: getKeyFromPseudo(request.userPseudo)
+    })
 })
-
 //edit profile
 .get('/profile', mustBeAuthentified(), (request, response) => {
     user.getUserInfo(request, function(profile){
