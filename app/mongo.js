@@ -21,14 +21,14 @@ function openConnection(callback){
     if(!conn){
 		var options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
                 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };       
-
-        conn = mongoose.createConnection(conf.database.name, options, function(err) {
+        var address = getAddress();
+        conn = mongoose.createConnection(address, options, function(err) {
            if(!err){
                callback(null)
-			   logMsg("ptp:mongo:():openConnection:OK:(mongo connected to "+conf.database.name+" )");
+			   logMsg("ptp:mongo:():openConnection:OK:(mongo connected to "+address+" )");
            }else{
 			   callback(err)
-			   logMsg("ptp:mongo:():openConnection:ERR:(mongo is unable to connect to "+conf.database.name+" )");
+			   logMsg("ptp:mongo:():openConnection:ERR:(mongo is unable to connect to "+address+" )");
 			   return;
 		   }
         })
@@ -49,6 +49,19 @@ function logMsg(msg){
 	}
 }
 
+function getAddress(){
+
+    var address= process.env.DB_PREFIX || conf.database.defaultAddress.prefix;
+    address+='://';
+    if(process.env.DB_USER && process.env.DB_PASSWORD){
+     address+=process.env.DB_USER+':'+process.env.DB_PASSWORD+'@';
+    }
+    address += process.env.DB_NAME || conf.database.defaultAddress.name;
+    address+='/';
+    address += process.env.DB_DATABASE || conf.database.defaultAddress.database;
+    
+    return address;
+}
 
 /*********
 function are always :
