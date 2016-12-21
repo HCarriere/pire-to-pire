@@ -20,7 +20,7 @@ function init(){
             city:"Montréal"
         },
         privileges:[
-            {privilege:"create_articles"}
+            {privilege:"article_post"}
         ]
     },
         {
@@ -37,7 +37,7 @@ function init(){
             city:"Lyon"
         },
         privileges:[
-            {privilege:"create_articles"}
+            {privilege:"article_post"}
         ]
     },
         {

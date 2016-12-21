@@ -1,5 +1,6 @@
 var schema = require('./schema')
 var user = require('./user')
+var law = require('./userLaw')
 
 module.exports = {
     Schema : schema.Schema,
@@ -9,5 +10,7 @@ module.exports = {
     updateUserPassword : user.updateUserPassword,
     getUserInfoByPseudo : user.getUserInfoByPseudo,
     getUserPrivileges : user.getUserPrivileges,
-    listUsers : user.listUsers
+    listUsers : user.listUsers,
+    law: law.law,
+    getDefaultPrivilegesFromRole: law.getDefaultPrivilegesFromRole
 }

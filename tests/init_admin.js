@@ -21,9 +21,9 @@ function init(){
             city:"Lyon"
         },
         privileges : [
-            {privilege:"admin_users"},
-            {privilege:"admin"},
-            {privilege:"create_articles"}
+            {privilege:"bo_remove_user"},
+            {privilege:"bo_access"},
+            {privilege:"article_post"}
         ]
         
     }]

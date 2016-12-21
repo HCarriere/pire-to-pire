@@ -61,7 +61,10 @@ function getAsTable(objectSet, tableModel){
 function updateUserRank(request, callback){
     mongo.update(user.Schema, function(err,result){
         callback(err);
-    }, {login:request.body.login}, {rank:request.body.rank}, {})
+    }, {login:request.body.login}, {
+        rank:request.body.rank,
+        privileges:user.getDefaultPrivilegesFromRole(request.body.rank) //TODO test
+    }, {})
 }
 
 //callback(err)

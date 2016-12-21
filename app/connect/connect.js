@@ -3,6 +3,7 @@
 const passport = require('passport')  
 const LocalStrategy = require('passport-local').Strategy
 const UserSchema = require('../user').Schema
+const Law = require('../user').law
 const mongo = require('../mongo')
 const md5 = require('md5')
 ////////////// private ////////////////
@@ -104,7 +105,7 @@ function inscription(request, callback){
         password:hashPassword(request.body.password),
         pseudo:request.body.pseudo.trim(),
         mail:request.body.email,
-        privileges:[''],
+        privileges:Law.roles.USER.defaultRights,
         rank:'Utilisateur'
     };
     

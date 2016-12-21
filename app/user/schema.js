@@ -35,7 +35,8 @@ var userSchema = {
         geo: {
             country:String,
             city:String
-        }
+        },
+        verified: Boolean
     }),
     collection:conf.database.collections.users
 }

@@ -14,8 +14,8 @@ const http		= require('http')
 const mongo     = require('./app/mongo')
 const config    = require('./config') //config file
 const app       = express();
-const port      = config.server.port
-const server 	= http.createServer(app)
+const port      = process.env.PORT || config.server.port;
+const server 	= http.createServer(app);
 
 //Express configuration
 app
@@ -115,6 +115,7 @@ app
 		keyAuth: getKeyFromPseudo(request.userPseudo),
         articles : request.articles,
 		userPseudo : request.userPseudo,
+        privileges:request.privileges,
 		news: request.news
     })
 })
@@ -184,7 +185,7 @@ app
     })
 })
 //write article
-.get('/new/article', mustBeAuthentified(), (request, response) => {
+.get('/new/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.ARTICLE_POST), (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
         apiAdd:'/api/add/article'
@@ -212,7 +213,7 @@ app
     })
 })
 //write news
-.get('/new/news', mustBeAuthentified(), (request, response) => {
+.get('/new/news', mustBeAuthentified(), hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
         apiAdd:'/api/add/news'
@@ -238,10 +239,10 @@ app
 
 //BACK OFFICE
 //menu
-.get('/admin',hasPrivilege('admin'), (request, response) => {
+.get('/admin', hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     response.render('backOffice/menu', {global:getParameters(request)})
 })
-.get('/admin/users',hasPrivilege('admin'), (request, response) => {
+.get('/admin/users',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     user.listUsers(function(userList){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -249,7 +250,7 @@ app
         })  
     })
 })
-.get('/admin/articles',hasPrivilege('admin'), (request, response) => {
+.get('/admin/articles',hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     article.listArticles(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -257,7 +258,7 @@ app
         })  
     })
 })
-.get('/admin/news',hasPrivilege('admin'), (request, response) => {
+.get('/admin/news',hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     article.listNews(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -314,7 +315,7 @@ app
 })
 
 //add article
-.post('/api/add/article', mustBeAuthentified(), (request, response) => {
+.post('/api/add/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.ARTICLE_POST),(request, response) => {
     article.addArticle(request, function(err,shortName){
         if(shortName){
             response.redirect('/article/'+shortName);
@@ -330,7 +331,7 @@ app
 })
 
 //add news
-.post('/api/add/news',hasPrivilege('admin'), (request, response) => {
+.post('/api/add/news',hasPrivilege('admin'), hasPrivilege(user.law.privileges.BO_ACCESS),(request, response) => {
     article.addNews(request, function(err,shortName){
         if(shortName){
             response.redirect('/article/'+shortName);
@@ -338,7 +339,7 @@ app
     })
 })
 
-.post('/api/delete/user', hasPrivilege('admin'), (request,response) => {
+.post('/api/delete/user', hasPrivilege('admin'), hasPrivilege(user.law.privileges.BO_REMOVE_USER),(request,response) => {
     BO.deleteUser(request, function(err){
         if(err){
             response.redirect('/admin/users?error=1');
@@ -347,7 +348,7 @@ app
         else response.redirect('/admin/users?succes=1');
     })
 })
-.post('/api/update/user', hasPrivilege('admin'), (request,response) => {
+.post('/api/update/user', hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_REMOVE_USER), (request,response) => {
     BO.updateUserRank(request, function(err){
         if(err){
             response.redirect('/admin/users?error=2');
@@ -356,7 +357,7 @@ app
         else response.redirect('/admin/users?succes=2');
     })
 })
-.post('/api/delete/article', hasPrivilege('admin'), (request,response) => {
+.post('/api/delete/article', hasPrivilege('admin'), hasPrivilege(user.law.privileges.BO_ACCESS),(request,response) => {
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/articles?error=1');
@@ -365,7 +366,7 @@ app
         else response.redirect('/admin/articles?succes=1');
     })
 })
-.post('/api/delete/news', hasPrivilege('admin'), (request,response) => {
+.post('/api/delete/news', hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_ACCESS), (request,response) => {
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/news?error=1');
@@ -400,7 +401,7 @@ app.use((err, request, response, next) => {
 
 
 //application launch
-server.listen(process.env.PORT || port, (err) => {
+server.listen(port, (err) => {
     if(err) {
         return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }
@@ -434,7 +435,7 @@ function hasPrivilege(priv){
                     }
                 }
             }
-            res.redirect('/');
+            res.redirect('/?unauthorized=1');
         })
     }
 }
