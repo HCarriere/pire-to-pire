@@ -30,13 +30,14 @@
         <input type="text" name="login" 
                class="input-text {{#if special.loginExists}} error{{/if}}" placeholder="Nom de compte" required>
         
+<!--
         <br>
         <label class="input-label">
-            Pseudo (publique !) {{#if special.pseudoExists}} | {{special.pseudoExists}}  existe déjà !{{/if}}
+            Pseudo {{#if special.pseudoExists}} | {{special.pseudoExists}}  existe déjà !{{/if}}
         </label>
         <input type="text" name="pseudo" 
-               class="input-text {{#if special.pseudoExists}} error{{/if}}" placeholder="Pseudo (public !)" pattern="^[a-zA-Z0-9_]+$" required>
-        <br>
+               class="input-text {{#if special.pseudoExists}} error{{/if}}" placeholder="Pseudo" pattern="^[a-zA-Z0-9_]+$" required>
+-->
         <label class="input-label">
             Adresse e-mail {{#if special.mailExists}} | {{special.mailExists}} existe déjà !{{/if}}
         </label>

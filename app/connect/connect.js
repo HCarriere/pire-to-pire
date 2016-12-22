@@ -39,18 +39,15 @@ function getExistingUser(condition, callback){
     },condition)
 }
 
-function getExistingUserInfos(mail,login,pseudo,callback){
+function getExistingUserInfos(mail,login,callback){
     getExistingUser({mail:mail}, function(mailExists){
         getExistingUser({login:login}, function(loginExists){
-            getExistingUser({pseudo:pseudo}, function(pseudoExists){
-                var valid = !mailExists && !loginExists && !pseudoExists;
-                
-                callback({
-                    mailExists:mailExists?mail:false,
-                    loginExists:loginExists?login:false,
-                    pseudoExists:pseudoExists?pseudo:false
-                }, valid);
-            })
+            var valid = !mailExists && !loginExists;
+
+            callback({
+                mailExists:mailExists?mail:false,
+                loginExists:loginExists?login:false
+            }, valid);
         })
     })
 }
@@ -77,7 +74,7 @@ function initPassport(){
                     console.log('ptp:connection:():initPassport:WARN:(wrong password)');
                     return done(null, false);
                 }
-                console.log("ptp:connection:():initPassport->findUser:OK:("+user.login +" is authenticated)")
+                console.log("ptp:connection:():initPassport->findUser:OK:("+username +" is authenticated)")
                 return done(null, user)
             })
         }
@@ -103,13 +100,13 @@ function inscription(request, callback){
     var object = {
         login:request.body.login.trim(),
         password:hashPassword(request.body.password),
-        pseudo:request.body.pseudo.trim(),
+        //pseudo:request.body.pseudo.trim(),
         mail:request.body.email,
         privileges:Law.roles.USER.defaultRights,
-        rank:'Utilisateur'
+        rank:Law.roles.USER.name
     };
     
-    getExistingUserInfos(object.mail, object.login, object.pseudo, function(msg, valid){
+    getExistingUserInfos(object.mail, object.login, function(msg, valid){
         if(valid){
             mongo.add(UserSchema, function(err,result) {
                 if(err){
@@ -119,14 +116,14 @@ function inscription(request, callback){
                     });
                 }
                 else{
-                    console.log('ptp:connection:():inscription:OK:(user'+object.pseudo+'ajouté avec succès)');
+                    console.log('ptp:connection:():inscription:OK:(user'+object.login+'ajouté avec succès)');
                     callback( {
                         accountAdded : true
                     });
                 }
             },object);
         }else{
-            console.log("ptp:connection:():inscription:WARN:(mail/login/pseudo already took) : " + msg)
+            console.log("ptp:connection:():inscription:WARN:(mail/login already took) : " + msg)
             callback(msg);
         }
     })

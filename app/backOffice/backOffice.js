@@ -95,7 +95,7 @@ var UserTableModel = {
             value:'login',  //recupéré depuis la BDD (field)
             id:"login",     //id input
             input:'text',      //type input (si null-> pas d'input)
-            link:'/user/%pseudo%',
+            link:'/user/%login%',
             attributes:'readonly'
         },
         {

@@ -36,10 +36,10 @@ var law = {
     }
 }
 
-function getDefaultPrivilegesFromRole(role){
-    for (defaultRoles of law.roles){
-        if(defaultRoles.defaultRights === role){
-            return defaultRoles.defaultRights;
+function getDefaultPrivilegesFromRole(stringRole){
+    for (role in law.roles){
+        if(law.roles.hasOwnProperty(role) && law.roles[role].name === stringRole){
+            return law.roles[role].defaultRights;
         }
     }
     return [];

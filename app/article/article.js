@@ -47,7 +47,7 @@ function getHTMLContent(content){
 
 function addArticle(request,callback){
     
-    if(!request.isAuthenticated() || !request.user.pseudo){
+    if(!request.isAuthenticated() || !request.user.login){
         callback({error:'Non authentifié'},null);
         return;
     }
@@ -62,7 +62,7 @@ function addArticle(request,callback){
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
-        author: request.user.pseudo,
+        author: request.user.login,
         isNews: false
     };
 
@@ -77,7 +77,7 @@ function addArticle(request,callback){
 
 function addNews(request,callback){
     
-    if(!request.isAuthenticated() || !request.user.pseudo){
+    if(!request.isAuthenticated() || !request.user.login){
         callback({error:'Non authentifié'},null);
         return;
     }
@@ -92,7 +92,7 @@ function addNews(request,callback){
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
-        author: request.user.pseudo,
+        author: request.user.login,
         isNews: true
     };
 
@@ -153,7 +153,7 @@ function getArticle(shortName, callback){
 
 /**
 middleware
-récupère de la base dataBase les objets dont 'author' est le pseudo
+récupère de la base dataBase les objets dont 'author' est le login
 */
 function getAuthorPublications(){
     return function (request, response, next) {

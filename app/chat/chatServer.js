@@ -95,7 +95,7 @@ function saveMessage(object, callback){
 
 function isAuthorValid(author, key){
 	if(author && key){
-		if(getKeyFromPseudo(author) === key){
+		if(getKeyFromLogin(author) === key){
 			//console.log(author+" -> "+key+ " (ok)");
 			return true;
 		}else{
@@ -124,9 +124,9 @@ function escapeHtml(string) {
   });
 }
 
-function getKeyFromPseudo(pseudo){
-	if(pseudo != null) 
-		return md5(pseudo+conf.chat.secret);
+function getKeyFromLogin(login){
+	if(login != null) 
+		return md5(login+conf.chat.secret);
 	return "";
 }
 

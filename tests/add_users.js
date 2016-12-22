@@ -10,7 +10,7 @@ function init(){
         {
         login: "admin2",
         password : "202cb962ac59075b964b07152d234b70", //123
-        pseudo: "admin2",
+       // pseudo: "admin2",
         fullName : "Admin",
         mail: "admin2@pire-to-pire.fr",
         rank:Law.roles.ADMIN.name,
@@ -25,7 +25,7 @@ function init(){
         {
         login: "user2",
         password : "202cb962ac59075b964b07152d234b70", //123
-        pseudo: "user2",
+       // pseudo: "user2",
         fullName : "Ecrivain",
         mail: "ecrivain@pire-to-pire.fr",
         rank:Law.roles.WRITER.name,
@@ -40,7 +40,7 @@ function init(){
         {
         login: "user1",
         password : "202cb962ac59075b964b07152d234b70", //123
-        pseudo: "user1",
+       // pseudo: "user1",
         fullName : "Utilisateur",
         mail: "user@pire-to-pire.fr",
         rank:Law.roles.USER.name,
@@ -55,7 +55,7 @@ function init(){
         {
         login: "pecno",
         password : "202cb962ac59075b964b07152d234b70", //123
-        pseudo: "pecno",
+       // pseudo: "pecno",
         fullName : "Pecore",
         mail: "pecore@hotmail.fr",
         rank:"pecore de base",

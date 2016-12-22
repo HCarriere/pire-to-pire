@@ -7,7 +7,7 @@
     {{else}}
         <img class="profile-picture round center" src="/images/noProfilePic.png" style="vertical-align:middle;">
     {{/if}} 
-    <h1 class="center">{{profile.pseudo}}</h1>
+    <h1 class="center">{{profile.login}}</h1>
     
     <div class="form-data-couple">
         <label class="input-label">Nom</label>
@@ -25,10 +25,8 @@
     </div>
 </article>
 
-<h1><i class="fa fa-newspaper-o"></i> News de {{profile.pseudo}}</h1>
-
 {{#if articles}}
-<h1><i class="fa fa-file-text-o"></i> Articles de {{profile.pseudo}}</h1>
+<h1><i class="fa fa-file-text-o"></i> Articles de {{profile.login}}</h1>
 <div class="list-container">
 
 {{#each articles}}
@@ -49,8 +47,16 @@
 </div>
 {{/if}}
 
-<h1><i class="fa fa-share-alt"></i> Partages de {{profile.pseudo}}</h1>
-
+{{#if shareables}}
+<h1><i class="fa fa-share-alt"></i> Partages de {{profile.login}}</h1>
+<div class="list-container">
+    {{#each shareables}}
+    <div class="list-element">
+    
+    </div>
+    {{/each}}
+</div>
+{{/if}}
 
 
 {{else}}

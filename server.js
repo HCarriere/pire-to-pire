@@ -112,9 +112,9 @@ app
 		otherScripts:[{script:"/socket.io/socket.io.js"},
 					  {script:"/js/chatClient.js"}],
 		previousChatMessage: request.previousChatMessage,
-		keyAuth: getKeyFromPseudo(request.userPseudo),
+		keyAuth: getKeyFromLogin(request.userLogin),
         articles : request.articles,
-		userPseudo : request.userPseudo,
+		userLogin : request.userLogin,
         privileges:request.privileges,
 		news: request.news
     })
@@ -130,7 +130,7 @@ app
 })
 
 //view profile
-.get('/user/:id',user.getUserInfoByPseudo(), article.getAuthorPublications() ,(request, response) => {
+.get('/user/:id', user.getUserInfoByLogin(), article.getAuthorPublications() ,(request, response) => {
     response.render('user/viewProfile', {
         global:getParameters(request),
         profile:request.profile,
@@ -446,10 +446,10 @@ function hasPrivilege(priv){
     }
 }
 
-function getKeyFromPseudo(pseudo){
+function getKeyFromLogin(login){
 	var md5 = require('md5');
-	if(pseudo != null) 
-		return md5(pseudo+config.chat.secret);
+	if(login != null) 
+		return md5(login+config.chat.secret);
 	return "invalid";
 }
 

@@ -4,7 +4,7 @@ const md5 = require('md5')
 
 
 ////////// private ////////////////
-
+/*
 function getIsPseudoExisting(pseudo, login,  exist){
     mongo.findOne( UserSchema, function(err, result){
         if(result){
@@ -19,7 +19,7 @@ function getIsPseudoExisting(pseudo, login,  exist){
             exist(false)
         }
     },{ pseudo:pseudo })
-}
+}*/
 
 function hashPassword(password){
     return md5(password);
@@ -52,17 +52,17 @@ function getUserInfo(request, callback){
 
 /**
 middleware
-récupère les info de l'utilisateur avec son pseudo
+récupère les info de l'utilisateur avec son login
 */
-function getUserInfoByPseudo(){
+function getUserInfoByLogin(){
     return function (request, response, next) {
-        var pseudo =request.params.id;
+        var login =request.params.id;
             mongo.findOne(UserSchema, function(err, result){
             if(result){
                 request.profile = result;
             }
             return next();
-        },{pseudo: pseudo});
+        },{login: login});
     }
 }
 
@@ -77,7 +77,7 @@ function getUserPrivileges(){
         mongo.findOne(UserSchema, function(err, result){
             if(result){
                 request.privileges = result.privileges;
-				request.userPseudo = result.pseudo;
+				request.userLogin = result.login;
             }
             return next();
         },{login: login});
@@ -90,37 +90,32 @@ function updateUserInfo(request, callback){
     if(!request.isAuthenticated()){
        callback({error:'Non authentifié.'})
     }
-    if(!request.body.pseudo){
+    /*if(!request.body.pseudo){
        callback({error:'Informations introuvables'})
-    }
+    }*/
     var login =  request.user.login;
-    var pseudo = request.body.pseudo.trim();
-    
-    getIsPseudoExisting(pseudo, login, function(exists){
-        if(!exists){
-            mongo.update(
-                UserSchema,
-                function(err,result){
-                    callback(err)
-                },{
-                    //conditions
-                    login:login 
-                },
-                {
-                    //update
-                    fullName:request.body.fullName.trim(),
-                    //pseudo: pseudo,
-                    geo:{
-                        country: request.body.geo_country,
-                        city:request.body.geo_city
-                    }
-                },
-                { /*options*/ }
-            );
-        }else{
-            callback({pseudoAlreadyInUse:pseudo})
-        }
-    })
+    //var pseudo = request.body.pseudo.trim();
+
+    mongo.update(
+        UserSchema,
+        function(err,result){
+            callback(err)
+        },{
+            //conditions
+            login:login 
+        },
+        {
+            //update
+            fullName:request.body.fullName.trim(),
+            //pseudo: pseudo,
+            geo:{
+                country: request.body.geo_country,
+                city:request.body.geo_city
+            }
+        },
+        { /*options*/ }
+    );
+
 }
 
 
@@ -205,7 +200,7 @@ module.exports = {
     updateUserInfo,
     updateUserProfilePicture,
     updateUserPassword,
-    getUserInfoByPseudo,
+    getUserInfoByLogin,
     getUserPrivileges,
     listUsers
 }

@@ -8,7 +8,7 @@ module.exports = {
     updateUserInfo: user.updateUserInfo,
     updateUserProfilePicture: user.updateUserProfilePicture,
     updateUserPassword : user.updateUserPassword,
-    getUserInfoByPseudo : user.getUserInfoByPseudo,
+    getUserInfoByLogin : user.getUserInfoByLogin,
     getUserPrivileges : user.getUserPrivileges,
     listUsers : user.listUsers,
     law: law.law,

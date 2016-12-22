@@ -10,7 +10,7 @@ function init(){
         {
         login: "admin",
         password : "e64b78fc3bc91bcbc7dc232ba8ec59e0", 
-        pseudo: "admin",
+        //pseudo: "admin",
         fullName : "Pire-to-pire Administrator",
         mail: "admin@pire-to-pire.fr",
         rank:Law.roles.GOD.name,
