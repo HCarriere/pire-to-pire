@@ -13,7 +13,8 @@ module.exports = {
         collections : {
             users:"user",
             articles:"article",
-			chatMessage:"chatMessage"
+			chatMessage:"chatMessage",
+            shareables:"shareable"
         },
 		verbose:false,
 		mongooseDebug:false
@@ -32,6 +33,9 @@ module.exports = {
     upload:{
         image:{
             maxSize:67108864 //64 MB
+        },
+        documents:{
+            maxSize:671088640 //640 MB
         }
     }
 }

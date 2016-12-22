@@ -4,7 +4,7 @@ const utils = require('../utils')
 
 ///////////// private /////////////////
 
-function setShortName(name){
+function getShortName(name){
     return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-');
 }
 
@@ -56,9 +56,9 @@ function addArticle(request,callback){
         return;
     }
     
-    var object ={
+    var object = {
         name:request.body.name.trim(),
-        shortName: setShortName(request.body.name.trim()),
+        shortName: getShortName(request.body.name.trim()),
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
@@ -88,7 +88,7 @@ function addNews(request,callback){
     
     var object ={
         name:request.body.name.trim(),
-        shortName: setShortName(request.body.name.trim()),
+        shortName: getShortName(request.body.name.trim()),
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
@@ -153,7 +153,7 @@ function getArticle(shortName, callback){
 
 /**
 middleware
-récupère de la base dataBase les objets dont 'author' est le login
+récupère de la base dataBase les articles dont 'author' est le login
 */
 function getAuthorPublications(){
     return function (request, response, next) {
@@ -166,7 +166,7 @@ function getAuthorPublications(){
                 request.articles = result;
            }
            return next();
-       },{author:request.params.id})
+       },{author:request.params.id, isNews:false})
     }
 }
 

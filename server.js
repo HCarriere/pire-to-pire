@@ -81,7 +81,15 @@ var uploadImage = multer({
     }
 }).single('profile_picture');
 
-
+var uploadDocument = multer({
+    storage: storage
+},{
+    limits: {
+        files:1,
+        fields: 5,
+        fileSize: config.upload.documents.maxSize
+    }
+}).single('document_upload')
 
 
 /////////// indexes ///////////
@@ -92,7 +100,7 @@ var home    = require('./app/home')
 var search  = require('./app/search')
 var BO      = require('./app/backOffice')
 var chat 	= require('./app/chat')
-
+var shared  = require('./app/shared')
 
 /////////// inits ///////////
 connect.init();
@@ -195,12 +203,30 @@ app
 
 //shared
 .get('/shared/:id', (request, response) => {
-    response.render('shared/shared', {global:getParameters(request)})
+    shared.getShareable(request.params.id, function(result){
+        response.render('shared/showShared', {
+            global:getParameters(request),
+            shareable:result
+        })  
+    })
 })    
 //list shareables
-.get('/shared', (request, response) => {
-    response.render('shared/lastShared', {global:getParameters(request)})
+.get('/shared', user.getUserPrivileges(), (request, response) => {
+    shared.listShareables(0, function(err, shareables) {
+        response.render('shared/listShared', {
+            global:getParameters(request),
+            shareables:shareables,
+            privileges: request.privileges
+        })    
+    })
 })
+//upload a doc
+.get('/new/shared', mustBeAuthentified(),  hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
+    response.render('shared/newShared' , {
+        global:getParameters(request)
+    })
+})
+
     
 //list news
 .get('/news', (request, response) => {
@@ -337,6 +363,25 @@ app
             response.redirect('/article/'+shortName);
         }
     })
+})
+
+//add shareable & upload document
+.post('/api/add/shareable', hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
+    uploadDocument(request,response,function(err) {
+        if(err) {
+            response.render('error', {
+                errorCode:500,
+                errorTitle:"Erreur d'upload",
+                errorContent:err
+            });
+        }else{
+            shared.addShareable(request, function(err, shortName){
+                if(shortName){
+                    response.redirect('/shared/'+shortName);
+                }
+            })
+        }
+    });
 })
 
 .post('/api/delete/user', hasPrivilege(user.law.privileges.BO_REMOVE_USER),(request,response) => {

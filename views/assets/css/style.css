@@ -17,7 +17,7 @@ header {
     width:100%;
     height:50px;
     background-color:black;
-    box-shadow: 0 3px 2px #666;
+    box-shadow: 0 3px 2px #333;
     position:fixed;
 }
 
@@ -268,6 +268,9 @@ form textarea:focus{
     box-shadow: 0 0 2px #222;
 }
 
+table{
+    background-color:white;
+}
 h1{
     font-family: "coolvetica";
     font-size: 2em;
@@ -313,7 +316,11 @@ pre{
 }
 .form-data-couple input{
     border-bottom: 1px solid black;
-    color:#666;
+    color:#222;
+}
+.form-data-couple input.modified{
+    background-color:#e3e3e3;
+    color:black;
 }
 .form-data-couple input:focus{
     box-shadow: 0 0 5px #222;

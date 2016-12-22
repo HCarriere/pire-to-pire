@@ -6,10 +6,12 @@ $(document).ready(function(){
     $('.form-data-couple input').on('keyup',function(){
         if($(this).val() === $(this).attr('value')){
             //normal
-            $(this).css("color","#666");
+            //$(this).css("color","#222");
+            $(this).removeClass("modified");
         }else{
             //modified
-            $(this).css("color","black");
+            //$(this).css("color","black");
+            $(this).addClass("modified");
         }
     })
     

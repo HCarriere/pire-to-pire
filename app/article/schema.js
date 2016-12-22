@@ -15,7 +15,9 @@ var articleSchema = {
             {tag:String}
         ],
         author: { type : String , ref : conf.database.collections.users },
-        isNews: Boolean
+        isNews: Boolean,
+        upvotes:Number,
+        downvotes:Number
     }),
     collection : conf.database.collections.articles
 }
