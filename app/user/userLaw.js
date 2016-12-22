@@ -10,28 +10,28 @@ var law = {
     roles:{
         GOD:{
             name:'Dieu',
-            defaultRights : ['bo_remove_user',
-                             'bo_access',
-                             'shareable_post',
-                             'article_post',
-                             'chat_talk']
+            defaultRights : [{privilege:'bo_remove_user'},
+                             {privilege:'bo_access'},
+                             {privilege:'shareable_post'},
+                             {privilege:'article_post'},
+                             {privilege:'chat_talk'}]
         },
         ADMIN:{
             name:'Admin',
-            defaultRights : ['bo_access',
-                             'shareable_post',
-                             'article_post',
-                             'chat_talk']
+            defaultRights : [{privilege:'bo_access'},
+                             {privilege:'shareable_post'},
+                             {privilege:'article_post'},
+                             {privilege:'chat_talk'}]
         },
         WRITER:{
             name:'Publieur',
-            defaultRights : ['shareable_post',
-                             'article_post',
-                             'chat_talk']
+            defaultRights : [{privilege:'shareable_post'},
+                             {privilege:'article_post'},
+                             {privilege:'chat_talk'}]
         },
         USER:{
             name:'Utilisateur',
-            defaultRights : ['chat_talk']
+            defaultRights : [{privilege:'chat_talk'}]
         }
     }
 }

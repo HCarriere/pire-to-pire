@@ -15,7 +15,7 @@ module.exports = {
             articles:"article",
 			chatMessage:"chatMessage"
         },
-		verbose:true,
+		verbose:false,
 		mongooseDebug:false
     },
     session:{

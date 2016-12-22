@@ -250,7 +250,7 @@ app
         })  
     })
 })
-.get('/admin/articles',hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin/articles',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     article.listArticles(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -258,7 +258,7 @@ app
         })  
     })
 })
-.get('/admin/news',hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin/news',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     article.listNews(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -331,7 +331,7 @@ app
 })
 
 //add news
-.post('/api/add/news',hasPrivilege('admin'), hasPrivilege(user.law.privileges.BO_ACCESS),(request, response) => {
+.post('/api/add/news', hasPrivilege(user.law.privileges.BO_ACCESS),(request, response) => {
     article.addNews(request, function(err,shortName){
         if(shortName){
             response.redirect('/article/'+shortName);
@@ -339,7 +339,7 @@ app
     })
 })
 
-.post('/api/delete/user', hasPrivilege('admin'), hasPrivilege(user.law.privileges.BO_REMOVE_USER),(request,response) => {
+.post('/api/delete/user', hasPrivilege(user.law.privileges.BO_REMOVE_USER),(request,response) => {
     BO.deleteUser(request, function(err){
         if(err){
             response.redirect('/admin/users?error=1');
@@ -348,7 +348,7 @@ app
         else response.redirect('/admin/users?succes=1');
     })
 })
-.post('/api/update/user', hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_REMOVE_USER), (request,response) => {
+.post('/api/update/user',hasPrivilege(user.law.privileges.BO_REMOVE_USER), (request,response) => {
     BO.updateUserRank(request, function(err){
         if(err){
             response.redirect('/admin/users?error=2');
@@ -357,7 +357,7 @@ app
         else response.redirect('/admin/users?succes=2');
     })
 })
-.post('/api/delete/article', hasPrivilege('admin'), hasPrivilege(user.law.privileges.BO_ACCESS),(request,response) => {
+.post('/api/delete/article', hasPrivilege(user.law.privileges.BO_ACCESS),(request,response) => {
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/articles?error=1');
@@ -366,7 +366,7 @@ app
         else response.redirect('/admin/articles?succes=1');
     })
 })
-.post('/api/delete/news', hasPrivilege('admin'),hasPrivilege(user.law.privileges.BO_ACCESS), (request,response) => {
+.post('/api/delete/news', hasPrivilege(user.law.privileges.BO_ACCESS), (request,response) => {
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/news?error=1');
@@ -375,7 +375,13 @@ app
         else response.redirect('/admin/news?succes=1');
     })
 })
-
+//////////////////////////
+.get('/forbidden', function(req,res){
+    res.render('error',{
+        errorCode:403,
+        errorTitle:"Restricted area. Keep out !"
+    });
+})
 
 //////////  OTHER ROUTES ///////
 .get('*', function(req, res){
@@ -435,7 +441,7 @@ function hasPrivilege(priv){
                     }
                 }
             }
-            res.redirect('/?unauthorized=1');
+            res.redirect('/forbidden');
         })
     }
 }

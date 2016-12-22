@@ -18,6 +18,7 @@ header {
     height:50px;
     background-color:black;
     box-shadow: 0 3px 2px #666;
+    position:fixed;
 }
 
 header .top-logo{
@@ -122,6 +123,7 @@ header form .search-submit:hover{
     padding:15px 100px;
     max-width:1200px;
     margin:auto;
+    padding-top:60px;
 }
 
 .section{
@@ -450,6 +452,9 @@ footer{
     header nav li.user{
         max-width:none;
         
+    }
+    header{
+        position:relative;
     }
     /* main */
     .content{

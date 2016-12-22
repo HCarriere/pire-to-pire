@@ -17,10 +17,7 @@ var userSchema = {
         privileges : [
            { privilege:String }
         ],
-        rank : {
-            type : String,
-            match : /^[a-zA-Z0-9-_]+$/
-        },
+        rank : String,
         
         inscriptionDate : Date,
         /*actualities:[

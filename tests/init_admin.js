@@ -1,6 +1,6 @@
 const mongo = require('../app/mongo')
 const UserSchema = require('../app/user').Schema
-
+const Law = require('../app/user').law;
 
 
 
@@ -13,18 +13,14 @@ function init(){
         pseudo: "admin",
         fullName : "Pire-to-pire Administrator",
         mail: "admin@pire-to-pire.fr",
-        rank:"god",
+        rank:Law.roles.GOD.name,
         inscriptionDate : new Date(),
         
         geo: {
             country:"France",
             city:"Lyon"
         },
-        privileges : [
-            {privilege:"bo_remove_user"},
-            {privilege:"bo_access"},
-            {privilege:"article_post"}
-        ]
+        privileges : Law.roles.GOD.defaultRights
         
     }]
     

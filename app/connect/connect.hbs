@@ -32,7 +32,7 @@
         
         <br>
         <label class="input-label">
-            Pseudo (public !) {{#if special.pseudoExists}} | {{special.pseudoExists}}  existe déjà !{{/if}}
+            Pseudo (publique !) {{#if special.pseudoExists}} | {{special.pseudoExists}}  existe déjà !{{/if}}
         </label>
         <input type="text" name="pseudo" 
                class="input-text {{#if special.pseudoExists}} error{{/if}}" placeholder="Pseudo (public !)" pattern="^[a-zA-Z0-9_]+$" required>
