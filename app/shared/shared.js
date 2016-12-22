@@ -27,15 +27,25 @@ function getExtension(filename){
     return filename.split('.').pop();
 }
 
+
+function getHTMLContent(content){
+    content = content.replace(/\n/g,'<br>');
+    content = content.replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
+    content = content.replace(/\r/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
+    return content;
+}
+
 ///////////// public
 //callback(error, shortName)
 //appellé lors de l'upload (au callback de réussite)
 function addShareable(request, callback){
+    
     if(!request.isAuthenticated() || !request.user.login){
         callback({error:'Non authentifié'},null);
         return;
     }
-    if(!request.body.name || !request.body.content || !request.body.tags){
+    
+    if(!request.body.name || !request.body.description || !request.body.tags){
         callback({error:'Contenu vide'},null);
         return;
     }
@@ -47,14 +57,13 @@ function addShareable(request, callback){
         tags:getTags(request.body.tags),
         author:request.user.login,
         uploadedObject : {
-            name:request.body.upload_name,
+            name:"nope",
             location:request.file.filename,
             size:request.file.size,
             extension:getExtension(request.file.filename)
         },
         publicationDate:Date.now()
     }
-    
     mongo.add(ShareableSchema, function(err,result){
         if(err){
             callback(err,null)    

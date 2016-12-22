@@ -89,7 +89,7 @@ var uploadDocument = multer({
         fields: 5,
         fileSize: config.upload.documents.maxSize
     }
-}).single('document_upload')
+}).single('document_upload');
 
 
 /////////// indexes ///////////
@@ -368,13 +368,15 @@ app
 //add shareable & upload document
 .post('/api/add/shareable', hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
     uploadDocument(request,response,function(err) {
-        if(err) {
+        
+        if(err || !request.file) {
             response.render('error', {
                 errorCode:500,
                 errorTitle:"Erreur d'upload",
                 errorContent:err
             });
         }else{
+            
             shared.addShareable(request, function(err, shortName){
                 if(shortName){
                     response.redirect('/shared/'+shortName);

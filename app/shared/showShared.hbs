@@ -1,5 +1,27 @@
 {{#if shareable}}
 
+<article class="article-content" style="text-align:justify;">
+    <div class="list-title">{{shareable.name}}</div>
+    
+    Par <a href="/user/{{shareable.author}}" class="meta user">
+        {{shareable.author}}
+    </a>le<div class="meta date">
+        {{shareable.stringPublicationDate}}
+    </div>
+    
+    <br><hr><br>
+    
+    <a href="/{{shareable.uploadedObject.location}}" > Document </a> (taille: {{shareable.uploadedObject.size}})
+    
+    {{{ shareable.description }}}
+
+    <br><br><hr>
+    
+    {{#each shareable.tags}}
+    <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
+    {{/each}}    
+</article>
+
 
 {{else}}
 
