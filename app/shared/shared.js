@@ -57,7 +57,7 @@ function addShareable(request, callback){
         tags:getTags(request.body.tags),
         author:request.user.login,
         uploadedObject : {
-            name:"nope",
+            name:request.body.document_upload,
             location:request.file.filename,
             size:request.file.size,
             extension:getExtension(request.file.filename)

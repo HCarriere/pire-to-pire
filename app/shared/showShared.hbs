@@ -11,7 +11,13 @@
     
     <br><hr><br>
     
-    <a href="/{{shareable.uploadedObject.location}}" > Document </a> (taille: {{shareable.uploadedObject.size}})
+     <a class="file-box" href="/{{shareable.uploadedObject.location}}">
+        <img class="file-icon" src="/icons/ext/{{shareable.uploadedObject.extension}}"/> 
+        <div class="file-description">
+            <div class="file-name">{{shareable.uploadedObject.name}}</div>
+            <div class="file-size">{{shareable.uploadedObject.size}}</div>
+        </div>
+    </a>
     
     {{{ shareable.description }}}
 
