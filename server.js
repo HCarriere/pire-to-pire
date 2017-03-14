@@ -130,7 +130,8 @@ app
         articles : request.articles,
 		userLogin : request.userLogin,
         privileges:request.privileges,
-		news: request.news
+		news: request.news,
+        shareables: request.shareables
     })
 })
 //edit profile

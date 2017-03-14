@@ -1,5 +1,5 @@
 const article = require('../article')
-
+const shared = require('../shared')
 
 
 
@@ -35,11 +35,14 @@ function getHomeArticles(){
 //middleware 3
 function getHomeShareables(){
     return function (request, response, next) {
-        return next();
+        shared.listShareables(1,function(err,result){
+            if(result) {
+                request.shareables = result;
+            }
+            return next();
+        })
     }
 }
-
-
 
 
 

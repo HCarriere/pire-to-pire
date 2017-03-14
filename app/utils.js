@@ -20,7 +20,7 @@ function getExtractOf(content){
 }
 
 /////////////////////////////////
-
+//TODO : si date ajourdui, pas de date, juste heure
 function getStringDate(date){
     if(!date){
         return "une date inconnue...";
