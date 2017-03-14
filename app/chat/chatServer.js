@@ -49,10 +49,12 @@ function fetchPreviousChatMessages(limit){
 				for(var chatMessage of result){
 					chatMessage.stringDate = utils.getSimpleStringDate(chatMessage.date);
 				}
+                //invert results
+                result.reverse();
 				request.previousChatMessage = result;
 			}
 			return next();
-		},{},limit,{date:1});
+		},{},limit,{date:-1});
     }
 }
 

@@ -20,7 +20,7 @@ const server 	= http.createServer(app);
 //Express configuration
 app
 .use(express.static(__dirname + '/views/assets'))   //styles
-.use(express.static(__dirname + '/uploads'))        //uploads
+.use('/uploads', express.static(__dirname + '/uploads'))        //uploads
 .use(session({
     secret : config.session.secret,
     resave: false,
@@ -114,7 +114,13 @@ app
 
 //home
 
-.get('/',home.getHomeLastNews(), home.getHomeArticles(), home.getHomeShareables(), chat.fetchPreviousChatMessages(config.chat.limitPrevious),user.getUserPrivileges(), (request, response) => {
+.get('/', 
+     home.getHomeLastNews(), 
+     home.getHomeArticles(), 
+     home.getHomeShareables(), 
+     chat.fetchPreviousChatMessages(config.chat.limitPrevious),
+     user.getUserPrivileges(), 
+     (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
 		otherScripts:[{script:"/socket.io/socket.io.js"},

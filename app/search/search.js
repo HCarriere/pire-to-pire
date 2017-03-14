@@ -28,7 +28,7 @@ const conf = require('../../config')
 const utils = require('../utils')
 //shemas
 const ArticleSchema = require('../article').Schema
-
+const ShareableSchema = require('../shared').Schema
 
 
 ///////////// private /////////////////
@@ -89,7 +89,23 @@ function findArticles() {
 function findShareables(){
     return function (request, response, next) {
         //request.shareableFound = { coucou : "result2"}
-        return next();   
+        var jsonRequest;
+        if(request.query.tag){
+            jsonRequest = {'tags.tag' : request.query.tag};
+        }
+        if(request.query.text){
+            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {description: new RegExp(request.query.text, "i")}]};
+        }
+        mongo.findWithOptions(ShareableSchema, function(err, result){
+            if(result){
+                //articles trouvés
+                for (var share of result){
+                    share.stringPublicationDate = utils.getStringDate(share.publicationDate);
+                }
+                request.shareableFound = result
+            }
+            return next()
+        }, jsonRequest, 0, {})
     }
 }
 

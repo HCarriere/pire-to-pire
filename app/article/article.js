@@ -4,9 +4,6 @@ const utils = require('../utils')
 
 ///////////// private /////////////////
 
-function getShortName(name){
-    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-');
-}
 
 /**
 tags: tag1;tag2;tag3
@@ -58,7 +55,7 @@ function addArticle(request,callback){
     
     var object = {
         name:request.body.name.trim(),
-        shortName: getShortName(request.body.name.trim()),
+        shortName: utils.getShortName(request.body.name.trim()),
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),
@@ -88,7 +85,7 @@ function addNews(request,callback){
     
     var object ={
         name:request.body.name.trim(),
-        shortName: getShortName(request.body.name.trim()),
+        shortName: utils.getShortName(request.body.name.trim()),
         content: request.body.content,
         publicationDate: Date.now(),
         tags: getTags(request.body.tags),

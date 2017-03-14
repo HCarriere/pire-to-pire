@@ -1,4 +1,16 @@
+function getShortName(name){
+    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-')+"-"+generateRandomId();
+}
 
+/////////////////////////////////
+
+function generateRandomId() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+}
+
+/////////////////////////////////
 
 function getExtractOf(content){
     if(!content){
@@ -22,7 +34,7 @@ function getStringDate(date){
 
 
 
-/////////////////////////////////////
+/////////////////////////////////
 
 function getStringDateHour(date){
 	return ("0"+date.getHours()).slice(-2)+
@@ -59,5 +71,6 @@ module.exports = {
 	getSimpleStringDate,
 	getStringDateHour,
 	getStringDateDay,
-	isDateFromToday
+	isDateFromToday,
+    getShortName
 }

@@ -4,9 +4,7 @@ const utils = require('../utils')
 
 ///////////// private
 
-function getShortName(name){
-    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-');
-}
+
 
 function getTags(tagsRequest){
     var r = [];
@@ -24,7 +22,13 @@ function getTags(tagsRequest){
 }
 
 function getExtension(filename){
-    return filename.split('.').pop();
+    var ext = filename.split('.').pop();
+    var extDictionnary = [
+  "aac","ai","aiff","avi","bmp","c","cpp","css","dat","dmg","doc","dotx","dwg","dxf","eps","exe","flv","gif","h","hpp","html","ics","iso","java","jpg","js","key","less","mid","mp3","mp4","mpg","odf","ods","odt","otp","ots","ott","pdf","php","png","ppt","psd","py","qt","rar","rb","rtf","sass","scss","sql","t.txt","tga","tgz","tiff","txt","wav","xls","xlsx","xml","yml","zip"
+    ];
+    if(extDictionnary.indexOf(ext) > -1){
+        return ext;
+    } else return "_blank";
 }
 
 
@@ -52,7 +56,7 @@ function addShareable(request, callback){
     
     var object = {
         name:request.body.name.trim(),
-        shortName:getShortName(request.body.name.trim()),
+        shortName:utils.getShortName(request.body.name.trim()),
         description:request.body.description,
         tags:getTags(request.body.tags),
         author:request.user.login,
