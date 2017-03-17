@@ -1,5 +1,6 @@
 var user    = require('../user')
 var article = require('../article')
+var shared = require('../shared')
 var mongo   = require('../mongo')
 
 ////////////////////// PRIVATE //////////////
@@ -58,13 +59,79 @@ function getAsTable(objectSet, tableModel){
 }
 
 //callback(err)
+/*
+Seul dieu peux promouvoir en admin
+Seul dieu peux dégrader un admin
+x Si un rang n'est pas officiel, les privileges ne changent pas
+x Personne ne peux promouvoir en Dieu
+x Personne ne peux descendre un Dieu
+*/
 function updateUserRank(request, callback){
-    mongo.update(user.Schema, function(err,result){
-        callback(err);
-    }, {login:request.body.login}, {
-        rank:request.body.rank,
-        privileges:user.getDefaultPrivilegesFromRole(request.body.rank) //TODO test
-    }, {})
+    var rank = request.profile.rank;
+    var requestedRank = request.body.rank;
+    var requestedPrivileges = user.getDefaultPrivilegesFromRole(request.body.rank);
+    
+    if(user.law.roles.GOD.name === requestedRank){
+        //dieu
+        callback("Impossible de promouvoir en Dieu")
+        return;
+    }
+    
+    mongo.findOne(user.Schema, function(err, result){
+        if(!err){
+            var ranksCurrentTarget = result.rank;
+            if(user.law.roles.GOD.name === ranksCurrentTarget) {
+                //target is GOD
+                callback("Impossible de toucher à Dieu");
+                return;
+            } else if(user.law.roles.ADMIN.name === ranksCurrentTarget) {
+                //target is ADMIN
+                if(user.law.roles.GOD.name === rank) {
+                    //we are GOD
+                    promoteUser(request.body.login, requestedRank, requestedPrivileges, callback);
+                } else {
+                    callback("Seul Dieu peux dégrader un admin")
+                }
+            } else {
+                //target is PEON
+                if(user.law.roles.ADMIN.name === requestedRank) {
+                    //on veux transformer en ADMIN
+                    if(user.law.roles.GOD.name === rank) {
+                        //we are GOD
+                        promoteUser(request.body.login, requestedRank, requestedPrivileges, callback);
+                    }else{
+                        callback("Seul Dieu peux promouvoir en admin")
+                    }
+                } else {
+                    promoteUser(request.body.login, requestedRank, requestedPrivileges, callback);
+                }
+            }
+        } else {
+            callback(err);
+        }
+    },{login: request.body.login});
+}
+
+//assuming everything is permitted
+function promoteUser(login, requestedRank, requestedPrivileges, callback) {
+     if(requestedPrivileges){
+        mongo.update(user.Schema, function(err,result){
+            callback(err);
+        },{
+            login:login
+        },{   
+            rank: requestedRank,
+            privileges:requestedPrivileges
+        },{ })
+    } else {
+         mongo.update(user.Schema, function(err,result){
+            callback(err);
+        },{
+            login:login
+        },{   
+            rank: requestedRank
+        },{ })
+    }
 }
 
 //callback(err)
@@ -81,6 +148,12 @@ function deleteArticle(request, callback){
     },request.body.id)
 }
 
+//callback(err)
+function deleteShareable(request, callback){
+    mongo.removeById(shared.Schema, function(err,result){
+        callback(err)
+    },request.body.id)
+}
 
 ///////// MODELS ///////////
 
@@ -89,6 +162,7 @@ var UserTableModel = {
 	selected:{
 		users:"selected"	
 	},
+    addHtmlAfter:"userDescription",
     columns:[
         {
             text:"Login",   //nom de la colonne 
@@ -114,7 +188,7 @@ var UserTableModel = {
             text:"Modifier",
             id:"update",
             input:"submit",
-            action:"/api/update/user",
+            action:"/api/promote/user",
             class:'button'
         },
         {
@@ -219,15 +293,58 @@ var NewsTableModel = {
     ]
 }
 
+var ShareableTableModel ={
+    title:'Partages',
+	selected:{
+		shareables:"selected"	
+	},
+    columns:[
+        {
+            text:"ID",
+            value:'id',
+            id:'id',
+            input:'text',
+            attributes:'readonly'
+        },
+        {
+            text:"Titre",
+            value:'name',
+            id:'title',
+            input:null,
+            link:'/shared/%shortName%' //devient un <a>, %XXX% avec XXX-> BDD field
+        },
+        {
+            text:"Auteur",
+            value:'author',
+            id:'author',
+            input:null
+        },
+        {
+            text:"Date",
+            value:'publicationDate',
+            id:'date',
+            input:null
+        },
+        {
+            text:"Supprimer",
+            id:'delete',
+            input:"submit",
+            action:"/api/delete/shareables",
+            class:"button danger"
+        }
+    ]
+}
 // EXPORTS
 
 module.exports = {
     getAsTable,
     UserTableModel,
     ArticleTableModel,
+    ShareableTableModel,
     NewsTableModel,
     updateUserRank,
     deleteUser,
-    deleteArticle
+    deleteArticle,
+    deleteShareable
 }
 

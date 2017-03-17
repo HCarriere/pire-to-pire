@@ -43,6 +43,14 @@
             {{{body}}}
         </div>
         
+        {{#ifContains privileges 'bo_access'}}
+        <a href="/admin" alt="Accès au back-office" class="administration-access">
+            <div>
+            
+            </div>
+        </a>
+        {{/ifContains}}
+        
         <footer>
 <!--            Copyright HCarriere 2016-->
         </footer>

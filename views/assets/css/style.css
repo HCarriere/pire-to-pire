@@ -190,7 +190,12 @@ form textarea:focus{
     width:100px;
     height:100px;
     box-shadow: 0 0  2px #666;
+    transition: transform 5s;
 }
+.profile-picture:hover{
+    transform:rotate(1080deg);
+}
+
 .profile-file-input{
     vertical-align: top;
     padding: 37px;
@@ -233,6 +238,25 @@ form textarea:focus{
 }
 
 /* back office */
+/*lien d'accès au back office*/
+.administration-access div{
+    background:rgb(172, 0, 0) url("/icons/gear.png") no-repeat;
+    background-size: 25px 25px;
+    background-position: center center;
+    border-radius:50%;
+    width:35px;
+    height:35px;
+    position:fixed;
+    z-index:10;
+    right:5px;
+    bottom:30px;
+    transition:all .3s;
+    opacity: .5;
+}
+.administration-access div:hover{
+    opacity:1;
+}
+
 /*menu*/
 .bo_menu{
 	padding:0px;margin:3px;

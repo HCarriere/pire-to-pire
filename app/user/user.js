@@ -53,11 +53,17 @@ function getUserInfo(request, callback){
 /**
 middleware
 récupère les info de l'utilisateur avec son login
+celui-ci est en param en url (/url/:id)
+ou en param simple
 */
 function getUserInfoByLogin(){
     return function (request, response, next) {
-        var login =request.params.id;
-            mongo.findOne(UserSchema, function(err, result){
+        if(request.params.id) {
+            login = request.params.id;
+        }else{
+            login = request.user.login;
+        }
+        mongo.findOne(UserSchema, function(err, result){
             if(result){
                 request.profile = result;
             }

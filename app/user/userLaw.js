@@ -1,37 +1,48 @@
+const const_privileges = {
+    BO_REMOVE_USER:'bo_remove_user',
+    BO_PROMOTE_USER:'bo_promote_user',
+    BO_ACCESS:'bo_access',
+    SHAREABLE_POST:'shareable_post',
+    ARTICLE_POST:'article_post',
+    CHAT_TALK:'chat_talk'
+}
 
-var law = {
+const law = {
     privileges:{
-        BO_REMOVE_USER:'bo_remove_user',
-        BO_ACCESS:'bo_access',
-        SHAREABLE_POST:'shareable_post',
-        ARTICLE_POST:'article_post',
-        CHAT_TALK:'chat_talk'
+        BO_REMOVE_USER:const_privileges.BO_REMOVE_USER,
+        BO_PROMOTE_USER:const_privileges.BO_PROMOTE_USER,
+        BO_ACCESS:const_privileges.BO_ACCESS,
+        SHAREABLE_POST:const_privileges.SHAREABLE_POST,
+        ARTICLE_POST:const_privileges.ARTICLE_POST,
+        CHAT_TALK:const_privileges.CHAT_TALK
     },
     roles:{
         GOD:{
             name:'Dieu',
-            defaultRights : [{privilege:'bo_remove_user'},
-                             {privilege:'bo_access'},
-                             {privilege:'shareable_post'},
-                             {privilege:'article_post'},
-                             {privilege:'chat_talk'}]
+            defaultRights : [{privilege:const_privileges.BO_REMOVE_USER},
+                             {privilege:const_privileges.BO_ACCESS},
+                             {privilege:const_privileges.BO_PROMOTE_USER},
+                             {privilege:const_privileges.SHAREABLE_POST},
+                             {privilege:const_privileges.ARTICLE_POST},
+                             {privilege:const_privileges.CHAT_TALK}]
         },
         ADMIN:{
             name:'Admin',
-            defaultRights : [{privilege:'bo_access'},
-                             {privilege:'shareable_post'},
-                             {privilege:'article_post'},
-                             {privilege:'chat_talk'}]
+            defaultRights : [{privilege:const_privileges.BO_ACCESS},
+                             {privilege:const_privileges.BO_PROMOTE_USER},
+                             {privilege:const_privileges.SHAREABLE_POST},
+                             {privilege:const_privileges.ARTICLE_POST},
+                             {privilege:const_privileges.CHAT_TALK}]
         },
         WRITER:{
             name:'Publieur',
-            defaultRights : [{privilege:'shareable_post'},
-                             {privilege:'article_post'},
-                             {privilege:'chat_talk'}]
+            defaultRights : [{privilege:const_privileges.SHAREABLE_POST},
+                             {privilege:const_privileges.ARTICLE_POST},
+                             {privilege:const_privileges.CHAT_TALK}]
         },
         USER:{
             name:'Utilisateur',
-            defaultRights : [{privilege:'chat_talk'}]
+            defaultRights : [{privilege:const_privileges.CHAT_TALK}]
         }
     }
 }

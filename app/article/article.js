@@ -16,7 +16,7 @@ return [
 function getTags(tagsRequest){
     var r  = [];
     var u = {};
-    var tags = tagsRequest.trim().replace(/,/g,';').split(';');
+    var tags = tagsRequest.trim().replace(/,/g,';').split(';').split("#").split("/");
     
     for (var tag in tags){
         var theTag = tags[tag].trim();

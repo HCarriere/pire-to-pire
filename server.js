@@ -44,6 +44,9 @@ var handlebars = exphbs.create({
             if(!context){
                 return "";
             }
+            if(context === options){
+                return out.fn(this);
+            }
             for(i=0; i<context.length; i++){
                 if(context[i].privilege === options){
                     //contains
@@ -279,7 +282,8 @@ app
     user.listUsers(function(userList){
         response.render('backOffice/table', {
             global:getParameters(request),
-            admin:BO.getAsTable(userList, BO.UserTableModel)
+            admin:BO.getAsTable(userList, BO.UserTableModel),
+            htmlAfter:BO.UserTableModel.addHtmlAfter
         })  
     })
 })
@@ -299,7 +303,14 @@ app
         })  
     })
 })
-
+.get('/admin/shareables',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+    shared.listShareables(0, function(err, list){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(list, BO.ShareableTableModel)
+        })  
+    })
+})
 
 ////////////////// APIs ////////////////////
 
@@ -402,11 +413,11 @@ app
         else response.redirect('/admin/users?succes=1');
     })
 })
-.post('/api/update/user',hasPrivilege(user.law.privileges.BO_REMOVE_USER), (request,response) => {
+.post('/api/promote/user', hasPrivilege(user.law.privileges.BO_PROMOTE_USER), user.getUserInfoByLogin(), (request,response) => {
     BO.updateUserRank(request, function(err){
         if(err){
             response.redirect('/admin/users?error=2');
-            console.log("ptp:api:(/api/udpate/user):BO.updateUserRank:ERR:():"+err);
+            console.log("ptp:api:(/api/promote/user):BO.updateUserRank:ERR:():"+err);
         }
         else response.redirect('/admin/users?succes=2');
     })
@@ -427,6 +438,15 @@ app
             console.log("ptp:api:(/api/delete/news):BO.deleteArticle:ERR:():"+err);
         }
         else response.redirect('/admin/news?succes=1');
+    })
+})
+.post('/api/delete/shareables', hasPrivilege(user.law.privileges.BO_ACCESS), (request,response) => {
+    BO.deleteShareable(request, function(err){
+        if(err){
+            response.redirect('/admin/shareables?error=1');
+            console.log("ptp:api:(/api/delete/shareables):BO.deleteShareable:ERR:():"+err);
+        }
+        else response.redirect('/admin/shareables?succes=1');
     })
 })
 //////////////////////////

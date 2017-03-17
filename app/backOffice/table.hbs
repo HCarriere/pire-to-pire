@@ -46,5 +46,73 @@
         {{/each}}
     </table>
     
+    {{#ifContains htmlAfter 'userDescription'}}
+    <div class="alert">
+        <p>
+            Les valeurs <strong>rang</strong> peuvent prendre ces valeurs:
+        </p>
+        <table>
+            <tr>
+                <th>Fonctionnalité</th>
+                <th>Dieu</th>
+                <th>Admin</th>
+                <th>Publieur</th>
+                <th>Utilisateur</th>
+                <th>Non connecté</th>
+            </tr>
+            <tr>
+                <td>Chat</td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+            </tr>
+            <tr>
+                <td>Création d'article et partages</td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+            </tr>
+            <tr>
+                <td>Accès aux back-office</td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+            </tr>
+            <tr>
+                <td>Création de news</td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+            </tr>
+            <tr>
+                <td>Promotion d'utilisateur (*)</td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+            </tr>
+            <tr>
+                <td>Suppression d'utilisateur</td>
+                <td><i class="fa fa-check" style="font-size:32px;color:green"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+                <td><i class="fa fa-close" style="font-size:32px;color:red"></i></td>
+            </tr>
+        </table>
+        <p>
+            (*): Seul Dieu peux promouvoir un utilisateur en admin.
+        </p>
+    </div>
+    {{/ifContains}}
     
 </div>
