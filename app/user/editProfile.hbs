@@ -35,7 +35,7 @@
     
     <form method="POST" action="/api/photo" enctype = "multipart/form-data">
         {{#if profile.picture}}
-        <img class="profile-picture" src="/{{profile.picture}}" >
+        <img class="profile-picture round" src="/uploads/{{profile.picture}}" >
         {{/if}}
         <input accept=".png,.jpg" type="file" name="profile_picture" class="profile-file-input">
         <br>

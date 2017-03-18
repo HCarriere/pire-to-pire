@@ -1,3 +1,30 @@
+const md5 = require('md5');
+
+
+function getTags(tagsRequest){
+    var r  = [];
+    var u = {};
+    var tags = tagsRequest.trim().replace(/,/g,';').replace(/#/g,';').split(';');
+    
+    for (var tag in tags){
+        var theTag = tags[tag].trim();
+        if(theTag && !u.hasOwnProperty(theTag) ){
+            r.push({tag:theTag});
+            u[theTag] = 1;
+        }
+    }
+    return r;
+}
+
+/////////////////////////////////
+
+
+function encryptPassword(password) {
+	return md5("0xxH_èdydhD70çàud"+password+"JdoDP\oe::;OE§§ùperTTOTHch68764xx");
+}
+
+/////////////////////////////////
+
 function getShortName(name){
     return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-')+"-"+generateRandomId();
 }
@@ -72,5 +99,7 @@ module.exports = {
 	getStringDateHour,
 	getStringDateDay,
 	isDateFromToday,
-    getShortName
+    getShortName,
+	encryptPassword,
+	getTags
 }

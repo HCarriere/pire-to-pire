@@ -181,13 +181,14 @@ app
 })
 
 
-//articles
+////////////////// articles
 //view article
-.get('/article/:id', (request, response) => {
+.get('/article/:id', user.getUserPrivileges(), (request, response) => {
     article.getArticle(request.params.id, function(result){
         response.render('article/showArticle', {
             global:getParameters(request),
-            article:result
+            article:result,
+			privileges:request.privileges
         }) 
     })
 })
@@ -206,17 +207,29 @@ app
 .get('/new/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.ARTICLE_POST), (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
-        apiAdd:'/api/add/article'
+        apiCalled:'/api/add/article'
     })
+})
+//edit article
+.get('/edit/article/:id', mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT), (request, response) => {
+	article.getArticle(request.params.id, function(result){
+		response.render('article/newArticle', {
+			global:getParameters(request),
+			apiCalled:'/api/edit/article',
+			article:result
+   		})
+	})
 })
 
 
+//////////////// SHARED
 //shared
-.get('/shared/:id', (request, response) => {
+.get('/shared/:id', user.getUserPrivileges(),  (request, response) => {
     shared.getShareable(request.params.id, function(result){
         response.render('shared/showShared', {
             global:getParameters(request),
-            shareable:result
+            shareable:result,
+			privileges:request.privileges
         })  
     })
 })    
@@ -230,14 +243,27 @@ app
         })    
     })
 })
-//upload a doc
+//write & upload shared
 .get('/new/shared', mustBeAuthentified(),  hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
     response.render('shared/newShared' , {
-        global:getParameters(request)
+        global:getParameters(request),
+		apiCalled:'/api/add/shareable'
     })
 })
 
-    
+//edit shared
+.get('/edit/shared/:id', mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT), (request, response) => {
+	shared.getShareable(request.params.id, function(result){
+		response.render('shared/newShared' , {
+			global:getParameters(request),
+			apiCalled:'/api/edit/shareable',
+			shareable:result
+		})
+	})
+})
+
+////////////// NEWS
+//edit & view are on articles (news = article)
 //list news
 .get('/news', (request, response) => {
     article.listNews(0, function(err,news){
@@ -252,7 +278,7 @@ app
 .get('/new/news', mustBeAuthentified(), hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
-        apiAdd:'/api/add/news'
+        apiCalled:'/api/add/news'
     })
 })
 
@@ -361,17 +387,25 @@ app
 //add article
 .post('/api/add/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.ARTICLE_POST),(request, response) => {
     article.addArticle(request, function(err,shortName){
-        if(shortName){
+        if(shortName) {
             response.redirect('/article/'+shortName);
         }
-        if(err){
-             response.render('error', {
-              errorCode:666,
-              errorTitle:"Mais qu'est ce que t'a fait toi...",
-              errorContent:"Refait plus jamais ça."
-          });
-        }
+		if(err) {
+			
+		}
     })
+})
+
+//edit article
+.post('/api/edit/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT),(request, response) => {
+    article.editDocument(request, function(err, shortName) {
+		if(shortName) {
+            response.redirect('/article/'+shortName);
+        }
+		if(err) {
+			
+		}
+	})
 })
 
 //add news
@@ -386,7 +420,6 @@ app
 //add shareable & upload document
 .post('/api/add/shareable', hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
     uploadDocument(request,response,function(err) {
-        
         if(err || !request.file) {
             response.render('error', {
                 errorCode:500,
@@ -395,13 +428,25 @@ app
             });
         }else{
             
-            shared.addShareable(request, function(err, shortName){
+            shared.addShareable(request, function(err, shortName) {
                 if(shortName){
                     response.redirect('/shared/'+shortName);
                 }
             })
         }
     });
+})
+
+//edit shareable
+.post('/api/edit/shareable',  mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT),  (request, response) => {
+	shared.editShareable(request, function(err, shortName) {
+		if(shortName) {
+			response.redirect('/shared/'+shortName);
+		}
+		if(err) {
+			
+		}
+	})
 })
 
 .post('/api/delete/user', hasPrivilege(user.law.privileges.BO_REMOVE_USER),(request,response) => {

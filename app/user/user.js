@@ -1,6 +1,6 @@
 const UserSchema = require('./schema').Schema
 const mongo = require('../mongo')
-const md5 = require('md5')
+const utils = require('../utils')
 
 
 ////////// private ////////////////
@@ -20,11 +20,6 @@ function getIsPseudoExisting(pseudo, login,  exist){
         }
     },{ pseudo:pseudo })
 }*/
-
-function hashPassword(password){
-    return md5(password);
-}
-
 
 
 /////////////  public //////////
@@ -140,7 +135,7 @@ function updateUserPassword(request, callback){
         return;
     }
     mongo.findOne(UserSchema,function(err,result){
-        if(result.password === hashPassword(request.body.old_password)){
+        if(result.password === utils.encryptPassword(request.body.old_password)){
             mongo.update(
                 UserSchema,
                 function(err,result){
@@ -150,7 +145,7 @@ function updateUserPassword(request, callback){
                     login:request.user.login
                 },
                 {
-                    password:hashPassword(request.body.new_password1)
+                    password:utils.encryptPassword(request.body.new_password1)
                 },
                 { }
             );

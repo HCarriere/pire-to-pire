@@ -2,7 +2,6 @@ const article = require('../article')
 const shared = require('../shared')
 
 
-
 ////////////////// private ////////////////
 
 

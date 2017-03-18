@@ -1,19 +1,24 @@
 <div class="page-title">
-Nouvel article
+	{{#if article}}
+		Editer un article
+	{{else}}
+		Nouvel article
+	{{/if}}
 </div>
 
 <div class="article-content">
 
-    <form method="post" action="{{apiAdd}}">
+    <form method="post" action="{{apiCalled}}">
         <label>Title de l'article</label>
-        <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required>
+		<input type="hidden" name="originalShortName" value="{{article.shortName}}">
+        <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required value="{{article.name}}">
         
         <label>Article</label>
-        <textarea name="content" wrap="soft" required></textarea>
+        <textarea name="content" wrap="soft" required>{{article.content}}</textarea>
         
         <label>Tags</label>
-        <input type="text" name="tags" placeholder="jeux-videos;tortues;ninja" class="input-text"  required>
+        <input type="text" name="tags" placeholder="jeux-videos;tortues;ninja" class="input-text"  required value="{{#each article.tags}}{{tag}}; {{/each}}">
         
-        <input type="submit" value="Publier" class="button add">
+        <input type="submit" value="{{#if shareable}}Modifier{{else}}Publier{{/if}}" class="button add">
     </form>
 </div>

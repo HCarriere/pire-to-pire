@@ -5,6 +5,11 @@
 </div>
 
 <article class="article-content" style="text-align:justify;">
+	
+	{{#ifContains privileges 'edit_document'}}
+	<a class="button add" href="/edit/article/{{article.shortName}}"><i class="fa fa-edit"></i> Editer le document</a>
+	{{/ifContains}}
+	
     <div class="list-title">{{article.name}}</div>
     
     Par <a href="/user/{{article.author}}" class="meta user">

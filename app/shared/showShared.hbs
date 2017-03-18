@@ -1,6 +1,11 @@
 {{#if shareable}}
 
 <article class="article-content" style="text-align:justify;">
+	
+	{{#ifContains privileges 'edit_document'}}
+	<a class="button add" href="/edit/shared/{{shareable.shortName}}"><i class="fa fa-edit"></i> Editer le document</a>
+	{{/ifContains}}
+	
     <div class="list-title">{{shareable.name}}</div>
     
     Par <a href="/user/{{shareable.author}}" class="meta user">

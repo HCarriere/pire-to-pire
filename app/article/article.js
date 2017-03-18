@@ -13,20 +13,6 @@ return [
     {tag:"tag3"}
 ]
 */
-function getTags(tagsRequest){
-    var r  = [];
-    var u = {};
-    var tags = tagsRequest.trim().replace(/,/g,';').split(';').split("#").split("/");
-    
-    for (var tag in tags){
-        var theTag = tags[tag].trim();
-        if(theTag && !u.hasOwnProperty(theTag) ){
-            r.push({tag:theTag});
-            u[theTag] = 1;
-        }
-    }
-    return r;
-}
 
 
 
@@ -40,11 +26,8 @@ function getHTMLContent(content){
 
 
 //////////// public ////////////////
-
-
-function addArticle(request,callback){
-    
-    if(!request.isAuthenticated() || !request.user.login){
+function addDocument(request, isNews, callback){
+	if(!request.isAuthenticated() || !request.user.login){
         callback({error:'Non authentifié'},null);
         return;
     }
@@ -58,9 +41,9 @@ function addArticle(request,callback){
         shortName: utils.getShortName(request.body.name.trim()),
         content: request.body.content,
         publicationDate: Date.now(),
-        tags: getTags(request.body.tags),
+        tags: utils.getTags(request.body.tags),
         author: request.user.login,
-        isNews: false
+        isNews: isNews
     };
 
     mongo.add(ArticleSchema, function(err,result){
@@ -70,40 +53,20 @@ function addArticle(request,callback){
             callback(null,object.shortName)
         }
     },object)
+}
+
+function addArticle(request,callback){
+    addDocument(request,false,callback);
 }
 
 function addNews(request,callback){
-    
-    if(!request.isAuthenticated() || !request.user.login){
-        callback({error:'Non authentifié'},null);
-        return;
-    }
-    if(!request.body.name || !request.body.content || !request.body.tags){
-        callback({error:'Contenu vide'},null);
-        return;
-    }
-    
-    var object ={
-        name:request.body.name.trim(),
-        shortName: utils.getShortName(request.body.name.trim()),
-        content: request.body.content,
-        publicationDate: Date.now(),
-        tags: getTags(request.body.tags),
-        author: request.user.login,
-        isNews: true
-    };
-
-    mongo.add(ArticleSchema, function(err,result){
-        if(err){
-            callback(err,null)    
-        }else{
-            callback(null,object.shortName)
-        }
-    },object)
+   addDocument(request,true,callback);
 }
 
-function listArticles(limit, callback){
-    mongo.findWithOptions(ArticleSchema, function(err,result){
+
+
+function listDocuments(limit,news,callback){
+	 mongo.findWithOptions(ArticleSchema, function(err,result){
         if(err){
             callback(err, null)
         }
@@ -114,27 +77,22 @@ function listArticles(limit, callback){
             }
             callback(null,result)
         }
-    },{isNews: false},limit,{publicationDate:-1})
+    },{isNews: news},limit,{publicationDate:-1})
+}
+
+function listArticles(limit, callback){
+    listDocuments(limit,false,callback);
 }
 
 
 function listNews(limit, callback){
-    mongo.findWithOptions(ArticleSchema, function(err,result){
-        if(err){
-            callback(err, null)
-        }
-        else{
-            for (var article of result){
-                article.stringPublicationDate = utils.getStringDate(article.publicationDate);
-                article.extract = utils.getExtractOf(article.content);
-            }
-            callback(null,result)
-        }
-    },{isNews:true},limit,{publicationDate:-1})
+    listDocuments(limit,true,callback);
 }
 
 
-function getArticle(shortName, callback){
+
+
+function getArticle(shortName, callback) {
     mongo.findOne(ArticleSchema, function(err,result){
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
@@ -147,6 +105,24 @@ function getArticle(shortName, callback){
         return;
     },{shortName: shortName})
 }
+
+
+function editDocument(request, callback) {
+	mongo.update(ArticleSchema, function(err, result) {
+		callback(err, request.body.originalShortName)
+	},
+	{
+		shortName: request.body.originalShortName
+	},//condition
+	{
+		modificationDate: Date.now(),
+		name: request.body.name.trim(),
+		content: request.body.content,
+		tags: utils.getTags(request.body.tags)
+	},//update
+	{})//options
+}
+
 
 /**
 middleware
@@ -173,7 +149,8 @@ module.exports = {
     addArticle,
     addNews,
     getArticle,
-    getAuthorPublications
+    getAuthorPublications,
+	editDocument
 }
 
 

@@ -6,5 +6,6 @@ module.exports = {
     addShareable : shared.addShareable,
     listShareables : shared.listShareables,
     getShareable : shared.getShareable,
-    getAuthorPublications : shared.getAuthorPublications
+    getAuthorPublications : shared.getAuthorPublications,
+	editShareable : shared.editShareable
 }

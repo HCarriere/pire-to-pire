@@ -138,7 +138,11 @@ function promoteUser(login, requestedRank, requestedPrivileges, callback) {
 function deleteUser(request, callback){
     mongo.remove(user.Schema, function(err,result){
         callback(err)
-    },{login:request.body.login})
+    },
+	{
+		login:request.body.login,
+		rank: {$ne: user.law.roles.GOD.name}
+	})
 }
 
 //callback(err)

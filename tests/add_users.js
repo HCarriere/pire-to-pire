@@ -9,7 +9,7 @@ function init(){
     var dataArray = [
         {
         login: "admin2",
-        password : "202cb962ac59075b964b07152d234b70", //123
+        password : "06f38b86c3fb68a5fe27d476314ce7cd", //123
        // pseudo: "admin2",
         fullName : "Admin",
         mail: "admin2@pire-to-pire.fr",
@@ -24,7 +24,7 @@ function init(){
     },
         {
         login: "user2",
-        password : "202cb962ac59075b964b07152d234b70", //123
+        password : "06f38b86c3fb68a5fe27d476314ce7cd", //123
        // pseudo: "user2",
         fullName : "Ecrivain",
         mail: "ecrivain@pire-to-pire.fr",
@@ -39,7 +39,7 @@ function init(){
     },
         {
         login: "user1",
-        password : "202cb962ac59075b964b07152d234b70", //123
+        password : "06f38b86c3fb68a5fe27d476314ce7cd", //123
        // pseudo: "user1",
         fullName : "Utilisateur",
         mail: "user@pire-to-pire.fr",
@@ -54,7 +54,7 @@ function init(){
     },
         {
         login: "pecno",
-        password : "202cb962ac59075b964b07152d234b70", //123
+        password : "06f38b86c3fb68a5fe27d476314ce7cd", //123
        // pseudo: "pecno",
         fullName : "Pecore",
         mail: "pecore@hotmail.fr",

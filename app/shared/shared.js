@@ -6,21 +6,6 @@ const utils = require('../utils')
 
 
 
-function getTags(tagsRequest){
-    var r = [];
-    var u = {};
-    var tags = tagsRequest.trim().replace(/,/g,';').split(';');
-    
-    for (var tag in tags){
-        var theTag = tags[tag].trim();
-        if(theTag && !u.hasOwnProperty(theTag) ){
-            r.push({tag:theTag});
-            u[theTag] = 1;
-        }
-    }
-    return r;
-}
-
 function getExtension(filename){
     var ext = filename.split('.').pop();
     var extDictionnary = [
@@ -58,7 +43,7 @@ function addShareable(request, callback){
         name:request.body.name.trim(),
         shortName:utils.getShortName(request.body.name.trim()),
         description:request.body.description,
-        tags:getTags(request.body.tags),
+        tags: utils.getTags(request.body.tags),
         author:request.user.login,
         uploadedObject : {
             name:request.body.document_upload,
@@ -92,7 +77,7 @@ function listShareables(limit, callback){
 }
 
 function getShareable(shortName, callback){
-    mongo.findOne(ShareableSchema, function (err, result) {
+    mongo.findOne(ShareableSchema, function(err, result) {
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
             result.description = getHTMLContent(result.description);
@@ -103,6 +88,24 @@ function getShareable(shortName, callback){
         return;
     }, {shortName: shortName})
 }
+
+function editShareable(request, callback) {
+	console.log("editing..."+JSON.stringify(request.body))
+	mongo.update(ShareableSchema, function(err, result) {
+		callback(err, request.body.originalShortName)
+	},
+	{
+		shortName: request.body.originalShortName
+	},//condition
+	{
+		modificationDate: Date.now(),
+		name: request.body.name.trim(),
+		tags: utils.getTags(request.body.tags),
+		description:request.body.description
+	},//update
+	{})//options
+}
+
 
 //middleware
 function getAuthorPublications(){
@@ -123,5 +126,6 @@ module.exports= {
     addShareable,
     listShareables,
     getShareable,
-    getAuthorPublications
+    getAuthorPublications,
+	editShareable
 }

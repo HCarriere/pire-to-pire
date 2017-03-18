@@ -3,7 +3,8 @@ $(document).ready(function(){
 	
 
 	var socket = io();
-
+	
+	//reception
 	socket.on('message', function (data) {
 		$('#chat-zone .in').append(
 		`<div class="chat-message">
@@ -13,8 +14,10 @@ $(document).ready(function(){
 		</div>`
 		);
 		scrollToBottomAnimated();
+		removeOverflow(50);
 	});
 
+	//envoi
 	$('#chat_form').submit(function(){
 		socket.emit('message', {
 			message:$('#message').val(),
@@ -24,7 +27,7 @@ $(document).ready(function(){
 		$('#message').val('');
 		return false;
 	});
-
+	
 	scrollToBottom();
 });
 
@@ -33,7 +36,20 @@ function scrollToBottomAnimated(){
 		scrollTop: $('#chat-zone .in').height()
 	},300);
 }
+
 function scrollToBottom(){
 	$('#chat-zone').scrollTop( $('#chat-zone .in').height());
 }
 
+function removeOverflow(maxLen){
+	var overflow = $('#chat-zone .in .chat-message').length - maxLen;
+	if(overflow > 0){
+		$('#chat-zone .in .chat-message').each(function(index){
+			if(index >= overflow){
+				return false;
+			}
+			//removing entry
+			$(this).remove();
+		})
+	}
+}

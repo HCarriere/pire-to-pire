@@ -1,22 +1,31 @@
 <div class="page-title">
-Nouveau partage
+	{{#if shareable}}
+		Editer un partage
+	{{else}}
+		Nouveau partage
+	{{/if}}
 </div>
 
 <div class="article-content">
 
-    <form method="post" action="/api/add/shareable" enctype = "multipart/form-data">
+    <form method="post" action="{{apiCalled}}" {{#if shareable}}{{else}}enctype="multipart/form-data"{{/if}}>
         <label>Title du partage</label>
-        <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required>
+		<input type="hidden" name="originalShortName" value="{{shareable.shortName}}">
+        <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required value="{{shareable.name}}">
         
         <label>Fichier à partager</label>
-        <input type="file" name="document_upload" class="">
+		{{#if shareable}}
+			<div class="alert">Impossible de modifier le fichier partagé lors d'une édition.</div>
+		{{else}}
+			<input type="file" name="document_upload" class="">
+		{{/if}}
         
         <label>Description</label>
-        <textarea name="description" wrap="soft" required></textarea>
+        <textarea name="description" wrap="soft" required>{{ shareable.description }}</textarea>
         
         <label>Tags</label>
-        <input type="text" name="tags" placeholder="jeu video; zip; homemade" class="input-text"  required>
+        <input type="text" name="tags" placeholder="jeu video; zip; homemade" class="input-text"  required value="{{#each shareable.tags}}{{tag}}; {{/each}}">
         
-        <input type="submit" value="Publier" class="button add">
+        <input type="submit" value="{{#if shareable}}Modifier{{else}}Publier{{/if}}" class="button add">
     </form>
 </div>
