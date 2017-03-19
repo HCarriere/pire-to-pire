@@ -1,6 +1,7 @@
 const ShareableSchema = require('./schema').Schema
 const mongo = require('../mongo')
 const utils = require('../utils')
+const config = require('../../config')
 
 ///////////// private
 
@@ -32,7 +33,12 @@ function addShareable(request, callback){
         callback({error:'Contenu vide'},null);
         return;
     }
-    
+	
+	if(request.file.size>=config.upload.documents.maxSize){
+        callback({error:'Fichier trop volumineux'},null);
+        return;
+    }
+	
     var object = {
         name:request.body.name.trim(),
         shortName:utils.getShortName(request.body.name.trim()),
@@ -40,7 +46,7 @@ function addShareable(request, callback){
         tags: utils.getTags(request.body.tags),
         author:request.user.login,
         uploadedObject : {
-            name:request.body.document_upload,
+            name:request.file.originalname,
             location:request.file.filename,
             size:request.file.size,
             extension:getExtension(request.file.filename)
@@ -64,6 +70,7 @@ function listShareables(limit, callback){
         }else{
             for(var share of result){
                 share.stringPublicationDate = utils.getStringDate(share.publicationDate);
+				share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
             }
             callback(null, result)
         }
@@ -75,6 +82,7 @@ function getShareable(shortName, callback, editMode){
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
 			result.stringModificationDate = utils.getStringDate(result.modificationDate);
+			result.uploadedObject.stringSize = utils.getStringSize(result.uploadedObject.size);
 			if(editMode){
 				result.description = utils.getTextContentFromHTML(result.description);
 			}else{

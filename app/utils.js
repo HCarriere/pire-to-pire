@@ -1,5 +1,19 @@
 const md5 = require('md5');
+//////////////////////////////////////
 
+
+function getStringSize(byteSize){
+	var conv = byteSize/8;
+	var mod = 0;
+	var labels = ["octets","Ko","Mo","Go","To"]
+	while(conv > 1024) {
+		conv = conv/1024;
+		mod++;
+	}
+	return conv.toPrecision(3)+" "+labels[mod];
+}
+
+//////////////////////////////////////
 
 function getHTMLContent(content) {
     content = content.replace(/\n/g,'<br>');
@@ -63,16 +77,20 @@ function getExtractOf(content){
 }
 
 /////////////////////////////////
-//TODO : si date ajourdui, pas de date, juste heure
 function getStringDate(date){
     if(!date){
-        return "une date inconnue...";
+        return "à une date inconnue";
     }
-    return  ("0"+date.getDate()).slice(-2)+
+    /*return  ("0"+date.getDate()).slice(-2)+
         "/"+("0"+date.getMonth()).slice(-2)+
         "/"+date.getFullYear()+
         " "+("0"+date.getHours()).slice(-2)+
-        ":"+("0"+date.getMinutes()).slice(-2);
+        ":"+("0"+date.getMinutes()).slice(-2);*/
+	if(isDateFromToday(date)) {
+		return "aujourd'hui à "+getStringDateHour(date);
+	} else {
+		return "le "+getStringDateDay(date);
+	}
 }
 
 
@@ -119,5 +137,6 @@ module.exports = {
 	encryptPassword,
 	getTags,
 	getHTMLContent,
-	getTextContentFromHTML
+	getTextContentFromHTML,
+	getStringSize
 }

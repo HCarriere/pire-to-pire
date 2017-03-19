@@ -10,11 +10,11 @@
     
     Par <a href="/user/{{shareable.author}}" class="meta user">
         {{shareable.author}}
-    </a>le<div class="meta date">
+    </a><div class="meta date">
         {{shareable.stringPublicationDate}}
     </div>
     {{#if shareable.modificationDate}}
-	<div class="meta date">(modifié le {{shareable.stringModificationDate}})</div>
+	<div class="meta date">(modifié {{shareable.stringModificationDate}})</div>
 	{{/if}}
 	
     <br><hr><br>
@@ -23,7 +23,7 @@
         <img class="file-icon" src="/icons/ext/{{shareable.uploadedObject.extension}}.png"/> 
         <div class="file-description">
             <div class="file-name">{{shareable.uploadedObject.name}}</div>
-            <div class="file-size">{{shareable.uploadedObject.size}}</div>
+            <div class="file-size">{{shareable.uploadedObject.stringSize}}</div>
         </div>
     </a>
     

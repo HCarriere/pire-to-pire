@@ -427,7 +427,6 @@ app
                 errorContent:err
             });
         }else{
-            
             shared.addShareable(request, function(err, shortName) {
                 if(shortName){
                     response.redirect('/shared/'+shortName);

@@ -11,12 +11,12 @@
     {{#each shareables}}
     <div class="list-element card">
         <a href="/shared/{{shortName}}" class="list-title">{{name}}</a>
-        Par<a href="/user/{{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
+        Par<a href="/user/{{author}}" class="meta user">{{author}}</a><div class="meta date">{{stringPublicationDate}}</div>
         <a class="file-box" href="/shared/{{shortName}}">
             <img class="file-icon" src="/icons/ext/{{uploadedObject.extension}}.png"/> 
             <div class="file-description">
                 <div class="file-name">{{uploadedObject.name}}</div>
-                <div class="file-size">{{uploadedObject.size}}</div>
+                <div class="file-size">{{uploadedObject.stringSize}}</div>
             </div>
         </a>
         {{#each tags}}

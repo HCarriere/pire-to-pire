@@ -34,10 +34,10 @@ module.exports = {
     },
     upload:{
         image:{
-            maxSize:67108864 //64 MB
+            maxSize:67108864 //8 Mo
         },
         documents:{
-            maxSize:671088640 //640 MB
+            maxSize:671088640 //80 Mo
         }
     }
 }
