@@ -9,7 +9,7 @@
 <div class="article-content">
 
     <form method="post" action="{{apiCalled}}" {{#if shareable}}{{else}}enctype="multipart/form-data"{{/if}}>
-        <label>Title du partage</label>
+        <label>Titre du partage</label>
 		<input type="hidden" name="originalShortName" value="{{shareable.shortName}}">
         <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required value="{{shareable.name}}">
         

@@ -13,7 +13,10 @@
     </a>le<div class="meta date">
         {{shareable.stringPublicationDate}}
     </div>
-    
+    {{#if shareable.modificationDate}}
+	<div class="meta date">(modifié le {{shareable.stringModificationDate}})</div>
+	{{/if}}
+	
     <br><hr><br>
     
      <a class="file-box" href="/uploads/{{shareable.uploadedObject.location}}">

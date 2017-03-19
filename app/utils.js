@@ -1,6 +1,22 @@
 const md5 = require('md5');
 
 
+function getHTMLContent(content) {
+    content = content.replace(/\n/g,'<br>');
+    content = content.replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
+    content = content.replace(/\r/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
+    return content;
+}
+//reverse of getHTMLContent
+function getTextContentFromHTML(content) {
+	content = content.replace('<br>','\n');
+    content = content.replace('&nbsp;&nbsp;&nbsp;&nbsp;','\t');
+	return content;
+}
+
+
+/////////////////////////////////////
+
 function getTags(tagsRequest){
     var r  = [];
     var u = {};
@@ -101,5 +117,7 @@ module.exports = {
 	isDateFromToday,
     getShortName,
 	encryptPassword,
-	getTags
+	getTags,
+	getHTMLContent,
+	getTextContentFromHTML
 }

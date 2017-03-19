@@ -17,12 +17,6 @@ function getExtension(filename){
 }
 
 
-function getHTMLContent(content){
-    content = content.replace(/\n/g,'<br>');
-    content = content.replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
-    content = content.replace(/\r/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
-    return content;
-}
 
 ///////////// public
 //callback(error, shortName)
@@ -76,11 +70,16 @@ function listShareables(limit, callback){
     },{},limit,{publicationDate:-1})
 }
 
-function getShareable(shortName, callback){
+function getShareable(shortName, callback, editMode){
     mongo.findOne(ShareableSchema, function(err, result) {
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
-            result.description = getHTMLContent(result.description);
+			result.stringModificationDate = utils.getStringDate(result.modificationDate);
+			if(editMode){
+				result.description = utils.getTextContentFromHTML(result.description);
+			}else{
+				result.description = utils.getHTMLContent(result.description);
+			}
             callback(result);
             return;
         }

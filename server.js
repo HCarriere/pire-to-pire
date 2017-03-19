@@ -218,7 +218,7 @@ app
 			apiCalled:'/api/edit/article',
 			article:result
    		})
-	})
+	},true) //edit mode
 })
 
 
@@ -259,7 +259,7 @@ app
 			apiCalled:'/api/edit/shareable',
 			shareable:result
 		})
-	})
+	},true)//edit mode
 })
 
 ////////////// NEWS

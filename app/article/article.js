@@ -2,26 +2,6 @@ const ArticleSchema = require('./schema').Schema
 const mongo = require('../mongo')
 const utils = require('../utils')
 
-///////////// private /////////////////
-
-
-/**
-tags: tag1;tag2;tag3
-return [
-    {tag:"tag1"},
-    {tag:"tag2"},
-    {tag:"tag3"}
-]
-*/
-
-
-
-function getHTMLContent(content){
-    content = content.replace(/\n/g,'<br>');
-    content = content.replace(/\t/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
-    content = content.replace(/\r/g,'&nbsp;&nbsp;&nbsp;&nbsp;');
-    return content;
-}
 
 
 
@@ -92,11 +72,16 @@ function listNews(limit, callback){
 
 
 
-function getArticle(shortName, callback) {
+function getArticle(shortName, callback, editMode) {
     mongo.findOne(ArticleSchema, function(err,result){
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
-            result.content = getHTMLContent(result.content);
+			result.stringModificationDate = utils.getStringDate(result.modificationDate);
+			if(editMode){
+				result.content = utils.getTextContentFromHTML(result.content);
+			}else{
+				result.content = utils.getHTMLContent(result.content);
+			}
 //            result.extract = getExtract(result.content);
             callback(result)
             return;
