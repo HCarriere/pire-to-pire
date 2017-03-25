@@ -109,9 +109,13 @@ var shared  = require('./app/shared')
 connect.init();
 chat.init(server);
 mongo.initMongo();
-////////////////////////
-//    R O U T E S     //
-////////////////////////
+
+///////////////////////////
+//						 //
+//  -   R O U T E S   -  //
+//						 //
+///////////////////////////
+
 app
 ////////// FRONT //////////
 
@@ -138,11 +142,21 @@ app
     })
 })
 //edit profile
-.get('/profile', mustBeAuthentified(), (request, response) => {
+.get('/profile/options', mustBeAuthentified(), (request, response) => {
     user.getUserInfo(request, function(profile){
         response.render('user/editProfile', {
             global:getParameters(request),
-            profile:profile
+            profile:profile,
+			selected:{options:'selected'}
+        })
+    })
+})
+.get('/profile/messages', mustBeAuthentified(), (request, response) => {
+    user.getUserInfo(request, function(profile){
+        response.render('user/messagingBoard', {
+            global:getParameters(request),
+            profile:profile,
+			selected:{messages:'selected'}
         })
     })
 })
@@ -345,9 +359,9 @@ app
 .post('/api/update/profile', mustBeAuthentified(), (request, response) => {
     user.updateUserInfo(request, function(err){
         if(err){
-            response.redirect('/profile?error=1');
+            response.redirect('/profile/options?error=1');
         }else {
-            response.redirect('/profile?success=1');
+            response.redirect('/profile/options?success=1');
         }
     })
 })
@@ -356,9 +370,9 @@ app
 .post('/api/update/password', mustBeAuthentified(), (request, response) => {
     user.updateUserPassword(request, function(err){
         if(err){
-            response.redirect('/profile?error=1');
+            response.redirect('/profile/options?error=1');
         }else {
-            response.redirect('/profile?success=1');
+            response.redirect('/profile/options?success=1');
         }
     })
 })
@@ -375,9 +389,9 @@ app
         }else{
             user.updateUserProfilePicture(request, function(err){
                 if(!err){
-                    response.redirect('/profile?success=1');
+                    response.redirect('/profile/options?success=1');
                 }else{
-                    response.redirect('/profile?error=1');
+                    response.redirect('/profile/options?error=1');
                 }
             })
         }

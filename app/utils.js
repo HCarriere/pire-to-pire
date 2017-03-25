@@ -73,7 +73,7 @@ function getExtractOf(content){
     if(!content){
         return "";
     }
-    return content.substring(0,400);
+    return getTextContentFromHTML(content.substring(0,400));
 }
 
 /////////////////////////////////

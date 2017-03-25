@@ -2,6 +2,11 @@
 
 <div class="page-title">#{{global.userName}}</div>
 
+<div class="bo_menu">
+   <a class="bo_menuitem {{selected.options}}" href="/profile/options">Options</a><!--
+--><a class="bo_menuitem {{selected.messages}}" href="/profile/messages">Messagerie</a>
+</div>
+
 <div class="article-content" style="padding-bottom: 60px;">
 
     <form  method="post" action="/api/update/profile">
@@ -15,7 +20,7 @@
         
         <div class="form-data-couple">
             <label class="input-label">Nom</label>
-            <input type="text" name="fullName" value="{{profile.fullName}}" placeholder="Votre vrai nom, bien sur." >
+            <input type="text" name="fullName" value="{{profile.fullName}}" placeholder="Votre vrai nom, bien sur!" >
         </div>
         
         <div class="form-data-couple">

@@ -79,7 +79,7 @@ header form .search-input-text{
     width:100px;
     transition: all .6s;
 }
-header form .search-input-text:focus{
+header form .search-input-text:focus, header form .search-input-text:hover{
     width:200px;
     box-shadow: 0 0 3px #BBB;
 }
@@ -191,11 +191,17 @@ form textarea:focus{
     width:100px;
     height:100px;
     box-shadow: 0 0  2px #666;
-    transition: transform 5s;
+    
 }
-.profile-picture:hover{
+
+.spinning{
+	transition: transform 5s;
+}
+.spinning:hover{
     transform:rotate(1080deg);
 }
+
+
 
 .profile-file-input{
     vertical-align: top;
