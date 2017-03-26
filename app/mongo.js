@@ -77,13 +77,14 @@ function addObject(schema, callback, object){
             var objectFromModel = new model(object);
             objectFromModel.save(function (err) {
                 if (err) { 
-                    throw err; 
                     callback(err, null);
                     closeConnection();
+					return;
                 }else{
                     logMsg("ptp:mongo:():addObject:OK:(Object added to "+schema.collection+")");
                     callback(null, 'Insert ok');
                     closeConnection();
+					return;
                 }
             });      
         }else{
@@ -99,13 +100,14 @@ function findObject(schema, callback, jsonRequest){
             var model = conn.model(schema.collection,schema.schema);
             model.find(jsonRequest, function (err, result) {
                 if(err) { 
-                    throw err; 
                     closeConnection();
                     callback(err, null);
+					return;
                 }
                 logMsg("ptp:mongo:():findObject:OK:("+result.length+" object found in "+schema.collection+")");
                 closeConnection();
                 callback(null, result);
+				return;
             });
         }else{
             callback(coErr, null);
@@ -119,13 +121,14 @@ function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
             var model = conn.model(schema.collection,schema.schema);
             model.find(jsonRequest, function (err, result) {
                 if(err) { 
-                    throw err; 
                     closeConnection();
                     callback(err, null);
+					return;
                 }
                 logMsg("ptp:mongo:():findObjectWithOptions:OK:("+result.length+" object found in "+schema.collection+")");
                 closeConnection();
                 callback(null, result);
+				return;
             })
             .limit(limit)
             .sort(sort)
@@ -142,13 +145,14 @@ function findOne(schema, callback, jsonRequest){
             var model = conn.model(schema.collection,schema.schema);
             model.findOne(jsonRequest, function (err, result) {
                 if(err) { 
-                    throw err; 
                     closeConnection();
                     callback(err, null);
+					return;
                 }
                 logMsg("ptp:mongo:():findOne:OK:(object found in "+schema.collection+")");
                 closeConnection()
                 callback(null, result);
+				return;
             });
         }else{
             callback(coErr, null);
@@ -160,21 +164,25 @@ function findById(schema, callback, id){
     openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
-            model.findById(id, function (err, result) {
-                if(err) { 
-                    throw err; 
-                    closeConnection();
-                    callback(err, null);
-                }
-                logMsg("ptp:mongo:():findById:OK:(object found in "+schema.collection+" with id "+id+")");
-                closeConnection()
-                callback(null, result);
-            });
+			
+			model.findById(id, function (err, result) {
+				if(err) { 
+					closeConnection();
+					callback(err, null);
+					return;
+				}
+				logMsg("ptp:mongo:():findById:OK:(object found in "+schema.collection+" with id "+id+")");
+				closeConnection()
+				callback(null, result);
+				return;
+			});
+			
         }else{
             callback(coErr, null);
         }
     })
 }
+
 
 function removeById(schema, callback, id){
     openConnection(function(coErr){
@@ -182,13 +190,14 @@ function removeById(schema, callback, id){
             var model = conn.model(schema.collection,schema.schema);
             model.findById(id).remove(function(err,result){
                 if(err) { 
-                    throw err; 
                     closeConnection();
                     callback(err, null);
+					return;
                 }
                 logMsg("ptp:mongo:():removeById:OK:("+result.length+" objects removed with id "+id+")");
                 closeConnection()
                 callback(null, result);
+				return;
             });
         }else{
             callback(coErr, null);
@@ -202,13 +211,14 @@ function updateObject(schema,callback, condition, update, option){
             var model = conn.model(schema.collection,schema.schema);
             model.update(condition, update, option, function(err){
                 if (err) {
-                    throw err; 
                     closeConnection();
                     callback(err, null);
+					return;
                 }
                 logMsg(`ptp:mongo:():updateObject:OK:(update ok : ${JSON.stringify(condition)} --> ${JSON.stringify(update)})`);
                 closeConnection();
                 callback(null, 'update ok');
+				return;
             });
         }else{
             callback(coErr, null);
@@ -223,13 +233,14 @@ function removeObject(schema, callback, condition){
             var model = conn.model(schema.collection,schema.schema);
             model.remove(condition, function (err) {
                 if (err) {
-                   throw err;
-                   closeConnection();
-                   callback(err, null);
+                    closeConnection();
+                    callback(err, null);
+					return;
                 }
                 logMsg(`ptp:mongo:():updateObject:OK:(remove ok (${JSON.stringify(condition)}))`);
                 closeConnection();
                 callback(err, 'remove ok');
+				return;
             });
         }else{
             callback(coErr, nulll);
@@ -244,13 +255,14 @@ function count(schema,callback, condition){
             var model = conn.model(schema.collection,schema.schema);
             model.count(condition , function(err, count){
                 if(!err && count){
-                    throw err;
                     closeConnection();
                     callback(null, count);
                     logMsg(`ptp:mongo:():updateObject:OK:( ${count} object have ${JSON.stringify(condition)})`);
+					return;
                 }else {
                     closeConnection();
                     callback(err, null);
+					return;
                 }
             });
         }else{
