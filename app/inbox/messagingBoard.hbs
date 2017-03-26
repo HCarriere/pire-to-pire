@@ -1,0 +1,46 @@
+<div class="page-title">Messagerie</div>
+
+<div class="bo_menu">
+   <a class="bo_menuitem " href="/profile/options">Options</a><!--
+--><a class="bo_menuitem selected" href="/profile/inbox">Messagerie</a>
+</div>
+
+<div class="article-content">
+	
+	<a class="button add" href="/profile/inbox/new"><i class="fa fa-plus"></i> Nouveau</a>
+	
+	<div class="inbox-tabs">
+		<div class="tab selected" id="tab-in">Reçus</div><!--
+		--><div class="tab" id="tab-out">Envoyés</div>
+	</div>
+	
+	<div class="inbox" id="inbox-in">
+		
+		{{#each messages.received}}
+		<a href="/profile/inbox/message/{{_id}}" class="inbox-message {{#if seen}}seen{{/if}}">
+			<div class="author">{{author}}</div>
+			<div class="message-corps">
+				<div class="subject">{{subject}}</div>
+				<div class="extract">{{extract}}</div>
+			</div>
+			<div class="date">{{simpleDate}}</div>
+		</a>
+		{{/each}}
+		
+	</div>
+	
+	<div class="inbox" id="inbox-out">
+		
+		{{#each messages.sended}}
+		<a href="/profile/inbox/message/{{_id}}" class="inbox-message seen">
+			<div class="author">À : {{to}}</div>
+			<div class="message-corps">
+				<div class="subject">{{subject}}</div>
+				<div class="extract">{{extract}}</div>
+			</div>
+			<div class="date">{{simpleDate}}</div>
+		</a>
+		{{/each}}
+		
+	</div>
+</div>

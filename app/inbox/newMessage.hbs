@@ -1,0 +1,23 @@
+<div class="page-title">Messagerie</div>
+
+<div class="bo_menu">
+   <a class="bo_menuitem " href="/profile/options">Options</a><!--
+--><a class="bo_menuitem selected" href="/profile/inbox">Messagerie</a>
+</div>
+
+<div class="article-content">
+	
+	<form method="post" action="/api/inbox/new">
+        <label>Destinataire:</label>
+        <input type="text" name="to" class="input-text" value="{{global.query.to}}" required>
+        
+		<label>Sujet:</label>
+        <input type="text" name="subject" class="input-text" value="{{global.query.subject}}" required>
+		
+        <label>Message:</label>
+        <textarea name="content" wrap="soft" required></textarea>
+        
+        <input type="submit" value="Envoyer" class="button add">
+    </form>
+		
+</div>

@@ -1,3 +1,9 @@
+/* 
+Couleurs :
+orange : FF7E12
+
+*/
+
 /* GENERAL */
 html{
     min-height:100%;
@@ -190,22 +196,85 @@ form textarea:focus{
 .profile-picture{
     width:100px;
     height:100px;
-    box-shadow: 0 0  2px #666;
-    
+    box-shadow: 0 0  2px #666;   
 }
-
-.spinning{
-	transition: transform 5s;
-}
-.spinning:hover{
-    transform:rotate(1080deg);
-}
-
-
 
 .profile-file-input{
     vertical-align: top;
     padding: 37px;
+}
+
+/* inbox messagerie*/
+
+.inbox{
+	overflow:auto;
+	min-width:910px;
+	margin-bottom:20px;
+}
+.inbox-message{
+	border-bottom:1px solid #CCC;
+	background-color:white;
+	padding:10px;
+	border-left:5px solid transparent;
+	display:block;
+	text-decoration: none;
+	color:black;
+	font-size: 0.9em;
+}
+.inbox-message:hover{
+	border-left:5px solid #FF7E12;
+}
+.inbox-message.seen{
+	background-color:#EEE;
+}
+.inbox-message .message-corps{
+	display:inline-block;
+	min-width:500px;
+}
+.inbox-message .author{
+	display:inline-block;
+	width:170px;
+}
+.inbox-message .subject{
+	display:inline-block;
+	font-weight: bold;
+}
+.inbox-message.seen .subject{
+	font-weight: normal;
+}
+.inbox-message .extract{
+	display:inline-block;
+	color:#888;
+}
+.inbox-message .date{
+	display:inline-block;
+	float:right;
+}
+
+.inbox-tabs{
+	margin-top:10px;
+	margin-bottom:5px;
+}
+.inbox-tabs .tab{
+	min-width:150px;
+	display:inline-block;
+	padding:10px 15px;
+	background-color: #EEE;
+	border:1px solid white;
+	border-bottom:1px solid #CCC;
+	cursor:pointer;
+}
+.inbox-tabs .tab.selected{
+	background-color: white;
+	border:1px solid #CCC;
+	border-bottom:1px solid white;
+	cursor:auto;
+}
+.inbox-tabs .tab:hover{
+	text-decoration: underline;
+}
+.inbox-tabs .tab.selected:hover{
+	text-decoration: none;
 }
 
 /* chat */
@@ -511,6 +580,14 @@ footer{
     margin-bottom:10px;
 }
 
+/* silly */ 
+
+.spinning{
+	transition: transform 5s;
+}
+.spinning:hover{
+    transform:rotate(1080deg);
+}
 
 /**************/
 /* responsive */

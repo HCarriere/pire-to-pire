@@ -69,11 +69,13 @@ function generateRandomId() {
 
 /////////////////////////////////
 
-function getExtractOf(content){
+function getExtractOf(content, len){
     if(!content){
         return "";
     }
-    return getTextContentFromHTML(content.substring(0,400));
+	var max = 400;
+	if(len) max = len;
+    return getTextContentFromHTML(content.substring(0,max));
 }
 
 /////////////////////////////////

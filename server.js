@@ -104,6 +104,7 @@ var search  = require('./app/search')
 var BO      = require('./app/backOffice')
 var chat 	= require('./app/chat')
 var shared  = require('./app/shared')
+var inbox 	= require('./app/inbox')
 
 /////////// inits ///////////
 connect.init();
@@ -146,20 +147,36 @@ app
     user.getUserInfo(request, function(profile){
         response.render('user/editProfile', {
             global:getParameters(request),
-            profile:profile,
-			selected:{options:'selected'}
+            profile:profile
         })
     })
 })
-.get('/profile/messages', mustBeAuthentified(), (request, response) => {
-    user.getUserInfo(request, function(profile){
-        response.render('user/messagingBoard', {
+//profile - inbox
+.get('/profile/inbox', mustBeAuthentified(), (request, response) => {
+    inbox.listAllMessages(request, function(messages){
+        response.render('inbox/messagingBoard', {
             global:getParameters(request),
-            profile:profile,
-			selected:{messages:'selected'}
+			otherScripts:[{script:"/js/inboxClient.js"}],
+            messages:messages
         })
     })
 })
+//view message - inbox
+.get('/profile/inbox/message/:id', mustBeAuthentified(), inbox.isRelatedToMessage(), (request, response) => {
+    inbox.getMessage(request, function(result){
+        response.render('inbox/viewMessage', {
+            global:getParameters(request),
+            message:result
+        })
+    })
+})
+//new message - inbox
+.get('/profile/inbox/new', mustBeAuthentified(), (request, response) => {
+	response.render('inbox/newMessage', {
+		global:getParameters(request)
+	})
+})
+
 
 //view profile
 .get('/user/:id', user.getUserInfoByLogin(), article.getAuthorPublications() ,(request, response) => {
@@ -396,6 +413,18 @@ app
             })
         }
     });
+})
+
+//send message - inbox
+.post('/api/inbox/new', mustBeAuthentified(), (request, response) => {
+    inbox.sendMessage(request, function(err,result){
+        if(result) {
+			//response.redirect('/profile/inbox/message/'+result._id)
+			response.redirect('/profile/inbox')
+		} else {
+			response.redirect('/profile/inbox?error=1')
+		}
+    })
 })
 
 //add article

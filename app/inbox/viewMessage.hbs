@@ -1,0 +1,19 @@
+<div class="page-title">Messagerie</div>
+
+<div class="bo_menu">
+   <a class="bo_menuitem " href="/profile/options">Options</a><!--
+--><a class="bo_menuitem selected" href="/profile/inbox">Messagerie</a>
+</div>
+
+<div class="article-content">
+	<a class="button add" href="/profile/inbox/new?to={{message.author}}&subject=RE:{{message.subject}}"><i class="fa fa-plus"></i> Répondre</a>
+	<br>
+	<a href="/user/{{message.author}}" class="meta user">
+        {{message.author}}
+    </a><div class="meta date">
+        {{message.simpleDate}}
+    </div>
+	<div class="list-title">{{message.subject}}</div>
+	<br>
+	{{{message.content}}}
+</div>
