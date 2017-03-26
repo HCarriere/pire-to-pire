@@ -179,13 +179,12 @@ app
 
 
 //view profile
-.get('/user/:id', user.getUserInfoByLogin(), article.getAuthorPublications() ,(request, response) => {
+.get('/user/:id', user.getUserInfoByLogin(), article.getAuthorPublications(), shared.getAuthorPublications() ,(request, response) => {
     response.render('user/viewProfile', {
         global:getParameters(request),
         profile:request.profile,
-        articles: request.articles
-//        news: request.news,
-//        shareables: request.shareables
+        articles: request.articles,
+        shareables: request.shareables
     })    
 })
 
