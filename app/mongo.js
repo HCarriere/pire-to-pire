@@ -288,13 +288,11 @@ function processFunction(mongoOperation, schema, dataArray, current, onDone){
         return ;
     }
     console.log('operation '+(current+1)+'/'+dataArray.length+':')
-    console.log('operating '+(current+1)+'...')
     mongoOperation(schema, function(err, result){
         if(err){
-            console.log('error on '+(current+1))
+            console.log('error on '+(current+1)+' : '+err)
         }else{
             console.log('operation '+(current+1)+' executed with success !')
-            console.log('--------------')
         }
         processFunction(mongoOperation, schema, dataArray, current + 1, onDone)
     } , dataArray[current]);

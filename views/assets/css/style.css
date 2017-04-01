@@ -320,7 +320,7 @@ form textarea:focus{
 	display:inline-block;
 }
 .chat-message .chat-content{
-	display:inline-block;
+	display:inline;
 }
 
 /* back office */
@@ -478,6 +478,7 @@ pre{
     max-width:600px;
     width:35%;
     display:inline-block;
+	vertical-align: top;
 }
 .list-title{
     text-decoration: none;

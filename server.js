@@ -212,11 +212,23 @@ app
 .get('/connect', (request, response) => {
     response.render('connect/connect', {global:getParameters(request)})
 })
-.post('/connect', passport.authenticate('local'),  (request, response) =>{
+.post('/connect', (request, response, next) =>{
+	passport.authenticate('local', function(err,user,info) {
+		if(!user) {
+			return response.redirect("/connect?error=1")
+		} else {
+			request.login(user, loginErr => {
+				if (loginErr) {
+					return next(loginErr);
+				}
+				response.redirect(request.session.nextUrl || '/');
+				delete request.session.nextUrl;
+				return;
+			}); 
+		}
+	})(request,response,next)
     /*successRedirect: '/',
     failureRedirect: '/connect?error=1'*/
-	response.redirect(request.session.nextUrl || '/');
-	delete request.session.nextUrl;
 })
 .post('/subscribe',(request, response) => {
     connect.inscription(request, function(msg){

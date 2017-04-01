@@ -1,26 +1,36 @@
 const mongo = require('../app/mongo')
 const ArticleSchema = require('../app/article').Schema
 const UserSchema = require('../app/user').Schema
+const ChatSchema = require('../app/chat').Schema
+const InboxSchema = require('../app/inbox').Schema
+const SharedSchema = require('../app/shared').Schema
 
+var schemaList = [
+	ArticleSchema,
+	UserSchema,
+	ChatSchema,
+	InboxSchema,
+	SharedSchema
+]
 
-function init(){
-    mongo.remove(ArticleSchema,{} , function(err){
-        if(!err){
-            console.log("destroy articles OK")
-        }else{
-            console.log(err)
-        }
-        mongo.remove(UserSchema,{} , function(err){
-            if(!err){
-                console.log("destroy users OK")
-                process.exit();
-            }else{
-                process.exit();
-            }
-        })
-    })
- 
+function cleanEverything(schemas, onDone) {
+	if(schemas.length <= 0){
+		onDone();
+		return;
+	}
+	var schema = schemas.pop();
+	console.log("cleaning "+schema.collection+"...");
+	mongo.remove(schema, {}, function(err){
+		cleanEverything(schemas, onDone);
+	})
+}
+
+function init(onDone){
+ 	
+	cleanEverything(schemaList, onDone);
     
 }
 
-init();
+module.exports = {
+	init
+}

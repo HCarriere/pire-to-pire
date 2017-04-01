@@ -60,7 +60,6 @@ function getMessage(request, callback){
 	var login = request.user.login;
 	var id = request.params.id;
 	mongo.findById(InboxSchema, function(err,result){
-		console.log("GETMESSAGE:"+JSON.stringify(err)+" /// "+JSON.stringify(result))
 		if(result) {
 			if(!result.seen && result.to == login){
 				setMessageSeen(id);
