@@ -104,6 +104,16 @@ header form .search-submit:hover{
     background-color:dimgray;
 }
 
+#unseenMessages-notif{
+	display:inline-block;
+	width:12px;
+	height:12px;
+	font-size:8px;
+	background-color:#eb0c0c;
+	border-radius:50%;
+	
+}
+
 /***** CONTENT *****/
 .website-title{
     font-family: "coolvetica";

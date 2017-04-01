@@ -127,7 +127,8 @@ app
      home.getHomeArticles(), 
      home.getHomeShareables(), 
      chat.fetchPreviousChatMessages(config.chat.limitPrevious),
-     user.getUserPrivileges(), 
+     user.getUserPrivileges(),
+	 inbox.getUnseenMessagesCount(),
      (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
@@ -143,7 +144,10 @@ app
     })
 })
 //edit profile
-.get('/profile/options', mustBeAuthentified(), (request, response) => {
+.get('/profile/options', 
+	mustBeAuthentified(), 
+	inbox.getUnseenMessagesCount(),
+	(request, response) => {
     user.getUserInfo(request, function(profile){
         response.render('user/editProfile', {
             global:getParameters(request),
@@ -152,7 +156,10 @@ app
     })
 })
 //profile - inbox
-.get('/profile/inbox', mustBeAuthentified(), (request, response) => {
+.get('/profile/inbox', 
+	mustBeAuthentified(), 
+	inbox.getUnseenMessagesCount(),
+	(request, response) => {
     inbox.listAllMessages(request, function(messages){
         response.render('inbox/messagingBoard', {
             global:getParameters(request),
@@ -162,7 +169,11 @@ app
     })
 })
 //view message - inbox
-.get('/profile/inbox/message/:id', mustBeAuthentified(), inbox.isRelatedToMessage(), (request, response) => {
+.get('/profile/inbox/message/:id', 
+	mustBeAuthentified(),
+	inbox.isRelatedToMessage(),
+	inbox.getUnseenMessagesCount(),
+	(request, response) => {
     inbox.getMessage(request, function(result){
         response.render('inbox/viewMessage', {
             global:getParameters(request),
@@ -171,7 +182,10 @@ app
     })
 })
 //new message - inbox
-.get('/profile/inbox/new', mustBeAuthentified(), (request, response) => {
+.get('/profile/inbox/new',
+	mustBeAuthentified(),
+	inbox.getUnseenMessagesCount(),
+	(request, response) => {
 	response.render('inbox/newMessage', {
 		global:getParameters(request)
 	})
@@ -179,7 +193,12 @@ app
 
 
 //view profile
-.get('/user/:id', user.getUserInfoByLogin(), article.getAuthorPublications(), shared.getAuthorPublications() ,(request, response) => {
+.get('/user/:id', 
+	user.getUserInfoByLogin(), 
+	article.getAuthorPublications(), 
+	shared.getAuthorPublications(),
+	inbox.getUnseenMessagesCount(),
+	(request, response) => {
     response.render('user/viewProfile', {
         global:getParameters(request),
         profile:request.profile,
@@ -193,10 +212,12 @@ app
 .get('/connect', (request, response) => {
     response.render('connect/connect', {global:getParameters(request)})
 })
-.post('/connect', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/connect?error=1'
-}))
+.post('/connect', passport.authenticate('local'),  (request, response) =>{
+    /*successRedirect: '/',
+    failureRedirect: '/connect?error=1'*/
+	response.redirect(request.session.nextUrl || '/');
+	delete request.session.nextUrl;
+})
 .post('/subscribe',(request, response) => {
     connect.inscription(request, function(msg){
         response.render('connect/connect', {
@@ -213,7 +234,10 @@ app
 
 ////////////////// articles
 //view article
-.get('/article/:id', user.getUserPrivileges(), (request, response) => {
+.get('/article/:id', 
+	 user.getUserPrivileges(),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     article.getArticle(request.params.id, function(result){
         response.render('article/showArticle', {
             global:getParameters(request),
@@ -223,7 +247,10 @@ app
     })
 })
 //list articles
-.get('/article',user.getUserPrivileges() ,(request, response) => {
+.get('/article',
+	 user.getUserPrivileges(),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     article.listArticles(0, function(err, articles){ //0: no limit
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
@@ -234,14 +261,22 @@ app
     })
 })
 //write article
-.get('/new/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.ARTICLE_POST), (request, response) => {
+.get('/new/article', 
+	 mustBeAuthentified(), 
+	 hasPrivilege(user.law.privileges.ARTICLE_POST),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
         apiCalled:'/api/add/article'
     })
 })
 //edit article
-.get('/edit/article/:id', mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT), (request, response) => {
+.get('/edit/article/:id', 
+	 mustBeAuthentified(), 
+	 hasPrivilege(user.law.privileges.EDIT_DOCUMENT), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
 	article.getArticle(request.params.id, function(result){
 		response.render('article/newArticle', {
 			global:getParameters(request),
@@ -254,7 +289,10 @@ app
 
 //////////////// SHARED
 //shared
-.get('/shared/:id', user.getUserPrivileges(),  (request, response) => {
+.get('/shared/:id',
+	 user.getUserPrivileges(), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     shared.getShareable(request.params.id, function(result){
         response.render('shared/showShared', {
             global:getParameters(request),
@@ -264,7 +302,10 @@ app
     })
 })    
 //list shareables
-.get('/shared', user.getUserPrivileges(), (request, response) => {
+.get('/shared', 
+	 user.getUserPrivileges(), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     shared.listShareables(0, function(err, shareables) {
         response.render('shared/listShared', {
             global:getParameters(request),
@@ -274,7 +315,11 @@ app
     })
 })
 //write & upload shared
-.get('/new/shared', mustBeAuthentified(),  hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
+.get('/new/shared',
+	 mustBeAuthentified(), 
+	 hasPrivilege(user.law.privileges.SHAREABLE_POST), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     response.render('shared/newShared' , {
         global:getParameters(request),
 		apiCalled:'/api/add/shareable'
@@ -282,7 +327,11 @@ app
 })
 
 //edit shared
-.get('/edit/shared/:id', mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT), (request, response) => {
+.get('/edit/shared/:id',
+	 mustBeAuthentified(),
+	 hasPrivilege(user.law.privileges.EDIT_DOCUMENT),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
 	shared.getShareable(request.params.id, function(result){
 		response.render('shared/newShared' , {
 			global:getParameters(request),
@@ -295,7 +344,9 @@ app
 ////////////// NEWS
 //edit & view are on articles (news = article)
 //list news
-.get('/news', (request, response) => {
+.get('/news', 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     article.listNews(0, function(err,news){
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
@@ -305,7 +356,11 @@ app
     })
 })
 //write news
-.get('/new/news', mustBeAuthentified(), hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/new/news', 
+	 mustBeAuthentified(), 
+	 hasPrivilege(user.law.privileges.BO_ACCESS), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
         apiCalled:'/api/add/news'
@@ -315,10 +370,11 @@ app
 
 //search
 .get('/search',
-    search.findNews(),         //middleware1 
-    search.findArticles(),     //middleware2
-    search.findShareables(),   //middleware3
-    (request, response) => {
+     search.findNews(),         
+     search.findArticles(),     
+     search.findShareables(),   
+	 inbox.getUnseenMessagesCount(),
+     (request, response) => {
     response.render('search/search', {
         global:getParameters(request),
         resultFound: {
@@ -331,10 +387,16 @@ app
 
 //BACK OFFICE
 //menu
-.get('/admin', hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin', 
+	 hasPrivilege(user.law.privileges.BO_ACCESS), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     response.render('backOffice/menu', {global:getParameters(request)})
 })
-.get('/admin/users',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin/users',
+	 hasPrivilege(user.law.privileges.BO_ACCESS), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     user.listUsers(function(userList){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -343,7 +405,10 @@ app
         })  
     })
 })
-.get('/admin/articles',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin/articles', 
+	 hasPrivilege(user.law.privileges.BO_ACCESS),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     article.listArticles(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -351,7 +416,10 @@ app
         })  
     })
 })
-.get('/admin/news',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin/news',
+	 hasPrivilege(user.law.privileges.BO_ACCESS),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     article.listNews(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -359,7 +427,10 @@ app
         })  
     })
 })
-.get('/admin/shareables',hasPrivilege(user.law.privileges.BO_ACCESS), (request, response) => {
+.get('/admin/shareables',
+	 hasPrivilege(user.law.privileges.BO_ACCESS),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
     shared.listShareables(0, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
@@ -587,7 +658,18 @@ function mustBeAuthentified() {
         if(req.isAuthenticated()) {
             return next()
         }
-        res.redirect('/connect')
+		var nextUrl = req.originalUrl;
+		
+		var notRedirectedUrl = [
+			"/profile/options",
+			"/connect",
+			"/"
+		]
+		if(notRedirectedUrl.indexOf(nextUrl) == -1){
+        	req.session.nextUrl = nextUrl;
+		}
+		res.redirect('/connect');
+		
     }
 }
 
@@ -613,6 +695,7 @@ function getKeyFromLogin(login){
 	return "invalid";
 }
 
+
 //////////// global parameters ////////// 
 /**
 accession global : global.*
@@ -622,7 +705,8 @@ function getParameters(request){
     return {
         authentified:request.isAuthenticated(),
         userName:request.isAuthenticated()?request.user.login:null,
-        query:request.query
+        query:request.query,
+		unseenMessages:request.unseenMessages
     }
 }
 

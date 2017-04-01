@@ -8,5 +8,6 @@ module.exports = {
 	listSendedMessages : inbox.listSendedMessages,
 	listAllMessages : inbox.listAllMessages,
 	sendMessage : inbox.sendMessage,
-	isRelatedToMessage : inbox.isRelatedToMessage
+	isRelatedToMessage : inbox.isRelatedToMessage,
+	getUnseenMessagesCount : inbox.getUnseenMessagesCount
 }

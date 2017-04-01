@@ -60,6 +60,7 @@ function getMessage(request, callback){
 	var login = request.user.login;
 	var id = request.params.id;
 	mongo.findById(InboxSchema, function(err,result){
+		console.log("GETMESSAGE:"+JSON.stringify(err)+" /// "+JSON.stringify(result))
 		if(result) {
 			if(!result.seen && result.to == login){
 				setMessageSeen(id);
@@ -68,8 +69,11 @@ function getMessage(request, callback){
 			result.content = utils.getHTMLContent(result.content);
 			callback(result)
 			return;
+		}else{
+			callback('Message introuvable');
+			return;
 		}
-		callback(null);
+		
 	},id);
 }
 
@@ -116,17 +120,34 @@ function isRelatedToMessage(){
 				if(result.author == login || result.to == login){
 					return next();
 				}else{
-					response.redirect('/forbidden');
+					response.redirect('/profile/inbox');
 				}
 			}
 		})
     }
 }
 
+/*
+middleware
+donne le nombre de messages non lus
+*/
+function getUnseenMessagesCount(){
+	return function (request, response, next) {
+		if(!request.isAuthenticated() ){
+			return next();
+		}
+		var login = request.user.login;
+		
+		mongo.count(InboxSchema, function(err,result) {
+			request.unseenMessages = result;
+			return next();
+		}, {to:login, seen:false})
+    }
+}
 
 function setMessageSeen(id){
 	mongo.update(InboxSchema,function(err,result){
-		
+		//nuthin'
 	}, {_id:id}, {seen:true}, {});
 }
 
@@ -136,5 +157,6 @@ module.exports = {
 	listSendedMessages,
 	listAllMessages,
 	sendMessage,
-	isRelatedToMessage
+	isRelatedToMessage,
+	getUnseenMessagesCount
 }

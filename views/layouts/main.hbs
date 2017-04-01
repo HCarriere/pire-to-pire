@@ -42,6 +42,9 @@
                     {{else}} 
                         Connexion 
                     {{/if}}
+					{{#if global.unseenMessages}} 
+                        <div id="unseenMessages-notif">{{global.unseenMessages}}</div>
+                    {{/if}}
                     </li></a>
                 </ul>
             </nav>
