@@ -125,7 +125,7 @@ function getAuthorPublications(){
                 request.shareables = result;
             }
             return next();
-        })
+        },{author:request.params.id})
     }
 }
 
