@@ -1,4 +1,5 @@
-const conf = require('../config')
+const conf = require('../config');
+var md5 = require('md5');
 var mongoose = require('mongoose');
 var conn;
 
@@ -54,7 +55,7 @@ function getAddress(){
     var address= process.env.DB_PREFIX || conf.database.defaultAddress.prefix;
     address+='://';
     if(process.env.DB_USER && process.env.DB_PASSWORD){
-     address+=process.env.DB_USER+':'+process.env.DB_PASSWORD+'@';
+     address+=process.env.DB_USER+':'+md5(process.env.DB_PASSWORD+conf.database.salt)+'@';
     }
     address += process.env.DB_NAME || conf.database.defaultAddress.name;
     address+='/';

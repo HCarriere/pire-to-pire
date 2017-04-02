@@ -8,9 +8,6 @@ module.exports = {
             prefix:"mongodb",
             name:"localhost",
             database:"pire-to-pire"
-           /* prefix:"mongodb",
-            name:"root:t2B175233TD@ds029575.mlab.com:29575",
-            database:"pire-to-pire"*/
         },
         collections : {
             users:"user",
@@ -20,7 +17,8 @@ module.exports = {
 			inbox:"messages"
         },
 		verbose:false,
-		mongooseDebug:false
+		mongooseDebug:false,
+		salt:"s84*--+489efHEiuhdUU"
     },
     session:{
         secret: "QeHjU?D542:8eE"
@@ -42,6 +40,6 @@ module.exports = {
         }
     },
 	limitDocuments:{
-		default:5
+		default:50
 	}
 }
