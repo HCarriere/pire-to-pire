@@ -10,7 +10,7 @@ html{
 }
 
 body {
-    background: #79C9F9 url("/images/background.png") no-repeat;
+    background: #79C9F9 url("/images/background.png");
     background-position:left bottom;
     background-repeat: repeat-x;
 	background-attachment: fixed;
