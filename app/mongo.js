@@ -115,9 +115,10 @@ function findObject(schema, callback, jsonRequest){
     })
 }
 
-function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
+function findObjectWithOptions(schema,callback, jsonRequest, limit, sort, offset){
     openConnection(function(coErr){
         if(conn){
+			if(!offset || offset < 0) offset = 0;
             var model = conn.model(schema.collection,schema.schema);
             model.find(jsonRequest, function (err, result) {
                 if(err) { 
@@ -132,6 +133,7 @@ function findObjectWithOptions(schema,callback, jsonRequest, limit, sort){
             })
             .limit(limit)
             .sort(sort)
+			.skip(offset)
 			;
         }else{
             callback(coErr, null);

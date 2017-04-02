@@ -62,7 +62,7 @@ function addShareable(request, callback){
     },object)
 }
 
-function listShareables(limit, callback){
+function listShareables(limit, callback, offset){
     mongo.findWithOptions(ShareableSchema, function(err, result){
         if(err){
             callback(err, null)
@@ -74,7 +74,7 @@ function listShareables(limit, callback){
             }
             callback(null, result)
         }
-    },{},limit,{publicationDate:-1})
+    },{},limit,{publicationDate:-1},offset)
 }
 
 function getShareable(shortName, callback, editMode){

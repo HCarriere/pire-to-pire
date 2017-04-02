@@ -45,7 +45,7 @@ function addNews(request,callback){
 
 
 
-function listDocuments(limit,news,callback){
+function listDocuments(limit,news,callback,offset){
 	 mongo.findWithOptions(ArticleSchema, function(err,result){
         if(err){
             callback(err, null)
@@ -57,16 +57,16 @@ function listDocuments(limit,news,callback){
             }
             callback(null,result)
         }
-    },{isNews: news},limit,{publicationDate:-1})
+    },{isNews: news},limit,{publicationDate:-1},offset)
 }
 
-function listArticles(limit, callback){
-    listDocuments(limit,false,callback);
+function listArticles(limit, callback, offset){
+    listDocuments(limit,false,callback,offset);
 }
 
 
-function listNews(limit, callback){
-    listDocuments(limit,true,callback);
+function listNews(limit, callback, offset){
+    listDocuments(limit,true,callback,offset);
 }
 
 

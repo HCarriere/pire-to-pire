@@ -263,7 +263,7 @@ app
 	 user.getUserPrivileges(),
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    article.listArticles(0, function(err, articles){ //0: no limit
+    article.listArticles(config.limitDocuments.default, function(err, articles){ //0: no limit
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:articles,
@@ -272,6 +272,21 @@ app
         })
     })
 })
+.get('/article/page/:n',
+	 user.getUserPrivileges(),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    article.listArticles(config.limitDocuments.default, function(err, articles){ //0: no limit
+        response.render('../views/layouts/listArticles', {
+            global:getParameters(request),
+            articles:articles,
+            privileges:request.privileges,
+            pageTitle:'Derniers articles',
+			nextPage:parseInt(request.params.n)+1
+        })
+    },(request.params.n-1) * config.limitDocuments.default)
+})
+
 //write article
 .get('/new/article', 
 	 mustBeAuthentified(), 
@@ -318,7 +333,7 @@ app
 	 user.getUserPrivileges(), 
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    shared.listShareables(0, function(err, shareables) {
+    shared.listShareables(config.limitDocuments.default, function(err, shareables) {
         response.render('shared/listShared', {
             global:getParameters(request),
             shareables:shareables,
@@ -326,6 +341,20 @@ app
         })    
     })
 })
+.get('/shared/page/:n', 
+	 user.getUserPrivileges(), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    shared.listShareables(config.limitDocuments.default, function(err, shareables) {
+        response.render('shared/listShared', {
+            global:getParameters(request),
+            shareables:shareables,
+            privileges: request.privileges,
+			nextPage:parseInt(request.params.n)+1
+        })    
+    }, (request.params.n-1) * config.limitDocuments.default)
+})
+
 //write & upload shared
 .get('/new/shared',
 	 mustBeAuthentified(), 
@@ -359,13 +388,27 @@ app
 .get('/news', 
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    article.listNews(0, function(err,news){
+    article.listNews(config.limitDocuments.default, function(err,news){
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:news,
-            pageTitle:'Dernières news'
+            pageTitle:'Dernières news',
+			isnews:true
         })  
     })
+})
+.get('/news/page/:n', 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    article.listNews(config.limitDocuments.default, function(err,news){
+        response.render('../views/layouts/listArticles', {
+            global:getParameters(request),
+            articles:news,
+            pageTitle:'Dernières news',
+			isnews:true,
+			nextPage:parseInt(request.params.n)+1
+        })  
+    },(request.params.n-1) * config.limitDocuments.default)
 })
 //write news
 .get('/new/news', 
@@ -409,46 +452,103 @@ app
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    user.listUsers(function(userList){
+    user.listUsers(config.limitDocuments.default,function(userList){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(userList, BO.UserTableModel),
-            htmlAfter:BO.UserTableModel.addHtmlAfter
+            htmlAfter:BO.UserTableModel.addHtmlAfter,
+			type:'users'
         })  
     })
+})
+.get('/admin/users/page/:n',
+	 hasPrivilege(user.law.privileges.BO_ACCESS), 
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    user.listUsers(config.limitDocuments.default,function(userList){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(userList, BO.UserTableModel),
+            htmlAfter:BO.UserTableModel.addHtmlAfter,
+			type:'users',
+			nextPage:parseInt(request.params.n)+1
+        })  
+    },(request.params.n-1) * config.limitDocuments.default)
 })
 .get('/admin/articles', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    article.listArticles(0, function(err, list){
+    article.listArticles(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
-            admin:BO.getAsTable(list, BO.ArticleTableModel)
+            admin:BO.getAsTable(list, BO.ArticleTableModel),
+			type:'articles',
         })  
     })
+})
+.get('/admin/articles/page/:n', 
+	 hasPrivilege(user.law.privileges.BO_ACCESS),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    article.listArticles(config.limitDocuments.default, function(err, list){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(list, BO.ArticleTableModel),
+			type:'articles',
+			nextPage:parseInt(request.params.n)+1
+        })  
+    },(request.params.n-1) * config.limitDocuments.default)
 })
 .get('/admin/news',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    article.listNews(0, function(err, list){
+    article.listNews(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
-            admin:BO.getAsTable(list, BO.NewsTableModel)
+            admin:BO.getAsTable(list, BO.NewsTableModel),
+			type:'news'
         })  
     })
+})
+.get('/admin/news/page/:n',
+	 hasPrivilege(user.law.privileges.BO_ACCESS),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    article.listNews(config.limitDocuments.default, function(err, list){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(list, BO.NewsTableModel),
+			type:'news',
+			nextPage:parseInt(request.params.n)+1
+        })  
+    },(request.params.n-1) * config.limitDocuments.default)
 })
 .get('/admin/shareables',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
-    shared.listShareables(0, function(err, list){
+    shared.listShareables(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
             global:getParameters(request),
-            admin:BO.getAsTable(list, BO.ShareableTableModel)
+            admin:BO.getAsTable(list, BO.ShareableTableModel),
+			type:'shareables'
         })  
     })
+})
+.get('/admin/shareables/page/:n',
+	 hasPrivilege(user.law.privileges.BO_ACCESS),
+	 inbox.getUnseenMessagesCount(),
+	 (request, response) => {
+    shared.listShareables(config.limitDocuments.default, function(err, list){
+        response.render('backOffice/table', {
+            global:getParameters(request),
+            admin:BO.getAsTable(list, BO.ShareableTableModel),
+			type:'shareables',
+			nextPage:parseInt(request.params.n)+1
+        })  
+    },(request.params.n-1) * config.limitDocuments.default)
 })
 
 ////////////////// APIs ////////////////////

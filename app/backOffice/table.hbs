@@ -46,6 +46,12 @@
         {{/each}}
     </table>
     
+	{{#if nextPage}}
+	<a class="next-page" href="/admin/{{type}}/page/{{nextPage}}">plus</a>
+	{{else}}
+	<a class="next-page" href="/admin/{{type}}/page/2">plus</a>
+	{{/if}}
+	
     {{#ifContains htmlAfter 'userDescription'}}
     <div class="alert">
         <p>

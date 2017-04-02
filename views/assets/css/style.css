@@ -141,6 +141,7 @@ header form .search-submit:hover{
     max-width:1200px;
     margin:auto;
     padding-top:60px;
+	margin-bottom: 60px;
 }
 
 .section{
@@ -436,8 +437,23 @@ pre{
     box-shadow: 0 0 5px #222;
     border: 1px solid transparent;
 }
-
-
+.next-page{
+	background-color: #346ba1;
+	padding: 13px 62px;
+	color: white;
+	text-decoration: none;
+	text-align:center;
+	box-shadow: 0 0 2px #000;
+	transition:.3s all;
+	display: inline-block;
+}
+.next-page.right{
+	float:right;
+}
+.next-page:hover{
+	background-color: #234b72;
+	box-shadow:none;
+}
 
 
 /*alerts*/
@@ -650,6 +666,11 @@ footer{
     h1{
         font-size:1.5em;
     }
+	.next-page{
+		width: 100%;
+		padding: 13px 0;
+		text-align: center;
+	}
 }
 
 

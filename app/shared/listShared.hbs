@@ -6,7 +6,7 @@
 <a class="button add" href="/new/shared"><i class="fa fa-plus"></i> Importer un nouveau document</a>
 {{/ifContains}}
 
-{{#if shareables}}
+
 <div class="list-container">
     {{#each shareables}}
     <div class="list-element card">
@@ -25,4 +25,9 @@
     </div>
     {{/each}}
 </div>
+
+{{#if nextPage}}
+<a class="next-page right" href="/shared/page/{{nextPage}}">plus</a>
+{{else}}
+<a class="next-page right" href="/shared/page/2">plus</a>
 {{/if}}

@@ -180,7 +180,7 @@ function updateUserProfilePicture(request, callback){
     );
 }
 
-function listUsers(callback){
+function listUsers(limit,callback, offset){
     mongo.findWithOptions(
         UserSchema, 
         function(err, result){
@@ -189,7 +189,7 @@ function listUsers(callback){
             }else{
                 callback(null)
             }
-        }, {},0,{inscriptionDate:-1}
+        }, {},limit,{inscriptionDate:-1},offset
     );
 }
 

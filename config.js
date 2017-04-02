@@ -40,5 +40,8 @@ module.exports = {
         documents:{
             maxSize:671088640 //80 Mo
         }
-    }
+    },
+	limitDocuments:{
+		default:5
+	}
 }

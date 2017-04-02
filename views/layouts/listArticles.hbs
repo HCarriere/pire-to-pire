@@ -2,9 +2,13 @@
     {{pageTitle}}
 </div>
 
-{{#ifContains privileges 'article_post'}}
-<a class="button add" href="/new/article"><i class="fa fa-plus"></i> Nouveau</a>
-{{/ifContains}}
+{{#if isnews}}
+
+{{else}}
+	{{#ifContains privileges 'article_post'}}
+	<a class="button add" href="/new/article"><i class="fa fa-plus"></i> Nouveau</a>
+	{{/ifContains}}
+{{/if}}
 
 <div class="list-container">
 
@@ -24,3 +28,16 @@
     {{/each}}
     
 </div>
+{{#if isnews}}
+	{{#if nextPage}}
+	<a class="next-page right" href="/news/page/{{nextPage}}">plus</a>
+	{{else}}
+	<a class="next-page right" href="/news/page/2">plus</a>
+	{{/if}}
+{{else}}
+	{{#if nextPage}}
+	<a class="next-page right" href="/article/page/{{nextPage}}">plus</a>
+	{{else}}
+	<a class="next-page right" href="/article/page/2">plus</a>
+	{{/if}}
+{{/if}}

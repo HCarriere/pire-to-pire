@@ -29,6 +29,9 @@ const konamiCode =[
 ];
 var konamiCurrentStep = 0;
 function konamiPress(event) {
+	if(konamiCurrentStep >= konamiCode.length){
+		return;
+	}
 	if(event.key === konamiCode[konamiCurrentStep]) {
 		konamiCurrentStep++;
 	}
@@ -40,7 +43,8 @@ function konamiPress(event) {
 function easterEgg() {
 	console.log('Easter egg !')
 	
-	$('body').css('background-image','url(/images/wxp.png)')
+	$('body').css('background-image','url(/images/wxp.png)');
+	$('body').css('background-position','top');
 	$('.website-title, .top-name').text("Windows XP");
 	$('.website-title, .top-name').css("color","#fff");
 }
