@@ -5,6 +5,7 @@ var conn;
 
 function initMongo(){
 	mongoose.set('debug', conf.database.mongooseDebug);
+	mongoose.Promise = global.Promise;
 	logMsg("ptp:mongo:():initMongo:OK:(mongo initialized)");
 }
 
