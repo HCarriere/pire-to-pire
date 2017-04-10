@@ -25,15 +25,18 @@ $(document).ready(function(){
 
 //Easter egg.
 const konamiCode =[
-	"ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight"
+	"ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","a","b"
 ];
 var konamiCurrentStep = 0;
 function konamiPress(event) {
+	//console.log(event.key);
 	if(konamiCurrentStep >= konamiCode.length){
 		return;
 	}
 	if(event.key === konamiCode[konamiCurrentStep]) {
 		konamiCurrentStep++;
+	} else {
+		konamiCurrentStep = 0;
 	}
 	if(konamiCurrentStep == konamiCode.length) {
 		easterEgg();

@@ -432,6 +432,7 @@ app
      (request, response) => {
     response.render('search/search', {
         global:getParameters(request),
+		otherScripts:[{script:"/js/searchClient.js"}],
         resultFound: {
             news : request.newsFound,
             articles : request.articlesFound,

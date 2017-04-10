@@ -71,6 +71,7 @@ function listShareables(limit, callback, offset){
             for(var share of result){
                 share.stringPublicationDate = utils.getStringDate(share.publicationDate);
 				share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
+				share.extract = utils.getExtractOf(share.description);
             }
             callback(null, result)
         }

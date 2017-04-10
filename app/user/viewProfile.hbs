@@ -34,7 +34,7 @@
     <div class="list-element">
         <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
         Par<a href="/user/{{author}}" class="meta user">{{author}}</a>le<div class="meta date">{{stringPublicationDate}}</div>
-        <div class="list-extract">{{extract}}...</div>
+        <p>{{extract}}...</p>
 
         {{#each tags}}
         <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
@@ -48,12 +48,13 @@
 {{/if}}
 
 {{#if shareables}}
-<h1><i class="fa fa-share-alt"></i> Partages de {{profile.login}}</h1>
+<h1><i class="fa fa-file"></i> Partages de {{profile.login}}</h1>
 <div class="list-container">
     {{#each shareables}}
-    <div class="list-element card">
+    <div class="list-element">
         <a href="/shared/{{shortName}}" class="list-title">{{name}}</a>
         Par<a href="/user/{{author}}" class="meta user">{{author}}</a><div class="meta date">{{stringPublicationDate}}</div>
+		<p>{{extract}}...</p>
         <a class="file-box" href="/shared/{{shortName}}">
             <img class="file-icon" src="/icons/ext/{{uploadedObject.extension}}.png"/> 
             <div class="file-description">

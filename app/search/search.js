@@ -19,8 +19,6 @@ query type possible:
     _partages -> les partages "
 
 
-
-
 *****/
 
 const mongo = require('../mongo')
@@ -33,20 +31,34 @@ const ShareableSchema = require('../shared').Schema
 
 ///////////// private /////////////////
 
-
+function getJsonRequest(request, additionalArguments) {
+	var jsonRequest = {};
+	if(request.query.tag){
+		jsonRequest = {
+			'tags.tag' : request.query.tag
+		};
+	}
+	if(request.query.text){
+		jsonRequest = {
+			$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}]
+		};
+	}
+	
+	if(additionalArguments) {
+		for(var key in additionalArguments) {
+			jsonRequest[key] = additionalArguments[key];
+		}
+	}
+	return jsonRequest;
+}
 
 
 //////////////public ////////////////
 //middleware 1
 function findNews(){
      return function (request, response, next) {
-        var jsonRequest;
-        if(request.query.tag){
-            jsonRequest = {'tags.tag' : request.query.tag, isNews: true};
-        }
-        if(request.query.text){
-            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}],isNews: true};
-        }
+        var jsonRequest = getJsonRequest(request, {isNews:true});
+		
         mongo.findWithOptions(ArticleSchema, function(err, result){
             if(result){
                 //articles trouvés
@@ -57,20 +69,15 @@ function findNews(){
                 request.newsFound = result
             }
             return next()
-        }, jsonRequest, 0, {})
+        }, jsonRequest, conf.limitDocuments.search, {})
     }
 }
 
 //middleware 2
 function findArticles() {
     return function (request, response, next) {
-        var jsonRequest;
-        if(request.query.tag){
-            jsonRequest = {'tags.tag' : request.query.tag, isNews: false};
-        }
-        if(request.query.text){
-            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}],isNews: false};
-        }
+        var jsonRequest = getJsonRequest(request, {isNews:false});
+		
         mongo.findWithOptions(ArticleSchema, function(err, result){
             if(result){
                 //articles trouvés
@@ -81,31 +88,26 @@ function findArticles() {
                 request.articlesFound = result
             }
             return next()
-        }, jsonRequest, 0, {})
+        }, jsonRequest, conf.limitDocuments.search, {})
     }
 }
 
 //middleware 3
 function findShareables(){
     return function (request, response, next) {
-        //request.shareableFound = { coucou : "result2"}
-        var jsonRequest;
-        if(request.query.tag){
-            jsonRequest = {'tags.tag' : request.query.tag};
-        }
-        if(request.query.text){
-            jsonRequest = {$or:[{name: new RegExp(request.query.text, "i")}, {description: new RegExp(request.query.text, "i")}]};
-        }
+        var jsonRequest = getJsonRequest(request);
+		
         mongo.findWithOptions(ShareableSchema, function(err, result){
             if(result){
                 //articles trouvés
                 for (var share of result){
                     share.stringPublicationDate = utils.getStringDate(share.publicationDate);
+					share.extract = utils.getExtractOf(share.description);
                 }
                 request.shareableFound = result
             }
             return next()
-        }, jsonRequest, 0, {})
+        }, jsonRequest, conf.limitDocuments.search, {})
     }
 }
 

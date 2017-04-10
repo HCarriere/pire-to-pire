@@ -489,6 +489,10 @@ pre{
     margin:25px 0;
     box-shadow: 0 0 2px #222;
 }
+.list-element p{
+	margin-bottom:10px;
+	margin-top:5px;
+}
 .list-element.card{
     min-width:300px;
     max-width:600px;
@@ -566,6 +570,33 @@ a.meta:hover{
 }
 .file-description .file-size{
     font-size:.8em;
+}
+/* search */
+ul.search-tab{
+	list-style: none;
+	padding:0;
+	margin:0;
+}
+ul.search-tab li{
+	display:inline-block;
+	
+}
+ul.search-tab li a{
+	display:block;
+	padding:10px 20px;
+	text-decoration: none;
+	color:white;
+	font-size: 1.5em;
+	font-family: "coolvetica";
+	text-shadow: 1px 1px 2px #666;
+	border-bottom:4px solid transparent;
+	transition:.3s all;
+}
+ul.search-tab li a.selected{
+	border-bottom:4px solid #FF7E12;
+}
+ul.search-tab li a:hover{
+	border-bottom:4px solid #FF7E12;
 }
 
 

@@ -16,7 +16,7 @@ $(document).ready(function(){
 
 
 function showTabs(){
-	console.log(selectedTab);
+	//console.log(selectedTab);
 	if(selectedTab == "tab-in"){
 		//recus
 		$('#inbox-in').show();

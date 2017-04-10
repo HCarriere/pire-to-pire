@@ -32,11 +32,17 @@ function getTextContentFromHTML(content) {
 /////////////////////////////////////
 
 function getTags(tagsRequest){
+	const maxTags = 10;
     var r  = [];
     var u = {};
+	var count = 0;
     var tags = tagsRequest.trim().replace(/,/g,';').replace(/#/g,';').split(';');
     
     for (var tag in tags){
+		if(count >= maxTags){
+			return r;
+		}
+		count++;
         var theTag = tags[tag].trim();
         if(theTag && !u.hasOwnProperty(theTag) ){
             r.push({tag:theTag});
