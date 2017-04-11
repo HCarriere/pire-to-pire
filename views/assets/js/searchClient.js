@@ -24,9 +24,9 @@ $(document).ready(function(){
 function showContent(){
 	for(var i =0; i<tabs.length; i++) {
 		if(tabs[i] == selectedTab) {
-			$('#search-result-'+tabs[i]).show();
+			$('#search-result-'+tabs[i]).fadeIn();
 		} else {
-			$('#search-result-'+tabs[i]).hide();
+			$('#search-result-'+tabs[i]).fadeOut();
 		}
 	}
 }
