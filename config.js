@@ -41,6 +41,6 @@ module.exports = {
     },
 	limitDocuments:{
 		default:50,
-		search:20
+		search:50
 	}
 }
