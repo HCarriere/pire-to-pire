@@ -6,7 +6,7 @@
 
 <article class="article-content" style="text-align:justify;">
 	
-	{{#ifContains privileges 'edit_document'}}
+	{{#ifContains global.privileges 'edit_document'}}
 	<a class="button add" href="/edit/article/{{article.shortName}}"><i class="fa fa-edit"></i> Editer le document</a>
 	{{/ifContains}}
 	
@@ -31,7 +31,7 @@
     <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
     {{/each}}
     
-    <h1>Commentaires</h1>
+    <!--<h1>Commentaires</h1>
     <textarea class="comments-text"></textarea>
     
     <div class="comment-box">
@@ -39,7 +39,7 @@
         <div class="comment">
         
         </div>
-    </div>
+    </div>-->
     
 </article>
 

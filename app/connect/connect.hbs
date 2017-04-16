@@ -12,6 +12,7 @@
         <input type="password" name="password" class="input-text" placeholder="********" required>
         <br>
         <input type="submit" value="Connection" class="button valid">
+		<input type="hidden" name="_csrf" value="{{global.csrfToken}}">
         {{#if global.query.error}}
         <div class="alert alert-red">
             <h1>Impossible de se connecter</h1>

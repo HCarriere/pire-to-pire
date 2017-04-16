@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Projet web CESI RIL Avril 2016",
   "main": "index.js",
-  "engine":{
-	  "node": "4.4.7"
+  "engine": {
+    "node": "4.4.7"
   },
   "scripts": {
     "test": "mocha test",
@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "csurf": "^1.9.0",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.1",

@@ -13,7 +13,7 @@ function getLinkByFields(link, object){
     }
     var array = link.split('%');
     var string="";
-    for(a = 0; a<array.length; a++){
+    for(var a = 0; a<array.length; a++){
         if(a%2==0){
             string+=array[a];
         }else{
@@ -31,9 +31,9 @@ function getAsTable(objectSet, tableModel){
     var admin = {};
     admin = tableModel;
     var lines = [];
-    for(i=0; i<objectSet.length; i++){
+    for(var i=0; i<objectSet.length; i++){
         var datas = [];
-        for(j=0; j<tableModel.columns.length; j++){
+        for(var j=0; j<tableModel.columns.length; j++){
             var data = {};
             data.text = objectSet[i][tableModel.columns[j].value];
             data.action = tableModel.columns[j].action;
@@ -298,7 +298,7 @@ var NewsTableModel = {
 }
 
 var ShareableTableModel ={
-    title:'Partages',
+    title:'Documents',
 	selected:{
 		shareables:"selected"	
 	},

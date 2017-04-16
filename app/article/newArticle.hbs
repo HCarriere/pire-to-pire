@@ -18,7 +18,6 @@
         
         <label>Tags</label>
         <input type="text" name="tags" placeholder="jeux-videos;tortues;ninja" class="input-text"  required value="{{#each article.tags}}{{tag}}; {{/each}}">
-        
         <input type="submit" value="{{#if shareable}}Modifier{{else}}Publier{{/if}}" class="button add">
     </form>
 </div>

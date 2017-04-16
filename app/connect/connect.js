@@ -17,7 +17,7 @@ function findUser(username, callback){
         }else{
             callback(null, result);
         }
-    },{ login: username });
+    },{'login': {$regex: new RegExp('^' + username.toLowerCase(), 'i')}});
     
 }
 
@@ -113,7 +113,7 @@ function inscription(request, callback){
                     });
                 }
                 else{
-                    console.log('ptp:connection:():inscription:OK:(user'+object.login+'ajouté avec succès)');
+                    console.log('ptp:connection:():inscription:OK:(user '+object.login+' ajouté avec succès)');
                     callback( {
                         accountAdded : true
                     });

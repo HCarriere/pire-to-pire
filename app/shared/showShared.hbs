@@ -2,7 +2,7 @@
 
 <article class="article-content" style="text-align:justify;">
 	
-	{{#ifContains privileges 'edit_document'}}
+	{{#ifContains global.privileges 'edit_document'}}
 	<a class="button add" href="/edit/shared/{{shareable.shortName}}"><i class="fa fa-edit"></i> Editer le document</a>
 	{{/ifContains}}
 	

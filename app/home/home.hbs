@@ -51,7 +51,7 @@
     </div>
     
     <div class="section" id="shared">
-        <h1><i class="fa fa-file"></i> Derniers partages</h1>
+        <h1><i class="fa fa-file"></i> Derniers documents</h1>
         
         <div class="list-container">
             {{#each shareables}}
@@ -89,7 +89,7 @@
 				{{/each}}
 				</div>
 			</div>
-			{{#ifContains privileges 'chat_talk'}} 
+			{{#ifContains global.privileges 'chat_talk'}} 
 			<form action="" id="chat_form">
 				<input id="message" type="text" autocomplete="off"/><!--
 				--><input id="message_author" type="hidden" value="{{userLogin}}"/><!--

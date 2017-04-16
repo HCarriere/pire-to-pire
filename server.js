@@ -1,14 +1,16 @@
+'use strict'
 // server.js
 
 //imports
 const express   = require('express')
-const path      = require('path')
-const exphbs    = require('express-handlebars')
-const passport  = require('passport')
 const session   = require('express-session')
+const exphbs    = require('express-handlebars')
+const http		= require('http')
+const path      = require('path')
+const passport  = require('passport')
 const bodyParser= require('body-parser')
 const multer    = require('multer')
-const http		= require('http')
+const csrf		= require('csurf')
 
 //General cong
 const mongo     = require('./app/mongo')
@@ -22,16 +24,25 @@ app
 .use(express.static(__dirname + '/views/assets'))   //styles
 .use('/uploads', express.static(__dirname + '/uploads'))        //uploads
 .use(session({
-    secret : config.session.secret,
+    secret: config.session.secret,
     resave: false,
-    saveUninitialized: false
-}))
+    saveUninitialized: false/*,
+	cookie:{
+		secure : true,
+		httpOnly: true
+	}*/
+}));
+
+//Other configurations
+app
+//.use(csrf()) //CSRF Token
 .use(passport.initialize())
 .use(passport.session())
 .use(bodyParser.json() )        // to support JSON-encoded bodies
 .use(bodyParser.urlencoded({    // to support URL-encoded bodies
   extended: true
-}))
+}));
+
 
 
 
@@ -40,14 +51,15 @@ var handlebars = exphbs.create({
     extname: '.hbs',
     layoutsDir: path.join(__dirname,'views/layouts'),
     helpers: {
-        ifContains: function(context, options, out) { //{{#ifContains privileges 'create_articles'}} interieur {{/ifContains}}
+		//{{#ifContains privileges 'create_articles'}} interieur {{/ifContains}}
+        ifContains: function(context, options, out) { 
             if(!context){
                 return "";
             }
             if(context === options){
                 return out.fn(this);
             }
-            for(i=0; i<context.length; i++){
+            for(var i=0; i<context.length; i++){
                 if(context[i].privilege === options){
                     //contains
                     return out.fn(this);
@@ -118,6 +130,14 @@ mongo.initMongo();
 ///////////////////////////
 
 app
+
+////////// GLOBAL //////////
+
+.use(
+	user.getUserPrivileges(),
+    inbox.getUnseenMessagesCount()
+	)
+
 ////////// FRONT //////////
 
 //home
@@ -127,8 +147,6 @@ app
      home.getHomeArticles(), 
      home.getHomeShareables(), 
      chat.fetchPreviousChatMessages(config.chat.limitPrevious),
-     user.getUserPrivileges(),
-	 inbox.getUnseenMessagesCount(),
      (request, response) => {
     response.render('home/home',{
         global:getParameters(request),
@@ -138,7 +156,6 @@ app
 		keyAuth: getKeyFromLogin(request.userLogin),
         articles : request.articles,
 		userLogin : request.userLogin,
-        privileges:request.privileges,
 		news: request.news,
         shareables: request.shareables
     })
@@ -210,7 +227,9 @@ app
 
 //connection/inscription
 .get('/connect', (request, response) => {
-    response.render('connect/connect', {global:getParameters(request)})
+    response.render('connect/connect', {
+		global:getParameters(request)
+	})
 })
 .post('/connect', (request, response, next) =>{
 	passport.authenticate('local', function(err,user,info) {
@@ -221,8 +240,9 @@ app
 				if (loginErr) {
 					return next(loginErr);
 				}
-				response.redirect(request.session.nextUrl || '/');
+				var nexturl = request.session.nextUrl;
 				delete request.session.nextUrl;
+				response.redirect(nexturl || '/');
 				return;
 			}); 
 		}
@@ -247,40 +267,31 @@ app
 ////////////////// articles
 //view article
 .get('/article/:id', 
-	 user.getUserPrivileges(),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.getArticle(request.params.id, function(result){
         response.render('article/showArticle', {
             global:getParameters(request),
-            article:result,
-			privileges:request.privileges
+            article:result
         }) 
     })
 })
 //list articles
 .get('/article',
-	 user.getUserPrivileges(),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listArticles(config.limitDocuments.default, function(err, articles){ //0: no limit
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:articles,
-            privileges:request.privileges,
             pageTitle:'Derniers articles'
         })
     })
 })
 .get('/article/page/:n',
-	 user.getUserPrivileges(),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listArticles(config.limitDocuments.default, function(err, articles){ //0: no limit
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:articles,
-            privileges:request.privileges,
             pageTitle:'Derniers articles',
 			nextPage:parseInt(request.params.n)+1
         })
@@ -291,7 +302,6 @@ app
 .get('/new/article', 
 	 mustBeAuthentified(), 
 	 hasPrivilege(user.law.privileges.ARTICLE_POST),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
@@ -302,7 +312,6 @@ app
 .get('/edit/article/:id', 
 	 mustBeAuthentified(), 
 	 hasPrivilege(user.law.privileges.EDIT_DOCUMENT), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
 	article.getArticle(request.params.id, function(result){
 		response.render('article/newArticle', {
@@ -317,39 +326,31 @@ app
 //////////////// SHARED
 //shared
 .get('/shared/:id',
-	 user.getUserPrivileges(), 
 	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     shared.getShareable(request.params.id, function(result){
         response.render('shared/showShared', {
             global:getParameters(request),
-            shareable:result,
-			privileges:request.privileges
+            shareable:result
         })  
     })
 })    
 //list shareables
 .get('/shared', 
-	 user.getUserPrivileges(), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     shared.listShareables(config.limitDocuments.default, function(err, shareables) {
         response.render('shared/listShared', {
             global:getParameters(request),
-            shareables:shareables,
-            privileges: request.privileges
+            shareables:shareables
         })    
     })
 })
 .get('/shared/page/:n', 
-	 user.getUserPrivileges(), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     shared.listShareables(config.limitDocuments.default, function(err, shareables) {
         response.render('shared/listShared', {
             global:getParameters(request),
             shareables:shareables,
-            privileges: request.privileges,
 			nextPage:parseInt(request.params.n)+1
         })    
     }, (request.params.n-1) * config.limitDocuments.default)
@@ -359,7 +360,6 @@ app
 .get('/new/shared',
 	 mustBeAuthentified(), 
 	 hasPrivilege(user.law.privileges.SHAREABLE_POST), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     response.render('shared/newShared' , {
         global:getParameters(request),
@@ -371,7 +371,6 @@ app
 .get('/edit/shared/:id',
 	 mustBeAuthentified(),
 	 hasPrivilege(user.law.privileges.EDIT_DOCUMENT),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
 	shared.getShareable(request.params.id, function(result){
 		response.render('shared/newShared' , {
@@ -386,7 +385,6 @@ app
 //edit & view are on articles (news = article)
 //list news
 .get('/news', 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listNews(config.limitDocuments.default, function(err,news){
         response.render('../views/layouts/listArticles', {
@@ -398,7 +396,6 @@ app
     })
 })
 .get('/news/page/:n', 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listNews(config.limitDocuments.default, function(err,news){
         response.render('../views/layouts/listArticles', {
@@ -414,7 +411,6 @@ app
 .get('/new/news', 
 	 mustBeAuthentified(), 
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     response.render('article/newArticle', {
         global:getParameters(request),
@@ -428,7 +424,6 @@ app
      search.findNews(),         
      search.findArticles(),     
      search.findShareables(),   
-	 inbox.getUnseenMessagesCount(),
      (request, response) => {
     response.render('search/search', {
         global:getParameters(request),
@@ -445,13 +440,11 @@ app
 //menu
 .get('/admin', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     response.render('backOffice/menu', {global:getParameters(request)})
 })
 .get('/admin/users',
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     user.listUsers(config.limitDocuments.default,function(userList){
         response.render('backOffice/table', {
@@ -464,7 +457,6 @@ app
 })
 .get('/admin/users/page/:n',
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     user.listUsers(config.limitDocuments.default,function(userList){
         response.render('backOffice/table', {
@@ -478,7 +470,6 @@ app
 })
 .get('/admin/articles', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listArticles(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
@@ -490,7 +481,6 @@ app
 })
 .get('/admin/articles/page/:n', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listArticles(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
@@ -503,7 +493,6 @@ app
 })
 .get('/admin/news',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listNews(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
@@ -515,7 +504,6 @@ app
 })
 .get('/admin/news/page/:n',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     article.listNews(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
@@ -528,7 +516,6 @@ app
 })
 .get('/admin/shareables',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     shared.listShareables(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
@@ -540,7 +527,6 @@ app
 })
 .get('/admin/shareables/page/:n',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
-	 inbox.getUnseenMessagesCount(),
 	 (request, response) => {
     shared.listShareables(config.limitDocuments.default, function(err, list){
         response.render('backOffice/table', {
@@ -556,7 +542,9 @@ app
 
 
 //update user profile
-.post('/api/update/profile', mustBeAuthentified(), (request, response) => {
+.post('/api/update/profile', 
+	  mustBeAuthentified(), 
+	  (request, response) => {
     user.updateUserInfo(request, function(err){
         if(err){
             response.redirect('/profile/options?error=1');
@@ -567,7 +555,9 @@ app
 })
 
 //update user password
-.post('/api/update/password', mustBeAuthentified(), (request, response) => {
+.post('/api/update/password', 
+	  mustBeAuthentified(), 
+	  (request, response) => {
     user.updateUserPassword(request, function(err){
         if(err){
             response.redirect('/profile/options?error=1');
@@ -578,7 +568,9 @@ app
 })
 
 //upload profile picture
-.post('/api/photo', mustBeAuthentified(), (request,response) => {
+.post('/api/photo', 
+	  mustBeAuthentified(), 
+	  (request,response) => {
     uploadImage(request,response,function(err) {
         if(err) {
             response.render('error', {
@@ -599,7 +591,9 @@ app
 })
 
 //send message - inbox
-.post('/api/inbox/new', mustBeAuthentified(), (request, response) => {
+.post('/api/inbox/new',
+	  mustBeAuthentified(), 
+	  (request, response) => {
     inbox.sendMessage(request, function(err,result){
         if(result) {
 			//response.redirect('/profile/inbox/message/'+result._id)
@@ -611,7 +605,10 @@ app
 })
 
 //add article
-.post('/api/add/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.ARTICLE_POST),(request, response) => {
+.post('/api/add/article', 
+	  mustBeAuthentified(),
+	  hasPrivilege(user.law.privileges.ARTICLE_POST),
+	  (request, response) => {
     article.addArticle(request, function(err,shortName){
         if(shortName) {
             response.redirect('/article/'+shortName);
@@ -623,7 +620,10 @@ app
 })
 
 //edit article
-.post('/api/edit/article', mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT),(request, response) => {
+.post('/api/edit/article',
+	  mustBeAuthentified(), 
+	  hasPrivilege(user.law.privileges.EDIT_DOCUMENT),
+	  (request, response) => {
     article.editDocument(request, function(err, shortName) {
 		if(shortName) {
             response.redirect('/article/'+shortName);
@@ -635,7 +635,9 @@ app
 })
 
 //add news
-.post('/api/add/news', hasPrivilege(user.law.privileges.BO_ACCESS),(request, response) => {
+.post('/api/add/news',
+	  hasPrivilege(user.law.privileges.BO_ACCESS),
+	  (request, response) => {
     article.addNews(request, function(err,shortName){
         if(shortName){
             response.redirect('/article/'+shortName);
@@ -644,7 +646,9 @@ app
 })
 
 //add shareable & upload document
-.post('/api/add/shareable', hasPrivilege(user.law.privileges.SHAREABLE_POST), (request, response) => {
+.post('/api/add/shareable', 
+	  hasPrivilege(user.law.privileges.SHAREABLE_POST), 
+	  (request, response) => {
     uploadDocument(request,response,function(err) {
         if(err || !request.file) {
             response.render('error', {
@@ -663,7 +667,10 @@ app
 })
 
 //edit shareable
-.post('/api/edit/shareable',  mustBeAuthentified(), hasPrivilege(user.law.privileges.EDIT_DOCUMENT),  (request, response) => {
+.post('/api/edit/shareable',  
+	  mustBeAuthentified(), 
+	  hasPrivilege(user.law.privileges.EDIT_DOCUMENT), 
+	  (request, response) => {
 	shared.editShareable(request, function(err, shortName) {
 		if(shortName) {
 			response.redirect('/shared/'+shortName);
@@ -674,7 +681,9 @@ app
 	})
 })
 
-.post('/api/delete/user', hasPrivilege(user.law.privileges.BO_REMOVE_USER),(request,response) => {
+.post('/api/delete/user', 
+	  hasPrivilege(user.law.privileges.BO_REMOVE_USER),
+	  (request,response) => {
     BO.deleteUser(request, function(err){
         if(err){
             response.redirect('/admin/users?error=1');
@@ -683,7 +692,10 @@ app
         else response.redirect('/admin/users?succes=1');
     })
 })
-.post('/api/promote/user', hasPrivilege(user.law.privileges.BO_PROMOTE_USER), user.getUserInfoByLogin(), (request,response) => {
+.post('/api/promote/user',
+	  hasPrivilege(user.law.privileges.BO_PROMOTE_USER),
+	  user.getUserInfoByLogin(), 
+	  (request,response) => {
     BO.updateUserRank(request, function(err){
         if(err){
             response.redirect('/admin/users?error=2');
@@ -692,7 +704,9 @@ app
         else response.redirect('/admin/users?succes=2');
     })
 })
-.post('/api/delete/article', hasPrivilege(user.law.privileges.BO_ACCESS),(request,response) => {
+.post('/api/delete/article', 
+	  hasPrivilege(user.law.privileges.BO_ACCESS),
+	  (request,response) => {
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/articles?error=1');
@@ -701,7 +715,9 @@ app
         else response.redirect('/admin/articles?succes=1');
     })
 })
-.post('/api/delete/news', hasPrivilege(user.law.privileges.BO_ACCESS), (request,response) => {
+.post('/api/delete/news', 
+	  hasPrivilege(user.law.privileges.BO_ACCESS), 
+	  (request,response) => {
     BO.deleteArticle(request, function(err){
         if(err){
             response.redirect('/admin/news?error=1');
@@ -710,7 +726,9 @@ app
         else response.redirect('/admin/news?succes=1');
     })
 })
-.post('/api/delete/shareables', hasPrivilege(user.law.privileges.BO_ACCESS), (request,response) => {
+.post('/api/delete/shareables',
+	  hasPrivilege(user.law.privileges.BO_ACCESS),
+	  (request,response) => {
     BO.deleteShareable(request, function(err){
         if(err){
             response.redirect('/admin/shareables?error=1');
@@ -746,6 +764,7 @@ app.use((err, request, response, next) => {
       errorCode:500,
       errorTitle:"Erreur de serveur interne",
       errorContent:err
+	  //EBADCSRFTOKEN
   });
 });
 
@@ -766,23 +785,27 @@ server.listen(port, (err) => {
 verify user is connected
 if not, redirect to /connect
 */
+function setIsNextUrl(req,res){
+	var nextUrl = req.originalUrl;
+		
+	var notRedirectedUrl = [
+		"/profile/options",
+		"/connect",
+		"/"
+	]
+	if(notRedirectedUrl.indexOf(nextUrl) == -1){
+		req.session.nextUrl = nextUrl;
+	}
+	res.redirect('/connect');
+}
+
 function mustBeAuthentified() {
     return function (req, res, next) {
         if(req.isAuthenticated()) {
             return next()
         }
-		var nextUrl = req.originalUrl;
 		
-		var notRedirectedUrl = [
-			"/profile/options",
-			"/connect",
-			"/"
-		]
-		if(notRedirectedUrl.indexOf(nextUrl) == -1){
-        	req.session.nextUrl = nextUrl;
-		}
-		res.redirect('/connect');
-		
+		setIsNextUrl(req,res);
     }
 }
 
@@ -790,13 +813,16 @@ function hasPrivilege(priv){
     return function (req, res, next) {
         user.getUserInfo(req, function(profile){
             if(profile){
-                for(i=0; i<profile.privileges.length; i++){
+                for(var i=0; i<profile.privileges.length; i++){
                     if(profile.privileges[i].privilege === priv){
                         return next();
                     }
                 }
             }
-            res.redirect('/forbidden');
+			//no enough rights
+			
+            //res.redirect('/forbidden');
+            setIsNextUrl(req,res);
         })
     }
 }
@@ -816,10 +842,12 @@ accessing 'get' parameters : 'global.query.*'
 */
 function getParameters(request){
     return {
+		query:request.query,
         authentified:request.isAuthenticated(),
         userName:request.isAuthenticated()?request.user.login:null,
-        query:request.query,
-		unseenMessages:request.unseenMessages
+		unseenMessages:request.unseenMessages,
+		privileges:request.privileges
+		//csrfToken:request.csrfToken()
     }
 }
 

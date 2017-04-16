@@ -5,7 +5,7 @@
 {{#if isnews}}
 
 {{else}}
-	{{#ifContains privileges 'article_post'}}
+	{{#ifContains global.privileges 'article_post'}}
 	<a class="button add" href="/new/article"><i class="fa fa-plus"></i> Nouveau</a>
 	{{/ifContains}}
 {{/if}}

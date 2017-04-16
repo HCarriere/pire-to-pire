@@ -40,10 +40,12 @@ function getJsonRequest(request, additionalArguments) {
 	}
 	if(request.query.text){
 		jsonRequest = {
-			$or:[{name: new RegExp(request.query.text, "i")}, {content: new RegExp(request.query.text, "i")}]
+			$or:[
+				{name: new RegExp(request.query.text, "i")}, 
+				{content: new RegExp(request.query.text, "i")}
+			]
 		};
 	}
-	
 	if(additionalArguments) {
 		for(var key in additionalArguments) {
 			jsonRequest[key] = additionalArguments[key];
