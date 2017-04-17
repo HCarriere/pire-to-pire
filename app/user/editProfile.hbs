@@ -33,7 +33,7 @@
             <input type="text" name="geo_city" value="{{profile.geo.city}}" placeholder="Matane ?" >
         </div>
         
-        
+        <input type="hidden" name="_csrf" value="{{global.csrfToken}}">
         <input type="submit" class="button valid" value="Enregistrer les modifications">
     </form>
     <br>
@@ -44,6 +44,7 @@
         {{/if}}
         <input accept=".png,.jpg" type="file" name="profile_picture" class="profile-file-input">
         <br>
+		<input type="hidden" name="_csrf" value="{{global.csrfToken}}">
         <input type="submit" class="button valid" value="Valider la photo">
     </form>
     <br>
@@ -63,7 +64,7 @@
             <label class="input-label">Répéter le mot de passe</label>
             <input type="password" name="new_password2" required>
         </div>
-        
+        <input type="hidden" name="_csrf" value="{{global.csrfToken}}">
         <input type="submit" class="button valid" value="Modifier le mot de passe">
     </form>
     

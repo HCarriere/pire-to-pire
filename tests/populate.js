@@ -78,6 +78,7 @@ function getUserDataArray(){
 			fullName:surname+" "+name,
 			mail:surname+"."+name+""+discriminent+"@"+"gmail.com",
 			privileges:Law.roles.WRITER.defaultRights,
+			rank:Law.roles.WRITER.name,
 			inscriptionDate:randomDate(),
 			verified:true
 		});

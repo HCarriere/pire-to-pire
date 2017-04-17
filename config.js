@@ -21,7 +21,9 @@ module.exports = {
 		salt:"s84*--+489efHEiuhdUU"
     },
     session:{
-        secret: "QeHjU?D542:8eE"
+        secret: "QeHjU?D542:8eE",
+		csrfTimeExpire:3600000,
+		csrfMaxTokens:50
     },
 	chat:{
 		secret: "ZOjc1o+i25-jO.IE7*OIJ8-_8OIJ",

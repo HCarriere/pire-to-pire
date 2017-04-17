@@ -8,9 +8,9 @@ const exphbs    = require('express-handlebars')
 const http		= require('http')
 const path      = require('path')
 const passport  = require('passport')
-const bodyParser= require('body-parser')
 const multer    = require('multer')
-const csrf		= require('csurf')
+const bodyParser= require('body-parser')
+const md5 		= require('md5');
 
 //General cong
 const mongo     = require('./app/mongo')
@@ -26,19 +26,14 @@ app
 .use(session({
     secret: config.session.secret,
     resave: false,
-    saveUninitialized: false/*,
-	cookie:{
-		secure : true,
-		httpOnly: true
-	}*/
+    saveUninitialized: false
 }));
 
 //Other configurations
 app
-//.use(csrf()) //CSRF Token
 .use(passport.initialize())
 .use(passport.session())
-.use(bodyParser.json() )        // to support JSON-encoded bodies
+.use(bodyParser.json())        // to support JSON-encoded bodies
 .use(bodyParser.urlencoded({    // to support URL-encoded bodies
   extended: true
 }));
@@ -135,7 +130,8 @@ app
 
 .use(
 	user.getUserPrivileges(),
-    inbox.getUnseenMessagesCount()
+    inbox.getUnseenMessagesCount(),
+	csrf()
 	)
 
 ////////// FRONT //////////
@@ -441,7 +437,9 @@ app
 .get('/admin', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
 	 (request, response) => {
-    response.render('backOffice/menu', {global:getParameters(request)})
+    response.render('backOffice/menu', {
+		global:getParameters(request)
+	})
 })
 .get('/admin/users',
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
@@ -768,6 +766,7 @@ app.use((err, request, response, next) => {
   });
 });
 
+app.use(csrf());
 
 //application launch
 server.listen(port, (err) => {
@@ -826,30 +825,85 @@ function hasPrivilege(priv){
         })
     }
 }
-
+//generate a key from a login
 function getKeyFromLogin(login){
-	var md5 = require('md5');
+	
 	if(login != null) 
 		return md5(login+config.chat.secret);
 	return "invalid";
 }
 
 
-//////////// global parameters ////////// 
 /**
-accession global : global.*
+global parameters
+accessing global : global.*
 accessing 'get' parameters : 'global.query.*'
 */
 function getParameters(request){
     return {
 		query:request.query,
+		csrfToken:request.csrfToken(),
         authentified:request.isAuthenticated(),
         userName:request.isAuthenticated()?request.user.login:null,
 		unseenMessages:request.unseenMessages,
 		privileges:request.privileges
-		//csrfToken:request.csrfToken()
     }
 }
+
+/**
+CSRF token
+
+*/
+var csrfTokens = [];
+
+function csrf() {
+	return function (req, res, next) {
+		
+		//add csrftoken generation to request
+		req.csrfToken = function(){
+			var token = md5(config.session.secret+Math.random());
+			if(csrfTokens.length > config.session.csrfMaxTokens){
+				csrfTokens.shift();
+			}
+			csrfTokens.push({value:token,date:new Date()});
+			console.log(token)
+			return token;
+		}
+		
+		//désactivé pour le moment !
+		return next(); 
+		
+		//if POST request, verify csrf token
+		/**
+		
+		if(req.method === 'POST' && req.headers['content-type'].indexOf("multipart/form-data")==-1) {
+			var requestToken = req.body._csrf;
+			//console.log("requested token : "+requestToken)
+			//console.log("table:"+JSON.stringify(csrfTokens))
+			//search token
+			var tokenIndex = csrfTokens.findIndex((t)=>{return t.value==requestToken});
+			if(tokenIndex != -1){
+				var token = csrfTokens[tokenIndex];
+				//delete token for good
+				csrfTokens.splice(tokenIndex,1);
+				//verify timestamp
+				if(new Date() - token.date < config.session.csrfTimeExpire){
+					//console.log('tokens:'+JSON.stringify(csrfTokens));
+					return next();	
+				} else {
+					//console.log("token expired")
+				}
+			}
+			//console.log("token not found")
+			res.redirect('/forbidden');
+		} else {
+			return next();
+		}
+		
+		*/
+	}
+}
+
 
 
 

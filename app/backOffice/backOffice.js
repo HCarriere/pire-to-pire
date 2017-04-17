@@ -1,7 +1,8 @@
 var user    = require('../user')
 var article = require('../article')
-var shared = require('../shared')
+var shared 	= require('../shared')
 var mongo   = require('../mongo')
+const md5 	= require('md5');
 
 ////////////////////// PRIVATE //////////////
 
@@ -49,7 +50,7 @@ function getAsTable(objectSet, tableModel){
                 data.text = tableModel.columns[j].text;
             }
             datas.push(data);
-            datas.uid = Math.random().toString().substring(2);
+            datas.uid = md5(Math.random())+"-"+i;
         }
         lines.push(datas);
     }

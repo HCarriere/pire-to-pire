@@ -41,7 +41,7 @@
                 {{/if}}
             </td>
             {{/each}}
-            <td><form id="{{uid}}" method="post"></form></td>
+            <td><input type="hidden" name="_csrf" value="{{../global.csrfToken}}" form="{{uid}}"><form id="{{uid}}" method="post"></form></td>
         </tr>
         {{/each}}
     </table>

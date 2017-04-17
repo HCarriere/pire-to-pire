@@ -25,7 +25,7 @@
         
         <label>Tags</label>
         <input type="text" name="tags" placeholder="jeu video; zip; homemade" class="input-text"  required value="{{#each shareable.tags}}{{tag}}; {{/each}}">
-        
+        <input type="hidden" name="_csrf" value="{{global.csrfToken}}">
         <input type="submit" value="{{#if shareable}}Modifier{{else}}Publier{{/if}}" class="button add">
     </form>
 </div>
