@@ -161,8 +161,9 @@ function updateUserProfilePicture(request, callback){
        callback({error:'Non authentifié.'})
        return;
     }
-    if(!request.file.filename){
+    if(!request.file){
         callback({error:'Informations introuvables'})
+		return;
     }
     var login =  request.user.login;
     mongo.update(

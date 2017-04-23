@@ -766,7 +766,6 @@ app.use((err, request, response, next) => {
   });
 });
 
-app.use(csrf());
 
 //application launch
 server.listen(port, (err) => {
