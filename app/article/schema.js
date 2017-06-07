@@ -17,7 +17,17 @@ var articleSchema = {
         author: { type : String , ref : conf.database.collections.users },
         isNews: Boolean,
         upvotes:Number,
-        downvotes:Number
+        downvotes:Number,
+        comments: [
+            {
+                content:String,
+                author:{ type : String , ref : conf.database.collections.users },
+                date: Date,
+                upvotes:Number,
+                downvotes:Number
+            }
+        ]
+        
     }),
     collection : conf.database.collections.articles
 }

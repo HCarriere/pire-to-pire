@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 // server.js
 
 //imports
@@ -39,8 +39,6 @@ app
 .use(bodyParser.urlencoded({    // to support URL-encoded bodies
   extended: true
 }));
-
-
 
 
 var handlebars = exphbs.create({
@@ -321,8 +319,18 @@ app
    		})
 	},true) //edit mode
 })
-
-
+// comment
+.post('/comment/article',
+      mustBeAuthentified(),
+      hasPrivilege(user.law.privileges.ARTICLE_POST),
+      (request,response) => {
+    article.commentArticle(request, function(err, data) {
+        if(err) {
+            console.log(err);
+        }
+        response.redirect(data.redirect);
+    });
+})
 //////////////// SHARED
 //shared
 .get('/shared/:id',
@@ -380,7 +388,18 @@ app
 		})
 	},true)//edit mode
 })
-
+// comment
+.post('/comment/shared',
+      mustBeAuthentified(),
+      hasPrivilege(user.law.privileges.SHAREABLE_POST),
+      (request,response) => {
+    shared.commentShareable(request, function(err, data) {
+        if(err) {
+            console.log(err);
+        }
+        response.redirect(data.redirect);
+    });
+})
 ////////////// NEWS
 //edit & view are on articles (news = article)
 //list news

@@ -84,6 +84,9 @@ function getShareable(shortName, callback, editMode){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
 			result.stringModificationDate = utils.getStringDate(result.modificationDate);
 			result.uploadedObject.stringSize = utils.getStringSize(result.uploadedObject.size);
+            for(var comment of result.comments) {
+                comment.stringDate = utils.getStringDate(comment.date);
+            }
 			if(editMode){
 				result.description = utils.getTextContentFromHTML(result.description);
 			}else{
@@ -130,10 +133,35 @@ function getAuthorPublications(){
     }
 }
 
+// callback(err, data)
+function commentShareable(request, callback) {
+    if(!request.body.comment) {
+        callback('Commentaire vide.',{redirect:'/'});
+    }
+    var sharedId = request.body.sharedId;
+    
+    mongo.update(ShareableSchema, function(err, result) {
+		callback(err, {
+            redirect:'/shared/'+sharedId
+        });
+	},
+	{
+		shortName: sharedId
+	},//condition
+	{$push: {'comments': {
+            content:request.body.comment,
+            author:request.user.login,
+            date: new Date(),
+        }
+    }},//update
+	{safe: true, upsert: true, new : true})//options
+}
+
 module.exports= {
     addShareable,
     listShareables,
     getShareable,
     getAuthorPublications,
-	editShareable
+	editShareable,
+    commentShareable
 }

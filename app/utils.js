@@ -141,6 +141,8 @@ function getSimpleStringDate(date){
 	}
 }
 
+    
+
 module.exports = {
     getExtractOf,
     getStringDate,

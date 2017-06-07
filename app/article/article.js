@@ -77,6 +77,9 @@ function getArticle(shortName, callback, editMode) {
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
 			result.stringModificationDate = utils.getStringDate(result.modificationDate);
+            for(var comment of result.comments) {
+                comment.stringDate = utils.getStringDate(comment.date);
+            }
 			if(editMode){
 				result.content = utils.getTextContentFromHTML(result.content);
 			}else{
@@ -128,6 +131,31 @@ function getAuthorPublications(){
     }
 }
 
+// callback(err, data)
+function commentArticle(request, callback) {
+    if(!request.body.comment) {
+        callback('Commentaire vide.',{redirect:'/'});
+    }
+    var articleId = request.body.articleId;
+    
+    mongo.update(ArticleSchema, function(err, result) {
+		callback(err, {
+            redirect:'/article/'+articleId
+        });
+	},
+	{
+		shortName: articleId
+	},//condition
+	{$push: {'comments': {
+            content:request.body.comment,
+            author:request.user.login,
+            date: new Date(),
+        }
+    }},//update
+	{safe: true, upsert: true, new : true})//options
+}
+
+
 module.exports = {
     listArticles,
     listNews,
@@ -135,7 +163,8 @@ module.exports = {
     addNews,
     getArticle,
     getAuthorPublications,
-	editDocument
+	editDocument,
+    commentArticle
 }
 
 

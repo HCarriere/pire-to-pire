@@ -9,5 +9,6 @@ module.exports = {
     addNews: article.addNews,
     getArticle: article.getArticle,
     getAuthorPublications : article.getAuthorPublications,
-	editDocument : article.editDocument
+	editDocument : article.editDocument,
+    commentArticle : article.commentArticle
 }
