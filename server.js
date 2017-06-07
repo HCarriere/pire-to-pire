@@ -12,12 +12,14 @@ const multer    = require('multer')
 const bodyParser= require('body-parser')
 const md5 		= require('md5');
 
-//General cong
+//General conf
 const mongo     = require('./app/mongo')
 const config    = require('./config') //config file
 const app       = express();
 const port      = process.env.PORT || config.server.port;
 const server 	= http.createServer(app);
+
+const sessionID = md5(Math.random());
 
 //Express configuration
 app
@@ -115,7 +117,7 @@ var inbox 	= require('./app/inbox')
 
 /////////// inits ///////////
 connect.init();
-chat.init(server);
+chat.init(server, sessionID);
 mongo.initMongo();
 
 ///////////////////////////
@@ -236,6 +238,8 @@ app
 				if (loginErr) {
 					return next(loginErr);
 				}
+                console.log("ptp:api:(/connect):passport.authenticate:OK:():"+user.login+" (UA: "+request.headers['user-agent']+") (IP: "+request.connection.remoteAddress+")");
+
 				var nexturl = request.session.nextUrl;
 				delete request.session.nextUrl;
 				response.redirect(nexturl || '/');
@@ -773,7 +777,8 @@ server.listen(port, (err) => {
     if(err) {
         return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }
-    console.log(`ptp:app:(/):():OK:(main server listening *:${port})`)
+    console.log(`ptp:app:(/):():OK:(main server listening *:${port})`);
+    console.log(`SessionID : ${sessionID}`);
     
 });
 
@@ -829,7 +834,7 @@ function hasPrivilege(priv){
 function getKeyFromLogin(login){
 	
 	if(login != null) 
-		return md5(login+config.chat.secret);
+		return md5(login+config.chat.secret+sessionID);
 	return "invalid";
 }
 
@@ -866,7 +871,7 @@ function csrf() {
 				csrfTokens.shift();
 			}
 			csrfTokens.push({value:token,date:new Date()});
-			console.log(token)
+			// console.log(token)
 			return token;
 		}
 		

@@ -23,7 +23,9 @@ $(document).ready(function(){
 			message:$('#message').val(),
 			author:$('#message_author').val(),
 			keyAuth:$('#message_keyauth').val()
-		});
+		}, function(ack) {
+            
+        });
 		$('#message').val('');
 		return false;
 	});

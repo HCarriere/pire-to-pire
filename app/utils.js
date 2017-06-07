@@ -121,7 +121,14 @@ function isDateFromToday(date){
 	return getStringDateDay(date) === getStringDateDay(new Date());
 }
 
+/////////////////////////////////
 
+function log(message, logLevel) {
+    if(typeof message !== 'string') {
+        message = JSON.stringify(message);
+    }
+    
+}
 /**
 si date aujourd'hui : que l'heure
 sinon, date.
@@ -146,5 +153,6 @@ module.exports = {
 	getTags,
 	getHTMLContent,
 	getTextContentFromHTML,
-	getStringSize
+	getStringSize,
+    log
 }
