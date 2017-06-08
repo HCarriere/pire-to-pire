@@ -62,7 +62,7 @@ function encryptPassword(password) {
 /////////////////////////////////
 
 function getShortName(name){
-    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-')+"-"+generateRandomId();
+    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-');//+"-"+generateRandomId();
 }
 
 /////////////////////////////////
@@ -121,7 +121,14 @@ function isDateFromToday(date){
 	return getStringDateDay(date) === getStringDateDay(new Date());
 }
 
+/////////////////////////////////
 
+function log(message, logLevel) {
+    if(typeof message !== 'string') {
+        message = JSON.stringify(message);
+    }
+    
+}
 /**
 si date aujourd'hui : que l'heure
 sinon, date.
@@ -133,6 +140,8 @@ function getSimpleStringDate(date){
 		return getStringDateDay(date);
 	}
 }
+
+    
 
 module.exports = {
     getExtractOf,
@@ -146,5 +155,6 @@ module.exports = {
 	getTags,
 	getHTMLContent,
 	getTextContentFromHTML,
-	getStringSize
+	getStringSize,
+    log
 }

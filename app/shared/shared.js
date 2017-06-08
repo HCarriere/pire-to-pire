@@ -53,37 +53,49 @@ function addShareable(request, callback){
         },
         publicationDate:Date.now()
     }
-    mongo.add(ShareableSchema, function(err,result){
-        if(err){
-            callback(err,null)    
-        }else{
-            callback(null,object.shortName)
-        }
-    },object)
+    
+    mongo.count(ShareableSchema, function(err, count){
+        object.id = count+1;
+        mongo.add(ShareableSchema, function(err,result){
+            if(err){
+                callback(err,null)    
+            }else{
+                callback(null,object.id)
+            }
+        },object);
+    }, {});
 }
 
 function listShareables(limit, callback, offset){
-    mongo.findWithOptions(ShareableSchema, function(err, result){
-        if(err){
-            callback(err, null)
-            return;
-        }else{
-            for(var share of result){
-                share.stringPublicationDate = utils.getStringDate(share.publicationDate);
-				share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
-				share.extract = utils.getExtractOf(share.description);
+    mongo.count(ShareableSchema, function(err, count){
+        mongo.findWithOptions(ShareableSchema, function(err, result){
+            if(err){
+                callback(err, null)
+                return;
+            }else{
+                for(var share of result){
+                    share.stringPublicationDate = utils.getStringDate(share.publicationDate);
+                    share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
+                    share.extract = utils.getExtractOf(share.description);
+                }
+                callback(null, result, count);
             }
-            callback(null, result)
-        }
-    },{},limit,{publicationDate:-1},offset)
+        },{},limit,{publicationDate:-1},offset)
+    }, {});
 }
 
-function getShareable(shortName, callback, editMode){
+function getShareable(id, callback, editMode){
     mongo.findOne(ShareableSchema, function(err, result) {
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
 			result.stringModificationDate = utils.getStringDate(result.modificationDate);
 			result.uploadedObject.stringSize = utils.getStringSize(result.uploadedObject.size);
+            for(var comment of result.comments) {
+                comment.stringDate = utils.getStringDate(comment.date);
+            }
+            result.comments.sort(function(a,b) {
+                return b.date - a.date;
+            });
 			if(editMode){
 				result.description = utils.getTextContentFromHTML(result.description);
 			}else{
@@ -94,16 +106,16 @@ function getShareable(shortName, callback, editMode){
         }
         callback(null);
         return;
-    }, {shortName: shortName})
+    }, {id: id})
 }
 
 function editShareable(request, callback) {
 	console.log("editing..."+JSON.stringify(request.body))
 	mongo.update(ShareableSchema, function(err, result) {
-		callback(err, request.body.originalShortName)
+		callback(err, request.body.originalId)
 	},
 	{
-		shortName: request.body.originalShortName
+		id: request.body.originalId
 	},//condition
 	{
 		modificationDate: Date.now(),
@@ -130,10 +142,36 @@ function getAuthorPublications(){
     }
 }
 
+// callback(err, data)
+function commentShareable(request, callback) {
+    if(!request.body.comment) {
+        callback('Commentaire vide.',{redirect:'/'});
+        return;
+    }
+    var sharedId = request.body.sharedId;
+    
+    mongo.update(ShareableSchema, function(err, result) {
+		callback(err, {
+            redirect:'/shared/'+sharedId
+        });
+	},
+	{
+		id: sharedId
+	},//condition
+	{$push: {'comments': {
+            content:request.body.comment,
+            author:request.user.login,
+            date: new Date(),
+        }
+    }},//update
+	{safe: true, upsert: true, new : true})//options
+}
+
 module.exports= {
     addShareable,
     listShareables,
     getShareable,
     getAuthorPublications,
-	editShareable
+	editShareable,
+    commentShareable
 }

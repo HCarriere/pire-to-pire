@@ -11,6 +11,7 @@
     <form method="post" action="{{apiCalled}}">
         <label>Titre de l'article</label>
 		<input type="hidden" name="originalShortName" value="{{article.shortName}}">
+		<input type="hidden" name="originalId" value="{{article.id}}">
         <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required value="{{article.name}}">
         
         <label>Article</label>

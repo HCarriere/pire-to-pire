@@ -8,6 +8,7 @@ var articleSchema = {
     schema:mongoose.Schema({
         name: String,
         shortName: String,
+        id: String,
         content: String,
         publicationDate: Date,
         modificationDate: Date,
@@ -16,8 +17,18 @@ var articleSchema = {
         ],
         author: { type : String , ref : conf.database.collections.users },
         isNews: Boolean,
-        upvotes:Number,
-        downvotes:Number
+        upvotes:[{ type : String , ref : conf.database.collections.users }],
+        downvotes:[{ type : String , ref : conf.database.collections.users }],
+        comments: [
+            {
+                content:String,
+                author:{ type : String , ref : conf.database.collections.users },
+                date: Date,
+                upvotes:[{ type : String , ref : conf.database.collections.users }],
+                downvotes:[{ type : String , ref : conf.database.collections.users }]
+            }
+        ]
+        
     }),
     collection : conf.database.collections.articles
 }

@@ -3,7 +3,7 @@
 <article class="article-content" style="text-align:justify;">
 	
 	{{#ifContains global.privileges 'edit_document'}}
-	<a class="button add" href="/edit/shared/{{shareable.shortName}}"><i class="fa fa-edit"></i> Editer le document</a>
+	<a class="button add" href="/edit/shared/{{shareable.id}}"><i class="fa fa-edit"></i> Editer le document</a>
 	{{/ifContains}}
 	
     <div class="list-title">{{shareable.name}}</div>
@@ -33,7 +33,29 @@
     
     {{#each shareable.tags}}
     <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
-    {{/each}}    
+    {{/each}}   
+    
+    <h2>Commentaires</h2>
+    {{#ifContains global.privileges 'shareable_post'}}
+    <form method="POST" action="/comment/shared">
+        <textarea name="comment" class="comments-text" placeholder="Votre commentaire..." required></textarea>
+        <input type="hidden" name="sharedId" value="{{shareable.id}}">
+        <button class="button add">Valider</button>
+    </form>
+    {{/ifContains}}
+    
+    {{#if shareable.comments}}
+        {{#each shareable.comments}}
+            <div class="comment-box">
+                <a href="/user/{{author}}" class="meta user">{{author}}</a>-<div class="meta date">{{stringDate}}</div>
+                <div class="comment">
+                    {{content}}
+                </div>
+            </div>
+        {{/each}}
+    {{else}}
+        <p>Aucun commentaire pour le moment.</p>
+    {{/if}}
 </article>
 
 

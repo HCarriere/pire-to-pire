@@ -26,13 +26,16 @@ function addDocument(request, isNews, callback){
         isNews: isNews
     };
 
-    mongo.add(ArticleSchema, function(err,result){
-        if(err){
-            callback(err,null)    
-        }else{
-            callback(null,object.shortName)
-        }
-    },object)
+    mongo.count(ArticleSchema, function(err, count){
+        object.id = count+1;
+        mongo.add(ArticleSchema, function(err,result){
+            if(err){
+                callback(err,null)    
+            }else{
+                callback(null,object.id);
+            }
+        },object);
+    },{});
 }
 
 function addArticle(request,callback){
@@ -46,18 +49,20 @@ function addNews(request,callback){
 
 
 function listDocuments(limit,news,callback,offset){
-	 mongo.findWithOptions(ArticleSchema, function(err,result){
-        if(err){
-            callback(err, null)
-        }
-        else{
-            for (var article of result){
-                article.stringPublicationDate = utils.getStringDate(article.publicationDate);
-                article.extract = utils.getExtractOf(article.content);
+    mongo.count(ArticleSchema, function(err, count){
+        mongo.findWithOptions(ArticleSchema, function(err,result){
+            if(err){
+                callback(err, null)
             }
-            callback(null,result)
-        }
-    },{isNews: news},limit,{publicationDate:-1},offset)
+            else{
+                for (var article of result){
+                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);
+                }
+                callback(null, result, count);
+            }
+        },{isNews: news},limit,{publicationDate:-1},offset)
+    },{isNews: news});
 }
 
 function listArticles(limit, callback, offset){
@@ -72,11 +77,17 @@ function listNews(limit, callback, offset){
 
 
 
-function getArticle(shortName, callback, editMode) {
-    mongo.findOne(ArticleSchema, function(err,result){
+function getArticle(id, callback, editMode) {
+    mongo.findOne(ArticleSchema, function(err, result){
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
 			result.stringModificationDate = utils.getStringDate(result.modificationDate);
+            for(var comment of result.comments) {
+                comment.stringDate = utils.getStringDate(comment.date);
+            }
+            result.comments.sort(function(a,b) {
+                return b.date - a.date;
+            });
 			if(editMode){
 				result.content = utils.getTextContentFromHTML(result.content);
 			}else{
@@ -88,16 +99,16 @@ function getArticle(shortName, callback, editMode) {
         }
         callback(null)
         return;
-    },{shortName: shortName})
+    },{id: id})
 }
 
 
 function editDocument(request, callback) {
 	mongo.update(ArticleSchema, function(err, result) {
-		callback(err, request.body.originalShortName)
+		callback(err, request.body.originalId)
 	},
 	{
-		shortName: request.body.originalShortName
+		id: request.body.originalId
 	},//condition
 	{
 		modificationDate: Date.now(),
@@ -128,6 +139,32 @@ function getAuthorPublications(){
     }
 }
 
+// callback(err, data)
+function commentArticle(request, callback) {
+    if(!request.body.comment) {
+        callback('Commentaire vide.',{redirect:'/'});
+        return;
+    }
+    var articleId = request.body.articleId;
+    
+    mongo.update(ArticleSchema, function(err, result) {
+		callback(err, {
+            redirect:'/article/'+articleId
+        });
+	},
+	{
+		id: articleId
+	},//condition
+	{$push: {'comments': {
+            content:request.body.comment,
+            author:request.user.login,
+            date: new Date(),
+        }
+    }},//update
+	{safe: true, upsert: true, new : true})//options
+}
+
+
 module.exports = {
     listArticles,
     listNews,
@@ -135,7 +172,8 @@ module.exports = {
     addNews,
     getArticle,
     getAuthorPublications,
-	editDocument
+	editDocument,
+    commentArticle
 }
 
 

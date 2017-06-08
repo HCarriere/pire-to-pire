@@ -181,17 +181,15 @@ function updateUserProfilePicture(request, callback){
     );
 }
 
-function listUsers(limit,callback, offset){
-    mongo.findWithOptions(
-        UserSchema, 
-        function(err, result){
-            if(result){
-                callback(result)
-            }else{
-                callback(null)
+function listUsers(limit, callback, offset){
+    mongo.count(UserSchema, function(err, count){
+        mongo.findWithOptions(UserSchema, function(err, result){
+            if(err) {
+                console.log(err);
             }
-        }, {},limit,{inscriptionDate:-1},offset
-    );
+            callback(err, result, count);
+        }, {},limit,{inscriptionDate:-1},offset);
+    }, {});
 }
 
 

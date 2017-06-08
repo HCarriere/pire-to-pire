@@ -15,7 +15,7 @@
     {{#each articles}}
     
     <div class="list-element">
-        <a href="/article/{{shortName}}" class="list-title">{{name}}</a>
+        <a href="/article/{{id}}" class="list-title">{{name}}</a>
         Par<a href="/user/{{author}}" class="meta user">{{author}}</a><div class="meta date">{{stringPublicationDate}}</div>
         <p>{{extract}}...</p>
     
@@ -28,16 +28,15 @@
     {{/each}}
     
 </div>
-{{#if isnews}}
-	{{#if nextPage}}
-	<a class="next-page right" href="/news/page/{{nextPage}}">plus</a>
-	{{else}}
-	<a class="next-page right" href="/news/page/2">plus</a>
-	{{/if}}
-{{else}}
-	{{#if nextPage}}
-	<a class="next-page right" href="/article/page/{{nextPage}}">plus</a>
-	{{else}}
-	<a class="next-page right" href="/article/page/2">plus</a>
-	{{/if}}
+
+{{#if pagination}}
+<div class="pagination">
+    {{#if pagination.firstpage}}<a class="firstpage" href="{{pagination.url}}/1">&lt;&lt;</a>{{/if}}<!--
+    -->{{#if pagination.previous}}<a class="previous" href="{{pagination.url}}/{{pagination.previous}}">&lt;</a>{{/if}}<!--
+    -->{{#each pagination.beforepages}}<a class="beforepages" href="{{../pagination.url}}/{{.}}">{{.}}</a>{{/each}}<!--
+    -->{{#if pagination.current}}<div class="current">{{pagination.current}}</div>{{/if}}<!--
+    -->{{#each pagination.afterpages}}<a class="afterpages" href="{{../pagination.url}}/{{.}}">{{.}}</a>{{/each}}<!--
+    -->{{#if pagination.next}}<a class="next" href="{{pagination.url}}/{{pagination.next}}">&gt;</a>{{/if}}<!--
+    -->{{#if pagination.lastpage}}<a class="lastpage" href="{{pagination.url}}/{{pagination.lastpage}}">&gt;&gt;</a>{{/if}}
+</div>
 {{/if}}

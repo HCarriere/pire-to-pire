@@ -5,6 +5,7 @@ var Schema = {
     schema:mongoose.Schema({
         name: String,
         shortName: String,
+        id:String,
         description: String,
         uploadedObject: {
             name: String,
@@ -18,8 +19,17 @@ var Schema = {
             {tag:String}
         ],
         author: { type : String , ref : conf.database.collections.users },
-        upvotes:Number,
-        downvotes:Number
+        upvotes:[{ type : String , ref : conf.database.collections.users }],
+        downvotes:[{ type : String , ref : conf.database.collections.users }],
+        comments: [
+            {
+                content:String,
+                author:{ type : String , ref : conf.database.collections.users },
+                date: Date,
+                upvotes:[{ type : String , ref : conf.database.collections.users }],
+                downvotes:[{ type : String , ref : conf.database.collections.users }]
+            }
+        ]
     }),
     collection : conf.database.collections.shareables
 }

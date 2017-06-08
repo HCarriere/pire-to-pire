@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 // server.js
 
 //imports
@@ -12,12 +12,14 @@ const multer    = require('multer')
 const bodyParser= require('body-parser')
 const md5 		= require('md5');
 
-//General cong
+//General conf
 const mongo     = require('./app/mongo')
 const config    = require('./config') //config file
 const app       = express();
 const port      = process.env.PORT || config.server.port;
 const server 	= http.createServer(app);
+
+const sessionID = md5(Math.random());
 
 //Express configuration
 app
@@ -39,8 +41,6 @@ app
 }));
 
 
-
-
 var handlebars = exphbs.create({
     defaultLayout: 'main',
     extname: '.hbs',
@@ -60,7 +60,8 @@ var handlebars = exphbs.create({
                     return out.fn(this);
                 }
             }
-        }
+        },
+        
     }
 });
 
@@ -115,7 +116,7 @@ var inbox 	= require('./app/inbox')
 
 /////////// inits ///////////
 connect.init();
-chat.init(server);
+chat.init(server, sessionID);
 mongo.initMongo();
 
 ///////////////////////////
@@ -236,6 +237,8 @@ app
 				if (loginErr) {
 					return next(loginErr);
 				}
+                console.log("ptp:api:(/connect):passport.authenticate:OK:():"+user.login+" (UA: "+request.headers['user-agent']+") (IP: "+request.connection.remoteAddress+")");
+
 				var nexturl = request.session.nextUrl;
 				delete request.session.nextUrl;
 				response.redirect(nexturl || '/');
@@ -274,22 +277,23 @@ app
 //list articles
 .get('/article',
 	 (request, response) => {
-    article.listArticles(config.limitDocuments.default, function(err, articles){ //0: no limit
+    article.listArticles(config.limitDocuments.default, function(err, articles, count){ //0: no limit
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:articles,
-            pageTitle:'Derniers articles'
+            pageTitle:'Derniers articles',
+            pagination:getPagination('/article/page',1,count, config.limitDocuments.default),
         })
     })
 })
 .get('/article/page/:n',
 	 (request, response) => {
-    article.listArticles(config.limitDocuments.default, function(err, articles){ //0: no limit
+    article.listArticles(config.limitDocuments.default, function(err, articles, count){ //0: no limit
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:articles,
             pageTitle:'Derniers articles',
-			nextPage:parseInt(request.params.n)+1
+			pagination:getPagination('/article/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })
     },(request.params.n-1) * config.limitDocuments.default)
 })
@@ -317,8 +321,18 @@ app
    		})
 	},true) //edit mode
 })
-
-
+// comment
+.post('/comment/article',
+      mustBeAuthentified(),
+      hasPrivilege(user.law.privileges.ARTICLE_POST),
+      (request,response) => {
+    article.commentArticle(request, function(err, data) {
+        if(err) {
+            console.log(err);
+        }
+        response.redirect(data.redirect);
+    });
+})
 //////////////// SHARED
 //shared
 .get('/shared/:id',
@@ -334,20 +348,21 @@ app
 //list shareables
 .get('/shared', 
 	 (request, response) => {
-    shared.listShareables(config.limitDocuments.default, function(err, shareables) {
+    shared.listShareables(config.limitDocuments.default, function(err, shareables, count) {
         response.render('shared/listShared', {
             global:getParameters(request),
-            shareables:shareables
+            shareables:shareables,
+            pagination:getPagination('/shared/page',1,count, config.limitDocuments.default),
         })    
     })
 })
 .get('/shared/page/:n', 
 	 (request, response) => {
-    shared.listShareables(config.limitDocuments.default, function(err, shareables) {
+    shared.listShareables(config.limitDocuments.default, function(err, shareables, count) {
         response.render('shared/listShared', {
             global:getParameters(request),
             shareables:shareables,
-			nextPage:parseInt(request.params.n)+1
+            pagination:getPagination('/shared/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })    
     }, (request.params.n-1) * config.limitDocuments.default)
 })
@@ -376,30 +391,42 @@ app
 		})
 	},true)//edit mode
 })
-
+// comment
+.post('/comment/shared',
+      mustBeAuthentified(),
+      hasPrivilege(user.law.privileges.SHAREABLE_POST),
+      (request,response) => {
+    shared.commentShareable(request, function(err, data) {
+        if(err) {
+            console.log(err);
+        }
+        response.redirect(data.redirect);
+    });
+})
 ////////////// NEWS
 //edit & view are on articles (news = article)
 //list news
 .get('/news', 
 	 (request, response) => {
-    article.listNews(config.limitDocuments.default, function(err,news){
-        response.render('../views/layouts/listArticles', {
-            global:getParameters(request),
-            articles:news,
-            pageTitle:'Dernières news',
-			isnews:true
-        })  
-    })
-})
-.get('/news/page/:n', 
-	 (request, response) => {
-    article.listNews(config.limitDocuments.default, function(err,news){
+    article.listNews(config.limitDocuments.default, function(err,news, count){
         response.render('../views/layouts/listArticles', {
             global:getParameters(request),
             articles:news,
             pageTitle:'Dernières news',
 			isnews:true,
-			nextPage:parseInt(request.params.n)+1
+            pagination:getPagination('/news/page',1,count, config.limitDocuments.default),
+        })  
+    })
+})
+.get('/news/page/:n', 
+	 (request, response) => {
+    article.listNews(config.limitDocuments.default, function(err,news, count){
+        response.render('../views/layouts/listArticles', {
+            global:getParameters(request),
+            articles:news,
+            pageTitle:'Dernières news',
+			isnews:true,
+			pagination:getPagination('/news/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })  
     },(request.params.n-1) * config.limitDocuments.default)
 })
@@ -444,94 +471,98 @@ app
 .get('/admin/users',
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
 	 (request, response) => {
-    user.listUsers(config.limitDocuments.default,function(userList){
+    user.listUsers(config.limitDocuments.default,function(err, userList, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(userList, BO.UserTableModel),
             htmlAfter:BO.UserTableModel.addHtmlAfter,
-			type:'users'
+			type:'users',
+            pagination:getPagination('/admin/users/page',1, count, config.limitDocuments.default),
         })  
     })
 })
 .get('/admin/users/page/:n',
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
 	 (request, response) => {
-    user.listUsers(config.limitDocuments.default,function(userList){
+    user.listUsers(config.limitDocuments.default,function(err, userList, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(userList, BO.UserTableModel),
             htmlAfter:BO.UserTableModel.addHtmlAfter,
 			type:'users',
-			nextPage:parseInt(request.params.n)+1
+            pagination:getPagination('/admin/users/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })  
     },(request.params.n-1) * config.limitDocuments.default)
 })
 .get('/admin/articles', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 (request, response) => {
-    article.listArticles(config.limitDocuments.default, function(err, list){
+    article.listArticles(config.limitDocuments.default, function(err, list, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.ArticleTableModel),
 			type:'articles',
+            pagination:getPagination('/admin/articles/page',1,count, config.limitDocuments.default),
         })  
     })
 })
 .get('/admin/articles/page/:n', 
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 (request, response) => {
-    article.listArticles(config.limitDocuments.default, function(err, list){
+    article.listArticles(config.limitDocuments.default, function(err, list, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.ArticleTableModel),
 			type:'articles',
-			nextPage:parseInt(request.params.n)+1
+			pagination:getPagination('/admin/articles/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })  
     },(request.params.n-1) * config.limitDocuments.default)
 })
 .get('/admin/news',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 (request, response) => {
-    article.listNews(config.limitDocuments.default, function(err, list){
+    article.listNews(config.limitDocuments.default, function(err, list, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.NewsTableModel),
-			type:'news'
+			type:'news',
+            pagination:getPagination('/admin/news/page',1,count, config.limitDocuments.default),
         })  
     })
 })
 .get('/admin/news/page/:n',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 (request, response) => {
-    article.listNews(config.limitDocuments.default, function(err, list){
+    article.listNews(config.limitDocuments.default, function(err, list, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.NewsTableModel),
 			type:'news',
-			nextPage:parseInt(request.params.n)+1
+			pagination:getPagination('/admin/news/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })  
     },(request.params.n-1) * config.limitDocuments.default)
 })
 .get('/admin/shareables',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 (request, response) => {
-    shared.listShareables(config.limitDocuments.default, function(err, list){
+    shared.listShareables(config.limitDocuments.default, function(err, list, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.ShareableTableModel),
-			type:'shareables'
+			type:'shareables',
+            pagination:getPagination('/admin/shareables/page',1,count, config.limitDocuments.default),
         })  
     })
 })
 .get('/admin/shareables/page/:n',
 	 hasPrivilege(user.law.privileges.BO_ACCESS),
 	 (request, response) => {
-    shared.listShareables(config.limitDocuments.default, function(err, list){
+    shared.listShareables(config.limitDocuments.default, function(err, list, count){
         response.render('backOffice/table', {
             global:getParameters(request),
             admin:BO.getAsTable(list, BO.ShareableTableModel),
 			type:'shareables',
-			nextPage:parseInt(request.params.n)+1
+			pagination:getPagination('/admin/shareables/page',parseInt(request.params.n),count, config.limitDocuments.default),
         })  
     },(request.params.n-1) * config.limitDocuments.default)
 })
@@ -607,9 +638,9 @@ app
 	  mustBeAuthentified(),
 	  hasPrivilege(user.law.privileges.ARTICLE_POST),
 	  (request, response) => {
-    article.addArticle(request, function(err,shortName){
-        if(shortName) {
-            response.redirect('/article/'+shortName);
+    article.addArticle(request, function(err,id){
+        if(id) {
+            response.redirect('/article/'+id);
         }
 		if(err) {
 			
@@ -622,9 +653,9 @@ app
 	  mustBeAuthentified(), 
 	  hasPrivilege(user.law.privileges.EDIT_DOCUMENT),
 	  (request, response) => {
-    article.editDocument(request, function(err, shortName) {
-		if(shortName) {
-            response.redirect('/article/'+shortName);
+    article.editDocument(request, function(err, id) {
+		if(id) {
+            response.redirect('/article/'+id);
         }
 		if(err) {
 			
@@ -636,9 +667,9 @@ app
 .post('/api/add/news',
 	  hasPrivilege(user.law.privileges.BO_ACCESS),
 	  (request, response) => {
-    article.addNews(request, function(err,shortName){
-        if(shortName){
-            response.redirect('/article/'+shortName);
+    article.addNews(request, function(err,id){
+        if(id){
+            response.redirect('/article/'+id);
         }
     })
 })
@@ -655,9 +686,9 @@ app
                 errorContent:err
             });
         }else{
-            shared.addShareable(request, function(err, shortName) {
-                if(shortName){
-                    response.redirect('/shared/'+shortName);
+            shared.addShareable(request, function(err, id) {
+                if(id){
+                    response.redirect('/shared/'+id);
                 }
             })
         }
@@ -669,9 +700,9 @@ app
 	  mustBeAuthentified(), 
 	  hasPrivilege(user.law.privileges.EDIT_DOCUMENT), 
 	  (request, response) => {
-	shared.editShareable(request, function(err, shortName) {
-		if(shortName) {
-			response.redirect('/shared/'+shortName);
+	shared.editShareable(request, function(err, id) {
+		if(id) {
+			response.redirect('/shared/'+id);
 		}
 		if(err) {
 			
@@ -772,7 +803,8 @@ server.listen(port, (err) => {
     if(err) {
         return console.log("ptp:app:():():ERR:(Node launch error):", err)
     }
-    console.log(`ptp:app:(/):():OK:(main server listening *:${port})`)
+    console.log(`ptp:app:(/):():OK:(main server listening *:${port})`);
+    console.log(`SessionID : ${sessionID}`);
     
 });
 
@@ -828,10 +860,34 @@ function hasPrivilege(priv){
 function getKeyFromLogin(login){
 	
 	if(login != null) 
-		return md5(login+config.chat.secret);
+		return md5(login+config.chat.secret+sessionID);
 	return "invalid";
 }
 
+function getPagination(url, currentPage, documentCount, offset) {
+    let pageMax = Math.floor(documentCount/offset) + 1;
+    let pagination =  {
+        url: url,
+        beforepages: [],
+        current: currentPage,
+        afterpages: [],
+    };
+    if(currentPage > 1) {
+        pagination.firstpage=1;
+        pagination.previous=currentPage-1;
+    }
+    for(let b = currentPage-1; b>currentPage-5 && b>0; b--) {
+        pagination.beforepages.unshift(b);
+    }
+    for(let a = currentPage+1; a<currentPage+5 && a<=pageMax; a++) {
+        pagination.afterpages.push(a);
+    }
+    if(currentPage < pageMax) {
+        pagination.lastpage=pageMax;
+        pagination.next=currentPage+1;
+    }
+    return pagination;
+}
 
 /**
 global parameters
@@ -865,7 +921,7 @@ function csrf() {
 				csrfTokens.shift();
 			}
 			csrfTokens.push({value:token,date:new Date()});
-			console.log(token)
+			// console.log(token)
 			return token;
 		}
 		

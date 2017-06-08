@@ -1,6 +1,8 @@
 const conf = require('../config');
 var md5 = require('md5');
 var mongoose = require('mongoose');
+
+
 var conn;
 
 function initMongo(){
@@ -279,26 +281,41 @@ function count(schema,callback, condition){
 
 /**
 methode de test. envoi de maniere recursive des données dans la DB
+
 mongoOperation : 1 seule opération
 schema : 1 seul schema
 dataArray plusieurs object dans le dataArray
 current : par ou commence l'array
-onDone() : action executée à la fin
+onDone(stats) : action executée à la fin
+(optionnel) onTick(done, requested) : function
+(optionnel) stats : statistiques de l'operation
 */
-function processFunction(mongoOperation, schema, dataArray, current, onDone){
+function processFunction(mongoOperation, schema, dataArray, current, onDone, onTick, stats){
+    if(!stats) {
+        stats = {
+            error:0,
+            success:0,
+            requested:dataArray.length,
+            collection:schema.collection,
+        };    
+    }
     if(current >= dataArray.length || current < 0){
-        console.log('done.')
-        onDone();
+        onDone(stats);
         return ;
     }
-    console.log('operation '+(current+1)+'/'+dataArray.length+':')
+    // console.log('operation '+(current+1)+'/'+dataArray.length+':')
     mongoOperation(schema, function(err, result){
         if(err){
-            console.log('error on '+(current+1)+' : '+err)
+            // console.log('error on '+(current+1)+' : '+err);
+            stats.error++;
         }else{
-            console.log('operation '+(current+1)+' executed with success !')
+            // console.log('operation '+(current+1)+' executed with success !');
+            stats.success++;
         }
-        processFunction(mongoOperation, schema, dataArray, current + 1, onDone)
+        if(onTick) {
+            onTick(current+1,stats.requested);
+        }
+        processFunction(mongoOperation, schema, dataArray, current + 1, onDone, onTick, stats);
     } , dataArray[current]);
 }
 

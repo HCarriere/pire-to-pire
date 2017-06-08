@@ -10,12 +10,13 @@ const utils = require('../utils')
 const md5 = require('md5');
 const conf = require('../../config')
 
+var sessionID='';
 ////////////// PUBLIC //////////////
 ////////////////////////////////////
 
-function init(server){
+function init(server, _sessionID){
 	var io = require('socket.io')(server);
-	
+	sessionID = _sessionID;
 	
 	io.sockets.on('connection', function(socket){
 		onConnect(socket);
@@ -128,7 +129,7 @@ function escapeHtml(string) {
 
 function getKeyFromLogin(login){
 	if(login != null) 
-		return md5(login+conf.chat.secret);
+		return md5(login+conf.chat.secret+sessionID);
 	return "";
 }
 
