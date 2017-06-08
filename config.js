@@ -14,7 +14,7 @@ module.exports = {
             articles:"article",
 			chatMessage:"chatMessage",
             shareables:"shareable",
-			inbox:"messages"
+			inbox:"message"
         },
 		verbose:false,
 		mongooseDebug:false,

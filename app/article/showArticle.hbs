@@ -39,10 +39,10 @@
         <button class="button add">Valider</button>
     </form>
     {{/ifContains}}
-    {{#if articles.comments}}
+    {{#if article.comments}}
         {{#each article.comments}}
             <div class="comment-box">
-                <div class="meta user">{{author}}</div>-<div class="meta date">{{stringDate}}</div>
+                <a href="/user/{{author}}" class="meta user">{{author}}</a>-<div class="meta date">{{stringDate}}</div>
                 <div class="comment">
                     {{content}}
                 </div>
