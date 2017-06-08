@@ -27,8 +27,14 @@
     {{/each}}
 </div>
 
-{{#if nextPage}}
-<a class="next-page right" href="/shared/page/{{nextPage}}">plus</a>
-{{else}}
-<a class="next-page right" href="/shared/page/2">plus</a>
+{{#if pagination}}
+<div class="pagination">
+    {{#if pagination.firstpage}}<a class="firstpage" href="{{pagination.url}}/1">&lt;&lt;</a>{{/if}}<!--
+    -->{{#if pagination.previous}}<a class="previous" href="{{pagination.url}}/{{pagination.previous}}">&lt;</a>{{/if}}<!--
+    -->{{#each pagination.beforepages}}<a class="beforepages" href="{{../pagination.url}}/{{.}}">{{.}}</a>{{/each}}<!--
+    -->{{#if pagination.current}}<div class="current">{{pagination.current}}</div>{{/if}}<!--
+    -->{{#each pagination.afterpages}}<a class="afterpages" href="{{../pagination.url}}/{{.}}">{{.}}</a>{{/each}}<!--
+    -->{{#if pagination.next}}<a class="next" href="{{pagination.url}}/{{pagination.next}}">&gt;</a>{{/if}}<!--
+    -->{{#if pagination.lastpage}}<a class="lastpage" href="{{pagination.url}}/{{pagination.lastpage}}">&gt;&gt;</a>{{/if}}
+</div>
 {{/if}}

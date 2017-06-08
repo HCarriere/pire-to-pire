@@ -63,19 +63,21 @@ function addShareable(request, callback){
 }
 
 function listShareables(limit, callback, offset){
-    mongo.findWithOptions(ShareableSchema, function(err, result){
-        if(err){
-            callback(err, null)
-            return;
-        }else{
-            for(var share of result){
-                share.stringPublicationDate = utils.getStringDate(share.publicationDate);
-				share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
-				share.extract = utils.getExtractOf(share.description);
+    mongo.count(ShareableSchema, function(err, count){
+        mongo.findWithOptions(ShareableSchema, function(err, result){
+            if(err){
+                callback(err, null)
+                return;
+            }else{
+                for(var share of result){
+                    share.stringPublicationDate = utils.getStringDate(share.publicationDate);
+                    share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
+                    share.extract = utils.getExtractOf(share.description);
+                }
+                callback(null, result, count);
             }
-            callback(null, result)
-        }
-    },{},limit,{publicationDate:-1},offset)
+        },{},limit,{publicationDate:-1},offset)
+    }, {});
 }
 
 function getShareable(shortName, callback, editMode){

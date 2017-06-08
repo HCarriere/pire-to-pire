@@ -46,18 +46,20 @@ function addNews(request,callback){
 
 
 function listDocuments(limit,news,callback,offset){
-	 mongo.findWithOptions(ArticleSchema, function(err,result){
-        if(err){
-            callback(err, null)
-        }
-        else{
-            for (var article of result){
-                article.stringPublicationDate = utils.getStringDate(article.publicationDate);
-                article.extract = utils.getExtractOf(article.content);
+    mongo.count(ArticleSchema, function(err, count){
+        mongo.findWithOptions(ArticleSchema, function(err,result){
+            if(err){
+                callback(err, null)
             }
-            callback(null,result)
-        }
-    },{isNews: news},limit,{publicationDate:-1},offset)
+            else{
+                for (var article of result){
+                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);
+                }
+                callback(null, result, count);
+            }
+        },{isNews: news},limit,{publicationDate:-1},offset)
+    },{isNews: news});
 }
 
 function listArticles(limit, callback, offset){

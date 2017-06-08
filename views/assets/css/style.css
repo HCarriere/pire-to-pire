@@ -449,6 +449,8 @@ pre{
     box-shadow: 0 0 5px #222;
     border: 1px solid transparent;
 }
+
+/* pagination */
 .next-page{
 	background-color: #346ba1;
 	padding: 13px 62px;
@@ -466,6 +468,27 @@ pre{
 	background-color: #234b72;
 	box-shadow:none;
 }
+
+.pagination {
+    text-align:center;
+}
+.pagination a,.pagination div{
+    text-decoration: none;
+    background-color: #346ba1;
+    color:white;
+    padding:5px;
+    display:inline;
+}
+.pagination a:hover{
+    background-color: #234b72;
+}
+.pagination .firstpage{margin-right:2px;}
+.pagination .previous{margin-right:2px;}
+.pagination .beforepages{}
+.pagination .current{padding:8px}
+.pagination .afterpages{}
+.pagination .next{margin-left:2px;}
+.pagination .lastpage{margin-left:2px;}
 
 
 /*alerts*/

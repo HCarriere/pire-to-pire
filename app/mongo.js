@@ -312,7 +312,9 @@ function processFunction(mongoOperation, schema, dataArray, current, onDone, onT
             // console.log('operation '+(current+1)+' executed with success !');
             stats.success++;
         }
-        onTick(current+1,stats.requested);
+        if(onTick) {
+            onTick(current+1,stats.requested);
+        }
         processFunction(mongoOperation, schema, dataArray, current + 1, onDone, onTick, stats);
     } , dataArray[current]);
 }
