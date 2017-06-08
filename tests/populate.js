@@ -32,22 +32,22 @@ Tous seront liés, utilisables, avec du contenu généré aléatoirement.
 const stats = {
 	users:{
         amount:200,
-        adminAmount:10,
+        adminAmount:10, // the amount of admin present among the users
     },
 	articles:{
-		max:5000,
+		max:10000,
 		perUserMin:0,
 		perUserMax:8
 	},
 	shareds:{
-		max:5000,
+		max:10000,
 		perUserMin:0,
 		perUserMax:8
 	},
 	news:{
-		max:1500,
+		max:3000,
 		perAdminMin:0,
-		perAdminMax:8
+		perAdminMax:25
 	},
 	chatMessages:{
 		max:10000,
@@ -55,9 +55,9 @@ const stats = {
 		perUserMax:12
 	},
 	inbox:{
-		max:8000,
+		max:100000,
 		perUserMin:0,
-		perUserMax:10
+		perUserMax:12
 	},
     comments:{
         min:0,
@@ -82,18 +82,19 @@ function init(){
 }
 	
 function getUserDataArray(){
+    console.log('Generating data array for users...');
 	let array = [];
     let adminRemaining = stats.users.adminAmount;
     
 	for(let i = 0;i<stats.users.amount;i++){
 		let surname = getRandomWordFromArray(names);
 		let name = getRandomWordFromArray(names);
-		let discriminent = Math.floor(Math.random()*1000);
+		let discriminant = Math.floor(Math.random()*1000);
 		let object = {
-			login:surname+""+discriminent,
+			login:surname+""+discriminant,
 			password:utils.encryptPassword("123"),//same password for everyone
 			fullName:surname+" "+name,
-			mail:surname+"."+name+""+discriminent+"@"+"pire-to-pire.com",
+			mail:surname+"."+name+""+discriminant+"@"+"pire-to-pire.com",
 			privileges:Law.roles.WRITER.defaultRights,
 			rank:Law.roles.WRITER.name,
 			inscriptionDate:randomDate(),
@@ -106,10 +107,13 @@ function getUserDataArray(){
         }
         array.push(object);
 	}
+    console.log('Done.')
+    userArray = array;
 	return array;
 }
 
 function getArticleDataArray(){
+    console.log('Generating data array for articles...');
 	let array = [];
 	let remaining = stats.articles.max;
 	for(let i = 0;i<stats.users.amount;i++){
@@ -137,10 +141,12 @@ function getArticleDataArray(){
     array.sort(function(a,b) {
         return b.publicationDate - a.publicationDate;
     });
+    console.log('Done');
 	return array;
 }
 
 function getSharedDataArray(){
+    console.log('Generating data array for shareables...');
 	let array = [];
 	let remaining = stats.shareds.max;
 	for(let i = 0;i<stats.users.amount;i++){
@@ -173,10 +179,12 @@ function getSharedDataArray(){
     array.sort(function(a,b) {
         return b.publicationDate - a.publicationDate;
     });
+    console.log('Done');
 	return array;
 }
 
 function getNewsDataArray(){
+    console.log('Generating data array for news...');
 	let array = [];
 	let remaining = stats.news.max;
 	for(let i = 0;i<stats.users.amount;i++){
@@ -207,10 +215,12 @@ function getNewsDataArray(){
     array.sort(function(a,b) {
         return b.publicationDate - a.publicationDate;
     });
+    console.log('Done');
 	return array;
 }
 
 function getChatMessageDataArray(){
+    console.log('Generating data array for chat messages...');
 	let array = [];
 	let remaining = stats.chatMessages.max;
 	for(let i = 0;i<stats.users.amount;i++){
@@ -227,10 +237,12 @@ function getChatMessageDataArray(){
 			}
 		}
 	}
+    console.log('Done');
 	return array;
 }
 
 function getInboxMessagesDataArray(){
+    console.log('Generating data array for inbox messages...');
 	let array = [];
 	let remaining = stats.inbox.max;
 	for(let i = 0;i<stats.users.amount;i++){
@@ -250,6 +262,7 @@ function getInboxMessagesDataArray(){
 			}
 		}
 	}
+    console.log('Done');
 	return array;
 }
 
@@ -260,7 +273,7 @@ function populateStep(_steps, callback){
 		return;
 	}
 	let step = _steps.shift();
-	let dataArray = step.dataArray;
+	let dataArray = step.dataArray();// generating data array...
 	console.log("Populating "+dataArray.length+" "+step.schema.collection+"s...");
 	let bar = new ProgressBar(':bar :percent | :elapsed s | :rate op/s', {
         total: dataArray.length,
@@ -268,7 +281,7 @@ function populateStep(_steps, callback){
         head:']',
         incomplete:'-'
     });
-    let timeInit = new Date();
+    // let timeInit = new Date();
     mongo.processFunction(
         mongo.add,
         step.schema,
@@ -395,31 +408,31 @@ const extDictionnary = [
   "aac","ai","aiff","avi","bmp","c","cpp","css","dat","dmg","doc","dotx","dwg","dxf","eps","exe","flv","gif","h","hpp","html","ics","iso","java","jpg","js","key","less","mid","mp3","mp4","mpg","odf","ods","odt","otp","ots","ott","pdf","php","png","ppt","psd","py","qt","rar","rb","rtf","sass","scss","sql","t.txt","tga","tgz","tiff","txt","wav","xls","xlsx","xml","yml","zip"
  ];
 
-const userArray = getUserDataArray();
+let userArray;
 const steps = [
 	{
 		schema:UserSchema,
-		dataArray:userArray
+		dataArray:getUserDataArray
 	},
 	{
 		schema:ArticleSchema,
-		dataArray:getArticleDataArray()
+		dataArray:getArticleDataArray
 	},
 	{
 		schema:ShareableSchema,
-		dataArray:getSharedDataArray()
+		dataArray:getSharedDataArray
 	},
 	{
 		schema:ArticleSchema,
-		dataArray:getNewsDataArray()
+		dataArray:getNewsDataArray
 	},
 	{
 		schema:ChatMessageSchema,
-		dataArray:getChatMessageDataArray()
+		dataArray:getChatMessageDataArray
 	},
 	{
 		schema:InboxSchema,
-		dataArray:getInboxMessagesDataArray()
+		dataArray:getInboxMessagesDataArray
 	},
 ]
 
