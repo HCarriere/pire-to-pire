@@ -30,7 +30,10 @@ Tous seront liés, utilisables, avec du contenu généré aléatoirement.
 *********************/
 
 const stats = {
-	users:200,
+	users:{
+        amount:200,
+        adminAmount:10,
+    },
 	articles:{
 		max:5000,
 		perUserMin:0,
@@ -43,8 +46,8 @@ const stats = {
 	},
 	news:{
 		max:1500,
-		perUserMin:0,
-		perUserMax:8
+		perAdminMin:0,
+		perAdminMax:8
 	},
 	chatMessages:{
 		max:10000,
@@ -80,20 +83,28 @@ function init(){
 	
 function getUserDataArray(){
 	let array = [];
-	for(let i = 0;i<stats.users;i++){
+    let adminRemaining = stats.users.adminAmount;
+    
+	for(let i = 0;i<stats.users.amount;i++){
 		let surname = getRandomWordFromArray(names);
 		let name = getRandomWordFromArray(names);
 		let discriminent = Math.floor(Math.random()*1000);
-		array.push({
+		let object = {
 			login:surname+""+discriminent,
 			password:utils.encryptPassword("123"),//same password for everyone
 			fullName:surname+" "+name,
-			mail:surname+"."+name+""+discriminent+"@"+"gmail.com",
+			mail:surname+"."+name+""+discriminent+"@"+"pire-to-pire.com",
 			privileges:Law.roles.WRITER.defaultRights,
 			rank:Law.roles.WRITER.name,
 			inscriptionDate:randomDate(),
 			verified:true
-		});
+		};
+        if(adminRemaining > 0) {
+            object.privileges = Law.roles.ADMIN.defaultRights;
+            object.rank = Law.roles.ADMIN.name;
+            adminRemaining--;
+        }
+        array.push(object);
 	}
 	return array;
 }
@@ -101,7 +112,7 @@ function getUserDataArray(){
 function getArticleDataArray(){
 	let array = [];
 	let remaining = stats.articles.max;
-	for(let i = 0;i<stats.users;i++){
+	for(let i = 0;i<stats.users.amount;i++){
 		let num = rand(stats.articles.perUserMin,stats.articles.perUserMax);
 		for(let y = 0; y<num; y++){
 			let title = randomTitle();
@@ -109,6 +120,7 @@ function getArticleDataArray(){
 			array.push({
 				name:title,
 				shortName: utils.getShortName(title),
+                id:'GEN_A'+(remaining+stats.articles.max),
 				content: randomContent(),
 				publicationDate:date,
 				tags:getRandomTags(),
@@ -122,13 +134,16 @@ function getArticleDataArray(){
 			}
 		}
 	}
+    array.sort(function(a,b) {
+        return b.publicationDate - a.publicationDate;
+    });
 	return array;
 }
 
 function getSharedDataArray(){
 	let array = [];
 	let remaining = stats.shareds.max;
-	for(let i = 0;i<stats.users;i++){
+	for(let i = 0;i<stats.users.amount;i++){
 		let num = rand(stats.shareds.perUserMin,stats.shareds.perUserMax);
 		for(let y = 0; y<num; y++){
 			let title = randomTitle();
@@ -136,6 +151,7 @@ function getSharedDataArray(){
 			array.push({
 				name:title,
 				shortName: utils.getShortName(title),
+                id:'GEN_S'+remaining,
 				description: randomContent(),
 				publicationDate:date,
 				tags:getRandomTags(),
@@ -154,40 +170,50 @@ function getSharedDataArray(){
 			}
 		}
 	}
+    array.sort(function(a,b) {
+        return b.publicationDate - a.publicationDate;
+    });
 	return array;
 }
 
 function getNewsDataArray(){
 	let array = [];
 	let remaining = stats.news.max;
-	for(let i = 0;i<stats.users;i++){
-		let num = rand(stats.news.perUserMin,stats.news.perUserMax);
-		for(let y = 0; y<num; y++){
-			let title = randomTitle();
-            let date = randomDate();
-			array.push({
-				name:title,
-				shortName: utils.getShortName(title),
-				content: randomContent(),
-				publicationDate:date,
-				tags:getRandomTags(),
-				author: userArray[i].login,
-				isNews: true,
-                comments: getRandomComments(rand(stats.comments.min,stats.comments.max),date)
-			});
-			remaining--;
-			if(remaining <= 0){
-				return array;
-			}
-		}
+	for(let i = 0;i<stats.users.amount;i++){
+        if(userArray[i].privileges == Law.roles.ADMIN.defaultRights) {
+            // is admin
+            let num = rand(stats.news.perAdminMin,stats.news.perAdminMax);
+            for(let y = 0; y<num; y++){
+                let title = randomTitle();
+                let date = randomDate();
+                array.push({
+                    name:title,
+                    shortName: utils.getShortName(title),
+                    id:'GEN_N'+remaining,
+                    content: randomContent(),
+                    publicationDate:date,
+                    tags:getRandomTags(),
+                    author: userArray[i].login,
+                    isNews: true,
+                    comments: getRandomComments(rand(stats.comments.min,stats.comments.max),date)
+                });
+                remaining--;
+                if(remaining <= 0){
+                    return array;
+                }
+            }
+        }
 	}
+    array.sort(function(a,b) {
+        return b.publicationDate - a.publicationDate;
+    });
 	return array;
 }
 
 function getChatMessageDataArray(){
 	let array = [];
 	let remaining = stats.chatMessages.max;
-	for(let i = 0;i<stats.users;i++){
+	for(let i = 0;i<stats.users.amount;i++){
 		let num = rand(stats.chatMessages.perUserMin,stats.chatMessages.perUserMax);
 		for(let y = 0; y<num; y++){
 			array.push({
@@ -207,12 +233,12 @@ function getChatMessageDataArray(){
 function getInboxMessagesDataArray(){
 	let array = [];
 	let remaining = stats.inbox.max;
-	for(let i = 0;i<stats.users;i++){
+	for(let i = 0;i<stats.users.amount;i++){
 		let num = rand(stats.inbox.perUserMin,stats.inbox.perUserMax);
 		for(let y = 0; y<num; y++){
 			array.push({
 				author:userArray[i].login,
-				to:userArray[rand(0,stats.users)].login,
+				to:userArray[rand(0,stats.users.amount)].login,
 				date:randomDate(),
 				subject:randomTitle(),
 				content:randomContent(),
@@ -325,7 +351,7 @@ function getRandomComments(num, articleDate) {
         });
     }
     comments.sort(function(a,b) {
-        return b.date - a.date;
+        return a.date - b.date;
     });
     return comments;
 }

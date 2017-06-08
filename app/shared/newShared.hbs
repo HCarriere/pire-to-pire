@@ -11,6 +11,7 @@
     <form method="post" action="{{apiCalled}}" {{#if shareable}}{{else}}enctype="multipart/form-data"{{/if}}>
         <label>Titre du partage</label>
 		<input type="hidden" name="originalShortName" value="{{shareable.shortName}}">
+		<input type="hidden" name="originalId" value="{{shareable.id}}">
         <input type="text" name="name" placeholder="Un nom cool" class="input-text list-title" required value="{{shareable.name}}">
         
         <label>Fichier à partager</label>

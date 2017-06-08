@@ -5,6 +5,7 @@ var Schema = {
     schema:mongoose.Schema({
         name: String,
         shortName: String,
+        id:String,
         description: String,
         uploadedObject: {
             name: String,

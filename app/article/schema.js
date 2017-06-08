@@ -8,6 +8,7 @@ var articleSchema = {
     schema:mongoose.Schema({
         name: String,
         shortName: String,
+        id: String,
         content: String,
         publicationDate: Date,
         modificationDate: Date,

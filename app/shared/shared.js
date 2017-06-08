@@ -53,13 +53,17 @@ function addShareable(request, callback){
         },
         publicationDate:Date.now()
     }
-    mongo.add(ShareableSchema, function(err,result){
-        if(err){
-            callback(err,null)    
-        }else{
-            callback(null,object.shortName)
-        }
-    },object)
+    
+    mongo.count(ShareableSchema, function(err, count){
+        object.id = count+1;
+        mongo.add(ShareableSchema, function(err,result){
+            if(err){
+                callback(err,null)    
+            }else{
+                callback(null,object.id)
+            }
+        },object);
+    }, {});
 }
 
 function listShareables(limit, callback, offset){
@@ -80,7 +84,7 @@ function listShareables(limit, callback, offset){
     }, {});
 }
 
-function getShareable(shortName, callback, editMode){
+function getShareable(id, callback, editMode){
     mongo.findOne(ShareableSchema, function(err, result) {
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
@@ -89,6 +93,9 @@ function getShareable(shortName, callback, editMode){
             for(var comment of result.comments) {
                 comment.stringDate = utils.getStringDate(comment.date);
             }
+            result.comments.sort(function(a,b) {
+                return b.date - a.date;
+            });
 			if(editMode){
 				result.description = utils.getTextContentFromHTML(result.description);
 			}else{
@@ -99,16 +106,16 @@ function getShareable(shortName, callback, editMode){
         }
         callback(null);
         return;
-    }, {shortName: shortName})
+    }, {id: id})
 }
 
 function editShareable(request, callback) {
 	console.log("editing..."+JSON.stringify(request.body))
 	mongo.update(ShareableSchema, function(err, result) {
-		callback(err, request.body.originalShortName)
+		callback(err, request.body.originalId)
 	},
 	{
-		shortName: request.body.originalShortName
+		id: request.body.originalId
 	},//condition
 	{
 		modificationDate: Date.now(),
@@ -139,6 +146,7 @@ function getAuthorPublications(){
 function commentShareable(request, callback) {
     if(!request.body.comment) {
         callback('Commentaire vide.',{redirect:'/'});
+        return;
     }
     var sharedId = request.body.sharedId;
     
@@ -148,7 +156,7 @@ function commentShareable(request, callback) {
         });
 	},
 	{
-		shortName: sharedId
+		id: sharedId
 	},//condition
 	{$push: {'comments': {
             content:request.body.comment,

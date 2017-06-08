@@ -62,7 +62,7 @@ function encryptPassword(password) {
 /////////////////////////////////
 
 function getShortName(name){
-    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-')+"-"+generateRandomId();
+    return name.replace(new RegExp("[^a-zA-Z ]+", "g"),'').trim().replace(/ /g,'-');//+"-"+generateRandomId();
 }
 
 /////////////////////////////////

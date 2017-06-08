@@ -26,13 +26,16 @@ function addDocument(request, isNews, callback){
         isNews: isNews
     };
 
-    mongo.add(ArticleSchema, function(err,result){
-        if(err){
-            callback(err,null)    
-        }else{
-            callback(null,object.shortName)
-        }
-    },object)
+    mongo.count(ArticleSchema, function(err, count){
+        object.id = count+1;
+        mongo.add(ArticleSchema, function(err,result){
+            if(err){
+                callback(err,null)    
+            }else{
+                callback(null,object.id);
+            }
+        },object);
+    },{});
 }
 
 function addArticle(request,callback){
@@ -74,14 +77,17 @@ function listNews(limit, callback, offset){
 
 
 
-function getArticle(shortName, callback, editMode) {
-    mongo.findOne(ArticleSchema, function(err,result){
+function getArticle(id, callback, editMode) {
+    mongo.findOne(ArticleSchema, function(err, result){
         if(result){
             result.stringPublicationDate = utils.getStringDate(result.publicationDate);
 			result.stringModificationDate = utils.getStringDate(result.modificationDate);
             for(var comment of result.comments) {
                 comment.stringDate = utils.getStringDate(comment.date);
             }
+            result.comments.sort(function(a,b) {
+                return b.date - a.date;
+            });
 			if(editMode){
 				result.content = utils.getTextContentFromHTML(result.content);
 			}else{
@@ -93,16 +99,16 @@ function getArticle(shortName, callback, editMode) {
         }
         callback(null)
         return;
-    },{shortName: shortName})
+    },{id: id})
 }
 
 
 function editDocument(request, callback) {
 	mongo.update(ArticleSchema, function(err, result) {
-		callback(err, request.body.originalShortName)
+		callback(err, request.body.originalId)
 	},
 	{
-		shortName: request.body.originalShortName
+		id: request.body.originalId
 	},//condition
 	{
 		modificationDate: Date.now(),
@@ -137,6 +143,7 @@ function getAuthorPublications(){
 function commentArticle(request, callback) {
     if(!request.body.comment) {
         callback('Commentaire vide.',{redirect:'/'});
+        return;
     }
     var articleId = request.body.articleId;
     
@@ -146,7 +153,7 @@ function commentArticle(request, callback) {
         });
 	},
 	{
-		shortName: articleId
+		id: articleId
 	},//condition
 	{$push: {'comments': {
             content:request.body.comment,

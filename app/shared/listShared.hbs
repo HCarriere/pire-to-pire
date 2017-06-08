@@ -10,10 +10,10 @@
 <div class="list-container">
     {{#each shareables}}
     <div class="list-element">
-        <a href="/shared/{{shortName}}" class="list-title">{{name}}</a>
+        <a href="/shared/{{id}}" class="list-title">{{name}}</a>
         Par<a href="/user/{{author}}" class="meta user">{{author}}</a><div class="meta date">{{stringPublicationDate}}</div>
         <p></p>{{extract}}...</p>
-		<a class="file-box" href="/shared/{{shortName}}">
+		<a class="file-box" href="/shared/{{id}}">
             <img class="file-icon" src="/icons/ext/{{uploadedObject.extension}}.png"/> 
             <div class="file-description">
                 <div class="file-name">{{uploadedObject.name}}</div>

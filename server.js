@@ -638,9 +638,9 @@ app
 	  mustBeAuthentified(),
 	  hasPrivilege(user.law.privileges.ARTICLE_POST),
 	  (request, response) => {
-    article.addArticle(request, function(err,shortName){
-        if(shortName) {
-            response.redirect('/article/'+shortName);
+    article.addArticle(request, function(err,id){
+        if(id) {
+            response.redirect('/article/'+id);
         }
 		if(err) {
 			
@@ -653,9 +653,9 @@ app
 	  mustBeAuthentified(), 
 	  hasPrivilege(user.law.privileges.EDIT_DOCUMENT),
 	  (request, response) => {
-    article.editDocument(request, function(err, shortName) {
-		if(shortName) {
-            response.redirect('/article/'+shortName);
+    article.editDocument(request, function(err, id) {
+		if(id) {
+            response.redirect('/article/'+id);
         }
 		if(err) {
 			
@@ -667,9 +667,9 @@ app
 .post('/api/add/news',
 	  hasPrivilege(user.law.privileges.BO_ACCESS),
 	  (request, response) => {
-    article.addNews(request, function(err,shortName){
-        if(shortName){
-            response.redirect('/article/'+shortName);
+    article.addNews(request, function(err,id){
+        if(id){
+            response.redirect('/article/'+id);
         }
     })
 })
@@ -686,9 +686,9 @@ app
                 errorContent:err
             });
         }else{
-            shared.addShareable(request, function(err, shortName) {
-                if(shortName){
-                    response.redirect('/shared/'+shortName);
+            shared.addShareable(request, function(err, id) {
+                if(id){
+                    response.redirect('/shared/'+id);
                 }
             })
         }
@@ -700,9 +700,9 @@ app
 	  mustBeAuthentified(), 
 	  hasPrivilege(user.law.privileges.EDIT_DOCUMENT), 
 	  (request, response) => {
-	shared.editShareable(request, function(err, shortName) {
-		if(shortName) {
-			response.redirect('/shared/'+shortName);
+	shared.editShareable(request, function(err, id) {
+		if(id) {
+			response.redirect('/shared/'+id);
 		}
 		if(err) {
 			

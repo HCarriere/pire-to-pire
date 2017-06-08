@@ -224,7 +224,7 @@ var ArticleTableModel = {
             value:'name',
             id:'title',
             input:null,
-            link:'/article/%shortName%' //devient un <a>, %XXX% avec XXX-> BDD field
+            link:'/article/%id%' //devient un <a>, %XXX% avec XXX-> BDD field
         },
         {
             text:"Auteur",
@@ -274,7 +274,7 @@ var NewsTableModel = {
             value:'name',
             id:'title',
             input:null,
-            link:'/article/%shortName%' //devient un <a>, %XXX% avec XXX-> BDD field
+            link:'/article/%id%' //devient un <a>, %XXX% avec XXX-> BDD field
         },
         {
             text:"Auteur",
@@ -316,7 +316,7 @@ var ShareableTableModel ={
             value:'name',
             id:'title',
             input:null,
-            link:'/shared/%shortName%' //devient un <a>, %XXX% avec XXX-> BDD field
+            link:'/shared/%id%' //devient un <a>, %XXX% avec XXX-> BDD field
         },
         {
             text:"Auteur",
