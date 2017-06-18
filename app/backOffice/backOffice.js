@@ -79,7 +79,7 @@ function updateUserRank(request, callback){
     }
     
     mongo.findOne(user.Schema, function(err, result){
-        if(!err){
+        if(!err || !result){
             var ranksCurrentTarget = result.rank;
             if(user.law.roles.GOD.name === ranksCurrentTarget) {
                 //target is GOD

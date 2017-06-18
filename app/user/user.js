@@ -135,6 +135,10 @@ function updateUserPassword(request, callback){
         return;
     }
     mongo.findOne(UserSchema,function(err,result){
+		if(!result) {
+			callback({error:'not found'});
+			return;
+		}
         if(result.password === utils.encryptPassword(request.body.old_password)){
             mongo.update(
                 UserSchema,

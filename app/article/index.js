@@ -10,5 +10,6 @@ module.exports = {
     getArticle: article.getArticle,
     getAuthorPublications : article.getAuthorPublications,
 	editDocument : article.editDocument,
-    commentArticle : article.commentArticle
+    commentArticle : article.commentArticle,
+	vote : article.vote,
 }

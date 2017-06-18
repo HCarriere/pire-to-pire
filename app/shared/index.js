@@ -8,5 +8,6 @@ module.exports = {
     getShareable : shared.getShareable,
     getAuthorPublications : shared.getAuthorPublications,
 	editShareable : shared.editShareable,
-    commentShareable : shared.commentShareable
+    commentShareable : shared.commentShareable,
+	vote: shared.vote,
 }

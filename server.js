@@ -270,7 +270,8 @@ app
     article.getArticle(request.params.id, function(result){
         response.render('article/showArticle', {
             global:getParameters(request),
-            article:result
+            article:result,
+			otherScripts:[{script:"/js/asyncVote.js"}],
         }) 
     })
 })
@@ -341,7 +342,8 @@ app
     shared.getShareable(request.params.id, function(result){
         response.render('shared/showShared', {
             global:getParameters(request),
-            shareable:result
+            shareable:result,
+			otherScripts:[{script:"/js/asyncVote.js"}],
         })  
     })
 })    
@@ -766,6 +768,31 @@ app
         else response.redirect('/admin/shareables?succes=1');
     })
 })
+
+// upvote/downvote for an article
+.post('/api/vote/article',
+	 mustBeAuthentified(),
+	 (request, response) => {
+	article.vote(request, (result) => {
+		if(result.err) {
+			console.log(result.err);
+		}
+		sendJSON(response, result);
+	});
+})
+
+// upvote/downvote for a share
+.post('/api/vote/shared',
+	 mustBeAuthentified(),
+	 (request, response) => {
+	shared.vote(request, (result) => {
+		if(result.err) {
+			console.log(result.err);
+		}
+		sendJSON(response, result);
+	});
+})
+
 //////////////////////////
 .get('/forbidden', function(req,res){
     res.render('error',{
@@ -903,6 +930,16 @@ function getParameters(request){
 		unseenMessages:request.unseenMessages,
 		privileges:request.privileges
     }
+}
+
+/**
+ * send a JSON to response header
+ * @param  {[Object]} response
+ * @param  {[Object]} json
+ */
+function sendJSON(response, json) {
+	response.contentType('application/json');
+	response.send(JSON.stringify(json, null, 4));
 }
 
 /**

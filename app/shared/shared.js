@@ -6,8 +6,7 @@ const config = require('../../config')
 ///////////// private
 
 
-
-function getExtension(filename){
+function getExtension(filename) {
     var ext = filename.split('.').pop();
     var extDictionnary = [
   "aac","ai","aiff","avi","bmp","c","cpp","css","dat","dmg","doc","dotx","dwg","dxf","eps","exe","flv","gif","h","hpp","html","ics","iso","java","jpg","js","key","less","mid","mp3","mp4","mpg","odf","ods","odt","otp","ots","ott","pdf","php","png","ppt","psd","py","qt","rar","rb","rtf","sass","scss","sql","t.txt","tga","tgz","tiff","txt","wav","xls","xlsx","xml","yml","zip"
@@ -17,7 +16,15 @@ function getExtension(filename){
     } else return "_blank";
 }
 
-
+function formatShared(shared) {
+	shared.stringPublicationDate = utils.getStringDate(shared.publicationDate);
+	shared.uploadedObject.stringSize = utils.getStringSize(shared.uploadedObject.size);
+	shared.extract = utils.getExtractOf(shared.description);
+	shared.stringModificationDate = utils.getStringDate(shared.modificationDate);
+	shared.upvoteNumber = shared.upvotes.length;
+	shared.downvoteNumber = shared.downvotes.length;
+	return shared;
+}
 
 ///////////// public
 //callback(error, shortName)
@@ -74,9 +81,7 @@ function listShareables(limit, callback, offset){
                 return;
             }else{
                 for(var share of result){
-                    share.stringPublicationDate = utils.getStringDate(share.publicationDate);
-                    share.uploadedObject.stringSize = utils.getStringSize(share.uploadedObject.size);
-                    share.extract = utils.getExtractOf(share.description);
+                    formatShared(share);
                 }
                 callback(null, result, count);
             }
@@ -87,9 +92,7 @@ function listShareables(limit, callback, offset){
 function getShareable(id, callback, editMode){
     mongo.findOne(ShareableSchema, function(err, result) {
         if(result){
-            result.stringPublicationDate = utils.getStringDate(result.publicationDate);
-			result.stringModificationDate = utils.getStringDate(result.modificationDate);
-			result.uploadedObject.stringSize = utils.getStringSize(result.uploadedObject.size);
+            formatShared(result);
             for(var comment of result.comments) {
                 comment.stringDate = utils.getStringDate(comment.date);
             }
@@ -133,7 +136,7 @@ function getAuthorPublications(){
         mongo.find(ShareableSchema, function(err, result) {
             if(result) {
                 for(var share of result){
-                    share.stringPublicationDate = utils.getStringDate(share.publicationDate);
+                    formatShared(share);
                 }
                 request.shareables = result;
             }
@@ -167,11 +170,57 @@ function commentShareable(request, callback) {
 	{safe: true, upsert: true, new : true})//options
 }
 
+
+/**
+POST params:
+sharedid: String,
+downvote: Boolean
+*/
+function vote(request, callback) {
+	if(!request.body) {
+		callback({error:'Request invalid'});
+		return;
+	}
+	mongo.findOne(ShareableSchema, (err, shared) => {
+		if(err  || !shared) {
+			callback({error:err});
+			return;
+		}
+		
+		var update = {};
+		var author = request.user.login;
+		
+		if(shared.downvotes.indexOf(author) != -1 ||
+		   shared.upvotes.indexOf(author) != -1) {
+			callback({error:'Vous avez déjà voté!'});
+			return;
+		}
+		
+		if(request.body.downvote) {
+			update = {$push: {'downvotes': author}};
+		} else {
+			update = {$push: {'upvotes': author}};
+		}
+		
+		mongo.update(ShareableSchema, (uErr, uRes) => {
+			if(uErr) {
+				callback({error:uErr});
+				return;
+			}
+			callback({result: 'OK'});
+		},
+		{id: request.body.sharedid},// condition
+		update,
+		{safe: true, upsert: true, new : true});// options
+	}, {id: request.body.sharedid});
+}
+
 module.exports= {
     addShareable,
     listShareables,
     getShareable,
     getAuthorPublications,
 	editShareable,
-    commentShareable
+    commentShareable,
+	vote,
 }

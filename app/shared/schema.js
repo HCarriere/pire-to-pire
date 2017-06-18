@@ -26,8 +26,6 @@ var Schema = {
                 content:String,
                 author:{ type : String , ref : conf.database.collections.users },
                 date: Date,
-                upvotes:[{ type : String , ref : conf.database.collections.users }],
-                downvotes:[{ type : String , ref : conf.database.collections.users }]
             }
         ]
     }),

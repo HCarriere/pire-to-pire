@@ -27,6 +27,16 @@
 
     <br><br><hr>
     
+	<form method="POST" action="/api/vote/article" class="noaction vote upvote">
+		<input type="hidden" name="articleid" value="{{article.id}}">
+		<button class="async-call">{{article.upvoteNumber}}</button>
+	</form>
+	<form method="POST" action="/api/vote/article" class="noaction vote downvote">
+		<input type="hidden" name="articleid" value="{{article.id}}">
+		<input type="hidden" name="downvote" value="true">
+		<button class="async-call">{{article.downvoteNumber}}</button>
+	</form>
+	
     {{#each article.tags}}
     <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
     {{/each}}

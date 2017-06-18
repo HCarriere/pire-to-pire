@@ -3,7 +3,14 @@ const mongo = require('../mongo')
 const utils = require('../utils')
 
 
-
+function formatArticle(article) {
+	article.stringPublicationDate = utils.getStringDate(article.publicationDate);
+	article.extract = utils.getExtractOf(article.content);
+	article.stringModificationDate = utils.getStringDate(article.modificationDate);
+	article.upvoteNumber = article.upvotes.length;
+	article.downvoteNumber = article.downvotes.length;
+	return article;
+}
 
 //////////// public ////////////////
 function addDocument(request, isNews, callback){
@@ -56,8 +63,10 @@ function listDocuments(limit,news,callback,offset){
             }
             else{
                 for (var article of result){
-                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
-                    article.extract = utils.getExtractOf(article.content);
+                    /*article.stringPublicationDate = 
+						utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);*/
+					formatArticle(article);
                 }
                 callback(null, result, count);
             }
@@ -80,8 +89,12 @@ function listNews(limit, callback, offset){
 function getArticle(id, callback, editMode) {
     mongo.findOne(ArticleSchema, function(err, result){
         if(result){
-            result.stringPublicationDate = utils.getStringDate(result.publicationDate);
-			result.stringModificationDate = utils.getStringDate(result.modificationDate);
+            /*result.stringPublicationDate = 
+				utils.getStringDate(result.publicationDate);
+			result.stringModificationDate = 
+				utils.getStringDate(result.modificationDate);*/
+			formatArticle(result);
+			
             for(var comment of result.comments) {
                 comment.stringDate = utils.getStringDate(comment.date);
             }
@@ -129,8 +142,10 @@ function getAuthorPublications(){
        mongo.find(ArticleSchema, function(err, result){
            if(result){
                 for (var article of result){
-                    article.stringPublicationDate = utils.getStringDate(article.publicationDate);
-                    article.extract = utils.getExtractOf(article.content);
+                    /*article.stringPublicationDate = 
+						utils.getStringDate(article.publicationDate);
+                    article.extract = utils.getExtractOf(article.content);*/
+					formatArticle(article);
                 }
                 request.articles = result;
            }
@@ -164,6 +179,50 @@ function commentArticle(request, callback) {
 	{safe: true, upsert: true, new : true})//options
 }
 
+/**
+POST params:
+articleid: String,
+downvote: Boolean
+*/
+function vote(request, callback) {
+	if(!request.body) {
+		callback({error:'Request invalid'});
+		return;
+	}
+	mongo.findOne(ArticleSchema, (err, article) => {
+		if(err || !article) {
+			callback({error:err});
+			return;
+		}
+		
+		var update = {};
+		var author = request.user.login;
+		
+		if(article.downvotes.indexOf(author) != -1 ||
+		   article.upvotes.indexOf(author) != -1) {
+			callback({error:'Vous avez déjà voté!'});
+			return;
+		}
+		
+		if(request.body.downvote) {
+			update = {$push: {'downvotes': author}};
+		} else {
+			update = {$push: {'upvotes': author}};
+		}
+		
+		mongo.update(ArticleSchema, (uErr, uRes) => {
+			if(uErr) {
+				callback({error:uErr});
+				return;
+			}
+			callback({result: 'OK'});
+		},
+		{id: request.body.articleid},// condition
+		update,
+		{safe: true, upsert: true, new : true});// options
+	}, {id: request.body.articleid});
+}
+
 
 module.exports = {
     listArticles,
@@ -173,7 +232,8 @@ module.exports = {
     getArticle,
     getAuthorPublications,
 	editDocument,
-    commentArticle
+    commentArticle,
+	vote
 }
 
 
