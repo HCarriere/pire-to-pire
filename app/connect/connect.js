@@ -14,7 +14,7 @@ function findUser(username, callback){
     mongo.findOne(UserSchema , function(err, result){
         if(err){
             callback(err, null);
-        }else{
+        } else {
             callback(null, result);
         }
     },{'login': {$regex: new RegExp('^' + username.toLowerCase(), 'i')}});

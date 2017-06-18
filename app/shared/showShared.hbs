@@ -33,14 +33,15 @@
     
 	<form method="POST" action="/api/vote/shared" class="noaction vote upvote">
 		<input type="hidden" name="sharedid" value="{{shareable.id}}">
-		<button class="async-call">{{shareable.upvoteNumber}}</button>
+		<button class="async-call"><i class="fa fa-arrow-up"></i><div class="num">{{shareable.upvoteNumber}}</div></button>
 	</form>
 	<form method="POST" action="/api/vote/shared" class="noaction vote downvote">
+		
 		<input type="hidden" name="sharedid" value="{{shareable.id}}">
 		<input type="hidden" name="downvote" value="true">
-		<button class="async-call">{{shareable.downvoteNumber}}</button>
+		<button class="async-call"><i class="fa fa-arrow-down"></i><div class="num">{{shareable.downvoteNumber}}</div></button>
 	</form>
-	
+	<br>
     {{#each shareable.tags}}
     <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
     {{/each}}   

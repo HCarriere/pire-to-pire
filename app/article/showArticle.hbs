@@ -29,14 +29,15 @@
     
 	<form method="POST" action="/api/vote/article" class="noaction vote upvote">
 		<input type="hidden" name="articleid" value="{{article.id}}">
-		<button class="async-call">{{article.upvoteNumber}}</button>
+		<button class="async-call"><i class="fa fa-arrow-up"></i><div class="num">{{article.upvoteNumber}}</div></button>
 	</form>
 	<form method="POST" action="/api/vote/article" class="noaction vote downvote">
+		
 		<input type="hidden" name="articleid" value="{{article.id}}">
 		<input type="hidden" name="downvote" value="true">
-		<button class="async-call">{{article.downvoteNumber}}</button>
+		<button class="async-call"><i class="fa fa-arrow-down"></i><div class="num">{{article.downvoteNumber}}</div></button>
 	</form>
-	
+	<br>
     {{#each article.tags}}
     <a href="/search?tag={{tag}}" class="meta tag"><i class="fa fa-tag"></i> {{tag}}</a>
     {{/each}}

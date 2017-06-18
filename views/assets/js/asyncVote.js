@@ -48,7 +48,7 @@ function postFormFromButton(button) {
 }
 
 function updateVoteButton(button) {
-	let votes = Number(button.text());
-	votes+=1;
-	button.text(votes);
+	let votes = Number(button.children('.num').text());
+	votes += 1;
+	button.children('.num').text(votes);
 }

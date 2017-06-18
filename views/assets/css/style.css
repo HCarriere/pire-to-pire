@@ -490,6 +490,29 @@ pre{
 .pagination .next{margin-left:2px;}
 .pagination .lastpage{margin-left:2px;}
 
+/* upvotes */
+form.vote{
+	display: inline-block;
+	padding:5px;
+}
+form.vote button{
+	border:none;
+	padding:8px;
+	cursor: pointer;
+	transition: all .5s;
+}
+form.vote button:hover{
+	background-color:aliceblue;
+}
+form.vote button .num{
+	display:inline-block;
+}
+form.vote.upvote button{
+	background-color:cadetblue;
+}
+form.vote.downvote button{
+	background-color:firebrick;
+}
 
 /*alerts*/
 .alert{
