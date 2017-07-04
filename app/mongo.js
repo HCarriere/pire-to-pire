@@ -45,6 +45,7 @@ function openConnection(callback){
 function closeConnection(conn){
    // conn.close();
    // console.log('^^^^^^^^^^^^ - connection closed - ^^^^^^^^^^^^');
+    // TODO quesque c'est les histoires
 }
 
 function logMsg(msg){

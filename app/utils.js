@@ -1,4 +1,4 @@
-const md5 = require('md5');
+var sha256 = require('sha.js')('sha256');
 //////////////////////////////////////
 
 
@@ -56,7 +56,7 @@ function getTags(tagsRequest){
 
 
 function encryptPassword(password) {
-	return md5("0xxH_èdydhD70çàud"+password+"JdoDP\oe::;OE§§ùperTTOTHch68764xx");
+	return sha256.update("0xxH_èdydhD70çàud"+password+"JdoDP\oe::;OE§§ùperTTOTHch68764xx",'utf8').digest('hex');
 }
 
 /////////////////////////////////

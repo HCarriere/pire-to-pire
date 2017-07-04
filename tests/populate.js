@@ -23,9 +23,7 @@ articles,
 shareds,
 news,
 chatmessages,
-inbox messages
-
-Tous seront liés, utilisables, avec du contenu généré aléatoirement.
+inbox messages,
 
 *********************/
 
