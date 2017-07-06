@@ -31,12 +31,26 @@ function drawCanvas() {
         // create graph
         let ctx = document.getElementById(graph.id).getContext('2d');
        
+        let options = {};
+        if(graph.type=='bar') {
+            console.log(graph.id);
+            options= {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        }
         let chart = new Chart(ctx, {
             type: graph.type,
             data: {
                 labels: graph.labels,
                 datasets: [],
             },
+            options: options,
         });
         charts[graph.id] = chart;
     });
