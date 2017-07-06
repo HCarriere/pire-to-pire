@@ -315,6 +315,13 @@ function randomDate(startDate, endDate){
 
 function getRandomWordFromArray(array){
     let max = array.length;
+    
+    for(let i = 0; i<max; i++) {
+        if(Math.random()<0.10) {
+            return array[i];
+        }
+    }
+    
     return array[Math.floor(Math.random()*max)];
 }
 
@@ -396,7 +403,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed bibendum 
 `Quisque nec lectus arcu. Fusce mollis dictum magna, sit amet placerat elit facilisis dignissim. Quisque a purus eleifend massa placerat porttitor. Suspendisse potenti. Aliquam tortor dolor, tempor id felis sed, scelerisque placerat sapien. Aliquam erat volutpat. Sed viverra purus at iaculis porta. Aenean feugiat, lorem vitae fringilla pulvinar, nulla purus lobortis orci, at vehicula felis mauris non sem. Ut vitae eros nunc. Suspendisse porttitor, turpis quis sagittis ornare, est est aliquam eros, at auctor ligula sapien rutrum sapien. `
 ];
 
-const names = [	"Alyse","Hardeman","Delphia","Grosvenor","Illa","Furness","Angelic","Janssen","Annice","Friedrichs","Kali","Medved","Jazmine","Mcnab","Arron","Kunze","Roger","Cluck","Tessie","Nader","Jonelle","Mcclaskey","Lavada","Humbertson","Erica","Utt","Neely","Otis","Fawn","Mcnemar","Polly","Vandenburg","Venessa","Claude","Rudy","Tasker","Emilie","Arbogast","Salvatore","Overmyer","Yvonne","Fenstermaker","Martine","Mccarley","Myrl","Raber","Bridget","Rarick","Eula","Ottley","Kenton","Ballweg","Frederic","Rodrigues","Maryland","Halvorson","Russ","Benavidez","Gus","Mooring","Cathie","Kozak","Birdie","Stapler","Marlys","Burry","Olga","Adair","Rutha","Bergey","Shela","Segers","Soledad","Mccubbin","Pierre","Desimone","Lois","Hochmuth","Sau","Wilkey","Tommye","Durso","Leeanne","Rohe","Assunta","Rawley","Vena","Goers","Donetta","Maheux","Alease","Tankersley","Marta","Soja","Leroy","Amison","Odilia","Weyandt","Jenniffer","Witmer"
+const names = [	"Alyse","Hardeman","Delphia","Grosvenor","Illa","Furness","Angelic","Janssen","Annice","Friedrichs","Kali","Medved","Jazmine","Mcnab","Arron","Kunze","Roger","Cluck","Tessie","Nader","Jonelle","Mcclaskey","Lavada","Humbertson","Erica","Utt","Neely","Otis","Fawn","Mcnemar","Polly","Vandenburg","Venessa","Claude","Rudy","Tasker","Emilie","Arbogast","Salvatore","Overmyer","Yvonne","Fenstermaker","Martine","Mccarley","Myrl","Raber","Bridget","Rarick","Eula","Ottley","Hervé","Ballweg","Frederic","Rodrigues","Maryland","Halvorson","Russ","Benavidez","Gus","Mooring","Cathie","Kozak","Birdie","Stapler","Marlys","Burry","Olga","Adair","Rutha","Bergey","Shela","Segers","Soledad","Mccubbin","Pierre","Desimone","Lois","Hochmuth","Sau","Wilkey","Tommye","Durso","Leeanne","Rohe","Assunta","Rawley","Vena","Goers","Donetta","Maheux","Alease","Tankersley","Marta","Soja","Leroy","Amison","Odilia","Weyandt","Jenniffer","Witmer"
 ];
 
 const words = [

@@ -826,7 +826,6 @@ app
 
 //////////// Error handler //////////
 app.use((err, request, response, next) => {  
-  //TODO log error
   console.log("ptp:app:():():ERR:(Express error handler):"+err);
   response.status(500).render('error', {
       errorCode:500,

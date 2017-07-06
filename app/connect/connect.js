@@ -68,6 +68,8 @@ function initPassport(){
                     return done(null, false)
                 }
                 if(utils.encryptPassword(password) != user.password){
+                    console.log(utils.encryptPassword(password));
+                    console.log(password);
                     console.log('ptp:connection:():initPassport:WARN:(wrong password)');
                     return done(null, false);
                 }

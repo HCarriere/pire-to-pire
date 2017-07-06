@@ -198,7 +198,9 @@ const graphs = [
 
 
 function getGraphsData(callback) {
-    if(!lastCalculationDate) {
+    if(lastCalculationDate && Date.now()-lastCalculationDate < 21600000) {// 6 hours
+        callback(resultCacheData);
+    } else {
         console.log('must calculate graphs data...');
         indexAllDocs((year, days, ever) => {
             // slice(0) to copy the array.
@@ -208,11 +210,7 @@ function getGraphsData(callback) {
                 callback(datas);    
             });
         });
-    } else {
-        console.log('graphs data already in cache...');
-        callback(resultCacheData);
     }
-    
 }
 
 function buildGraphs() {

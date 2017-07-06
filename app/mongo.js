@@ -6,8 +6,10 @@ var mongoose = require('mongoose');
 var conn;
 
 function initMongo(){
-	mongoose.set('debug', conf.database.mongooseDebug);
+	
+    mongoose.set('debug', conf.database.mongooseDebug);
 	mongoose.Promise = global.Promise;
+    
 	logMsg("ptp:mongo:():initMongo:OK:(mongo initialized)");
 }
 
@@ -28,10 +30,10 @@ function openConnection(callback){
         var address = getAddress();
         conn = mongoose.createConnection(address, options, function(err) {
            if(!err){
-               callback(null)
+               callback(null);
 			   logMsg("ptp:mongo:():openConnection:OK:(mongo connected to "+address+" )");
            }else{
-			   callback(err)
+			   callback(err);
 			   logMsg("ptp:mongo:():openConnection:ERR:(mongo is unable to connect to "+address+" )");
 			   return;
 		   }
@@ -284,23 +286,11 @@ function streamFind(schema, onDoc, onEnd, condition) {
     openConnection(function(coErr){
         if(conn){
             var model = conn.model(schema.collection,schema.schema);
-            let stream = model.find(condition).stream();
+            let cursor = model.find(condition).cursor();
             
-            stream.on('data', (doc) => {
-                onDoc(doc);
-            });
+            cursor.eachAsync(doc => onDoc(doc)).
+            then(() => onEnd());
             
-            stream.on('error', (err) => {
-                closeConnection();
-                logMsg(err);
-                return;
-            });
-            
-            stream.on('close', () => {
-                onEnd();
-                closeConnection();
-                return;
-            });
             
         } else {
             onEnd(null);

@@ -1,4 +1,4 @@
-var sha256 = require('sha.js')('sha256');
+var createHash = require('sha.js');
 //////////////////////////////////////
 
 
@@ -56,6 +56,7 @@ function getTags(tagsRequest){
 
 
 function encryptPassword(password) {
+    let sha256 = createHash('sha256');
 	return sha256.update("0xxH_èdydhD70çàud"+password+"JdoDP\oe::;OE§§ùperTTOTHch68764xx",'utf8').digest('hex');
 }
 

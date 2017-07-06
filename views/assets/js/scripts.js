@@ -25,11 +25,10 @@ $(document).ready(function(){
 
 //Easter egg.
 const konamiCode =[
-	"ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","a","b"
+	"z","z","s","s","q","d","q","d","a","b"
 ];
 var konamiCurrentStep = 0;
 function konamiPress(event) {
-	//console.log(event.key);
 	if(konamiCurrentStep >= konamiCode.length){
 		return;
 	}
