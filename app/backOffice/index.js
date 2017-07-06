@@ -1,4 +1,5 @@
-var BO = require('./backOffice')
+var BO = require('./backOffice');
+var stats = require('./stats');
 
 module.exports = {
     getAsTable : BO.getAsTable,
@@ -9,5 +10,8 @@ module.exports = {
     updateUserRank : BO.updateUserRank,
     deleteUser : BO.deleteUser,
     deleteArticle : BO.deleteArticle,
-    deleteShareable : BO.deleteShareable
+    deleteShareable : BO.deleteShareable,
+    
+    buildGraphs : stats.buildGraphs,
+    getGraphsData : stats.getGraphsData,
 }

@@ -467,8 +467,20 @@ app
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 
 	 (request, response) => {
     response.render('backOffice/menu', {
-		global:getParameters(request)
+		global:getParameters(request),
+        otherScripts:[
+            {script:'/js/chartsClient.js'},
+            {script:'/js/Chart.min.js'},
+        ],
+        graphs: BO.buildGraphs(),
 	})
+})
+.post('/admin/graphsData', 
+    hasPrivilege(user.law.privileges.BO_ACCESS),
+    (req, res) => {
+    BO.getGraphsData((data) => {
+        sendJSON(res, data);    
+    });
 })
 .get('/admin/users',
 	 hasPrivilege(user.law.privileges.BO_ACCESS), 

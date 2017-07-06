@@ -278,6 +278,36 @@ function count(schema,callback, condition){
     })
 }
 
+// onDoc(doc)
+// onEnd()
+function streamFind(schema, onDoc, onEnd, condition) {
+    openConnection(function(coErr){
+        if(conn){
+            var model = conn.model(schema.collection,schema.schema);
+            let stream = model.find(condition).stream();
+            
+            stream.on('data', (doc) => {
+                onDoc(doc);
+            });
+            
+            stream.on('error', (err) => {
+                closeConnection();
+                logMsg(err);
+                return;
+            });
+            
+            stream.on('close', () => {
+                onEnd();
+                closeConnection();
+                return;
+            });
+            
+        } else {
+            onEnd(null);
+        }
+    });
+}
+
 
 
 /**
@@ -334,6 +364,7 @@ module.exports = {
     removeById: removeById,
     count: count,
     findWithOptions : findObjectWithOptions,
+    streamFind : streamFind,
     ObjectId : ObjectId,
     processFunction : processFunction
 }

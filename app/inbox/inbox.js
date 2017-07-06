@@ -1,6 +1,7 @@
 const InboxSchema = require('./schema').Schema
 const mongo = require('../mongo')
 const utils = require('../utils')
+const Mailing = require('../mailing');
 
 function listMessages(request, callback, options) {
 	
@@ -93,13 +94,13 @@ function sendMessage(request, callback) {
 		date:Date.now(),
 		subject:request.body.subject,
 		content:request.body.content,
-		seen:false
+		seen:false,
 	}
 	mongo.add(InboxSchema, function(err, result) {
 		if(err) {
-			callback(err,null)
+			callback(err,null);
 		} else {
-			callback(null,result)
+			callback(null,result);
 		}
 	},object)
 }
