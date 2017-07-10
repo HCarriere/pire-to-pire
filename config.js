@@ -2,7 +2,6 @@
 
 module.exports = {
     database: {
-        // name: "mongodb://root:<t2...>@ds029575.mlab.com:29575/pire-to-pire",
         //name:"mongodb://localhost/pire-to-pire",
         defaultAddress:{
             prefix:"mongodb",
