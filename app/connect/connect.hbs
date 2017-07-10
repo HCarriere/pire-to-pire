@@ -13,6 +13,7 @@
         <br>
         <input type="hidden" name="_csrf" value="{{global.csrfToken}}">
         <input type="submit" value="Connection" class="button valid">
+        <br><a href="#">Mot de passe oublié?</a>
         {{#if global.query.error}}
         <div class="alert alert-red">
             <h1>Impossible de se connecter</h1>
@@ -20,6 +21,7 @@
         </div>
         {{/if}}
     </form>
+    
      
     
     <form method="post" action="/subscribe" class="form-login inscription" name="inscription">

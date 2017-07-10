@@ -149,8 +149,8 @@ function setLabels(chart, labels) {
 }
 
 function getRandomColor() {
-    let color = 'rgba('+Math.floor(Math.random()*255)
-        +','+Math.floor(Math.random()*255)
+    let color = 'rgba('+Math.floor(Math.random()*155+100)
+        +','+Math.floor(Math.random()*205+50)
         +','+Math.floor(Math.random()*255)
         +',0.5)';
     return color;
