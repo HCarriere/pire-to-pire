@@ -316,12 +316,6 @@ function randomDate(startDate, endDate){
 function getRandomWordFromArray(array){
     let max = array.length;
     
-    for(let i = 0; i<max; i++) {
-        if(Math.random()<0.10) {
-            return array[i];
-        }
-    }
-    
     return array[Math.floor(Math.random()*max)];
 }
 
