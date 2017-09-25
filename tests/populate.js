@@ -90,7 +90,7 @@ function getUserDataArray(){
 		let discriminant = Math.floor(Math.random()*1000);
 		let object = {
 			login:surname+""+discriminant,
-			password:utils.encryptPassword("123"),//same password for everyone
+			password:utils.encryptPassword("SuperSecretPass"),//same password for everyone
 			fullName:surname+" "+name,
 			mail:surname+"."+name+""+discriminant+"@"+"pire-to-pire.com",
 			privileges:Law.roles.WRITER.defaultRights,

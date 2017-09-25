@@ -9,7 +9,7 @@ function init(){
     var dataArray = [
         {
         login: "admin",
-        password : 'b018ca4ecef9c155ac0cd81f840c193ef2cf364c090635cf677c7e8587d0ba21', 
+        password : 'b018ca4ecef9c155ac0cd81f840c193ef2cf364c090635cf677c7e8587d0ba21', //default password
         //pseudo: "admin",
         fullName : "Pire-to-pire Administrator",
         mail: "admin@pire-to-pire.fr",
