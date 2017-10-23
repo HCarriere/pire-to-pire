@@ -473,7 +473,15 @@ app
             {script:'/js/Chart.min.js'},
         ],
         graphs: BO.buildGraphs(),
+        forceGraphsData: true
 	})
+}) // getGraphsData(cb, true);
+.post('/admin/forceGraphsData', 
+    hasPrivilege(user.law.privileges.BO_ACCESS),
+    (req, res) => {
+    BO.getGraphsData((data) => {
+        sendJSON(res, data);    
+    }, true);
 })
 .post('/admin/graphsData', 
     hasPrivilege(user.law.privileges.BO_ACCESS),

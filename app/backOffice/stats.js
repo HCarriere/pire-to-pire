@@ -197,8 +197,8 @@ const graphs = [
 ];
 
 
-function getGraphsData(callback) {
-    if(lastCalculationDate && Date.now()-lastCalculationDate < 21600000) {// 6 hours
+function getGraphsData(callback, forceCalcul) {
+    if(lastCalculationDate && Date.now()-lastCalculationDate < 21600000 && !forceCalcul) {// 6 hours
         callback(resultCacheData);
     } else {
         console.log('must calculate graphs data...');

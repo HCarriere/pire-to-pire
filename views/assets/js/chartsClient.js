@@ -6,7 +6,23 @@ let charts;
 $(document).ready(() => {
     drawCanvas();
     
+    getDatas();
+    
+    $('button.reloadGraphs').click(function(e) {
+        drawCanvas();
+        forceGraphsData();
+    });
 });
+
+function forceGraphsData() {
+    $.ajax({
+        method: 'POST',
+        url: '/admin/forceGraphsData'
+    }).then((data) => {
+        // console.log(JSON.stringify(data));
+        updateCanvas(data);
+    });
+}
 
 function getDatas() {
     $.ajax({
@@ -54,40 +70,6 @@ function drawCanvas() {
         });
         charts[graph.id] = chart;
     });
-   /* updateCanvas([
-        {
-            id: 'article_per_day',
-            datasets:[
-                {
-                    label:'coucou mdr',
-                    data: [1, 3, 5, 4, 2, 1, 8],
-                }
-            ]
-        },
-        {
-            id:'most_used_tags_ever',
-            datasets: [
-                {
-                    data: [10,30,40],
-                }
-            ],
-            labels: ['red', 'yellow', 'green']
-        },
-        {
-            id:'visite_frequency',
-            datasets: [
-                {
-                    label:'visitor',
-                    data: [10,3,4,7],
-                },
-                {
-                    label:'admin',
-                    data: [3,1,2,2],
-                }
-            ]
-        }
-    ]); */
-   getDatas();
 }
 
 function updateCanvas(data) {

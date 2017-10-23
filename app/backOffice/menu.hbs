@@ -16,6 +16,8 @@
         <h3>{{label}}</h3>
         <canvas id="{{id}}" class="graph-canvas" width="400" height="100" data-type="{{type}}" data-labels="{{labels}}"></canvas>
     {{/each}}
-    
+    {{#if forceGraphsData}}
+        <button class="button reloadGraphs">Recharger les graphs</button>
+    {{/if}}
 </div>
 
