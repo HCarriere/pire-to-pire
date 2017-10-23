@@ -57,7 +57,9 @@ function getTags(tagsRequest){
 
 function encryptPassword(password) {
     let sha = createHash('sha256');
-	return sha.update("0xxH_èdydhD70çàud"+password+"JdoDP\oe::;OE§§ùperTTOTHch68764xx",'utf8').digest('hex');
+	return sha
+        .update("0xxH_èdydhD70çàud"+password+"JdoDP\oe::;OE§§ùperTTOTHch68764xx",'utf8')
+        .digest('hex');
 }
 
 /////////////////////////////////
