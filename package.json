@@ -27,7 +27,7 @@
     "passport-local": "^1.0.0",
     "sha.js": "^2.4.8",
     "socket.io": "^1.7.1",
-    "progress": "^2.0.0",
+    "progress": "^2.0.0"
   },
   "devDependencies": {
     "mocha": "^3.0.2"
