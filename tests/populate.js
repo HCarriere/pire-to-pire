@@ -49,16 +49,16 @@ const stats = {
 	},
 	chatMessages:{
 		max:10000,
-		perUserMin:0,
+		perUserMin:1,
 		perUserMax:12
 	},
 	inbox:{
 		max:100000,
-		perUserMin:0,
+		perUserMin:1,
 		perUserMax:12
 	},
     comments:{
-        min:0,
+        min:1,
         max:15
     }
 }

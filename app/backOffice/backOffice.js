@@ -148,16 +148,16 @@ function deleteUser(request, callback){
 
 //callback(err)
 function deleteArticle(request, callback){
-    mongo.removeById(article.Schema, function(err,result){
+    mongo.remove(article.Schema, function(err,result){
         callback(err)
-    },request.body.id)
+    },{id:request.body.id})
 }
 
 //callback(err)
 function deleteShareable(request, callback){
-    mongo.removeById(shared.Schema, function(err,result){
+    mongo.remove(shared.Schema, function(err,result){
         callback(err)
-    },request.body.id)
+    },{id:request.body.id})
 }
 
 ///////// MODELS ///////////
