@@ -13,6 +13,11 @@ $(document).ready(function(){
 			<div class="chat-content">${data.message}</div>
 		</div>`
 		);
+        // fireworks ! 
+        if(data.message == 'boom') {
+            launchFireworks();
+        }
+        //
 		scrollToBottomAnimated();
 		removeOverflow(50);
 	});

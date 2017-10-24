@@ -148,7 +148,8 @@ app
     response.render('home/home',{
         global:getParameters(request),
 		otherScripts:[{script:"/socket.io/socket.io.js"},
-					  {script:"/js/chatClient.js"}],
+					  {script:"/js/chatClient.js"},
+                      {script:"/js/fireworks.js"}],
 		previousChatMessage: request.previousChatMessage,
 		keyAuth: getKeyFromLogin(request.userLogin),
         articles : request.articles,
