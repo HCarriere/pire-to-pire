@@ -326,7 +326,7 @@ app
 // comment
 .post('/comment/article',
       mustBeAuthentified(),
-      hasPrivilege(user.law.privileges.ARTICLE_POST),
+      hasPrivilege(user.law.privileges.COMMENT_ARTICLE),
       (request,response) => {
     article.commentArticle(request, function(err, data) {
         if(err) {
@@ -397,7 +397,7 @@ app
 // comment
 .post('/comment/shared',
       mustBeAuthentified(),
-      hasPrivilege(user.law.privileges.SHAREABLE_POST),
+      hasPrivilege(user.law.privileges.COMMENT_ARTICLE),
       (request,response) => {
     shared.commentShareable(request, function(err, data) {
         if(err) {

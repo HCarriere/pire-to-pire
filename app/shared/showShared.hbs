@@ -47,7 +47,7 @@
     {{/each}}   
     
     <h2>Commentaires</h2>
-    {{#ifContains global.privileges 'shareable_post'}}
+    {{#ifContains global.privileges 'comment_article'}}
     <form method="POST" action="/comment/shared">
         <textarea name="comment" class="comments-text" placeholder="Votre commentaire..." required></textarea>
         <input type="hidden" name="sharedId" value="{{shareable.id}}">

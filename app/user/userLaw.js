@@ -5,6 +5,7 @@ const const_privileges = {
 	EDIT_DOCUMENT:'edit_document',
     SHAREABLE_POST:'shareable_post',
     ARTICLE_POST:'article_post',
+    COMMENT_ARTICLE:'comment_article',
     CHAT_TALK:'chat_talk'
 }
 
@@ -16,7 +17,8 @@ const law = {
 		EDIT_DOCUMENT:const_privileges.EDIT_DOCUMENT,
         SHAREABLE_POST:const_privileges.SHAREABLE_POST,
         ARTICLE_POST:const_privileges.ARTICLE_POST,
-        CHAT_TALK:const_privileges.CHAT_TALK
+        COMMENT_ARTICLE:const_privileges.COMMENT_ARTICLE,
+        CHAT_TALK:const_privileges.CHAT_TALK,
     },
     roles:{
         GOD:{
@@ -27,6 +29,7 @@ const law = {
 							 {privilege:const_privileges.EDIT_DOCUMENT},
                              {privilege:const_privileges.SHAREABLE_POST},
                              {privilege:const_privileges.ARTICLE_POST},
+                             {privilege:const_privileges.COMMENT_ARTICLE},
                              {privilege:const_privileges.CHAT_TALK}]
         },
         ADMIN:{
@@ -36,17 +39,20 @@ const law = {
                              {privilege:const_privileges.EDIT_DOCUMENT},
                              {privilege:const_privileges.SHAREABLE_POST},
                              {privilege:const_privileges.ARTICLE_POST},
+                             {privilege:const_privileges.COMMENT_ARTICLE},
                              {privilege:const_privileges.CHAT_TALK}]
         },
         WRITER:{
             name:'Publieur',
             defaultRights : [{privilege:const_privileges.SHAREABLE_POST},
                              {privilege:const_privileges.ARTICLE_POST},
+                             {privilege:const_privileges.COMMENT_ARTICLE},
                              {privilege:const_privileges.CHAT_TALK}]
         },
         USER:{
             name:'Utilisateur',
-            defaultRights : [{privilege:const_privileges.CHAT_TALK}]
+            defaultRights : [{privilege:const_privileges.CHAT_TALK},
+                             {privilege:const_privileges.COMMENT_ARTICLE}]
         }
     }
 }
