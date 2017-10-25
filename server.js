@@ -216,6 +216,7 @@ app
 	(request, response) => {
     response.render('user/viewProfile', {
         global:getParameters(request),
+        otherScripts:[{script:"/js/profileBlast.js"}],
         profile:request.profile,
         articles: request.articles,
         shareables: request.shareables

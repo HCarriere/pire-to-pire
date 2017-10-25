@@ -11,11 +11,12 @@ let obsoleteParticles = [];
 
 let currentFireworks = 0;
 
-const GRAVITY = 0.05;
-const PARTICLES_SPEED = 10;
-const ENTROPY = 0.05;
-const PARTICLE_MAX_SIZE = 7;
-const MAX_FIREWORKS = 10;
+const FIREWORKS_GRAVITY = 0.05;
+const FIREWORKS_PARTICLES_SPEED = 4;
+const FIREWORKS_ENTROPY = 0.02;
+const FIREWORKS_PARTICLE_MAX_SIZE = 15;
+const MAX_FIREWORKS = 6;
+const FIREWORKS_SIZE = 300; 
 
 
 function launchFireworks() {
@@ -26,22 +27,23 @@ function launchFireworks() {
     if(!ctx) {
         initCanvas();
     }
-    addCluster(100,100,100,);
+    addCluster(100,100,100);
     
     for(let i = 0; i<MAX_FIREWORKS; i++) {
         setTimeout(function() { 
             addCluster(
                 Math.floor(Math.random()*width),
                 Math.floor(Math.random()*height),
-                Math.floor(Math.random()*300+100)
+                Math.floor(Math.random()*FIREWORKS_SIZE/2+FIREWORKS_SIZE/2)
                       );
             currentFireworks -= 1;
-        }, Math.floor(Math.random()*1000*MAX_FIREWORKS/2));
+        }, Math.floor(Math.random()*1000*MAX_FIREWORKS/3));
     }
 }
 
 function initCanvas() {
-    canvas = document.getElementById('fireworks');
+    canvas = document.getElementById('canvasEaster');
+    canvas.style.display = 'block';
     ctx = canvas.getContext('2d');
     // vars
     currentFrame = 0;
@@ -87,12 +89,12 @@ function drawParticles() {
                      particles[i].size/2, particles[i].size/2);
         
         // apply gravity
-        particles[i].diry += GRAVITY;
+        particles[i].diry += FIREWORKS_GRAVITY;
         // apply direction
         particles[i].x += particles[i].dirx;
         particles[i].y += particles[i].diry;
         //entropy
-        particles[i].size -= ENTROPY;
+        particles[i].size -= FIREWORKS_ENTROPY;
         // show
         //ctx.beginPath();
         ctx.fillRect(particles[i].x, particles[i].y, 
@@ -101,7 +103,7 @@ function drawParticles() {
         ctx.fillRect(particles[i].x+1, particles[i].y+1, 
                      particles[i].size/2, particles[i].size/2);
         ctx.fill();
-        if(particles[i].x < 0 || particles[i].y < 0 || particles[i].y > height
+        if(particles[i].x < 0 || particles[i].x > width || particles[i].y > height
           || particles[i].size <= 0) {
             obsoleteParticles.push(i);
         }
@@ -116,14 +118,14 @@ function addCluster(x, y, size) {
 }
 
 function addParticle(x, y, color) {
-    let vector = getRandomVector(PARTICLES_SPEED);
+    let vector = getRandomVector(FIREWORKS_PARTICLES_SPEED);
     particles.push({
         x: x,
         y: y,
         dirx: vector.x,
         diry: vector.y,
         color: color,
-        size: Math.random()*PARTICLE_MAX_SIZE+1,
+        size: Math.random()*FIREWORKS_PARTICLE_MAX_SIZE+1,
     });
 }
 
