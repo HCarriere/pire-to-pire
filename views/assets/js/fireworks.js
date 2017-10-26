@@ -128,6 +128,14 @@ function addParticle(x, y, color) {
         size: Math.random()*FIREWORKS_PARTICLE_MAX_SIZE+1,
     });
 }
+function getRandomVector(magMax) {
+    let angle = Math.random() * Math.PI * 2;
+    let mag = Math.random() * magMax - magMax;
+    return {
+        x: Math.cos(angle) * mag,
+        y: Math.sin(angle) * mag,
+    }
+}
 
 function removeParticles() {
     // delete obsolete particles
@@ -146,11 +154,4 @@ function getRandomColor() {
     return color;
 }
 
-function getRandomVector(magMax) {
-    let angle = Math.random() * Math.PI * 2;
-    let mag = Math.random() * magMax - magMax;
-    return {
-        x: Math.cos(angle) * mag,
-        y: Math.sin(angle) * mag,
-    }
-}
+
